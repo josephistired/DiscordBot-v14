@@ -66,15 +66,9 @@ if (command.developer && interaction.user.id !== "Place Your Discord Account ID 
 
 | System / Command            | Description                 | Status                                                        |
 | --------------------------- | --------------------------- | ------------------------------------------------------------- |
-<<<<<<< HEAD
 | Image Manipulation Commands | Alter another user's avatar | <img src="./Assets/comingsoon.gif" width="15%" height="15%"/> |
 | More Moderation Commands    | Moderation Commands         | <img src="./Assets/comingsoon.gif" width="15%" height="15%"/> |
 | More Fun Commands           | Fun Commands                | <img src="./Assets/comingsoon.gif" width="15%" height="15%"/> |
-=======
-| Image Manipulation Commands | Alter another user's avatar | <img src="./Assets/comingsoon.gif" width="10%" height="10%"/> |
-| More Moderation Commands    | Moderation Commands         | <img src="./Assets/comingsoon.gif" width="10%" height="10%"/> |
-| More Fun Commands           | Fun Commands                | <img src="./Assets/comingsoon.gif" width="10%" height="10%"/> |
->>>>>>> 5e0b460f8b327ae5e20e946c3ca0aa62293c29f7
 | Giveaway System             | Giveaway System             | Researching                                                   |
 | Ticket System               | Ticket System               | Researching                                                   |
 | Music System                | Music System                | .....                                                         |
