@@ -15,5 +15,9 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    * @param {Client} client
    */
-  async execute(interaction, client) {},
+  async execute(interaction, client) {
+    const status = new EmbedBuilder().setDescription("coming soon");
+
+    interaction.reply({ embeds: [status] });
+  },
 };

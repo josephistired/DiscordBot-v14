@@ -40,37 +40,37 @@ if (command.developer && interaction.user.id !== "Place Your Discord Account ID 
 
 ## Commands
 
-| Command            | Description                                            | Group      | Working                                                      |
-| ------------------ | ------------------------------------------------------ | ---------- | ------------------------------------------------------------ |
-| info               | Displays information on bot & this repo.               | Developer  | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| reload commands    | Reloads the bot commands                               | Developer  | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| reload events      | Reloads the events                                     | Developer  | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| infractions remove | Remove user's infraction count                         | Moderation | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| infractions view   | View user's infraction count                           | Moderation | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| ban                | Bans user from server                                  | Moderation | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| kick               | Kicks user from server                                 | Moderation | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| cuddle             | Cuddle another user                                    | Fun        | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| 8ball              | A 8ball that answers all your questions                | Fun        | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| hug                | Hug another user                                       | Fun        | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| kiss               | Kiss another user                                      | Fun        | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| size               | Displays 8====D size of other user                     | Fun        | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| slap               | Slap another user                                      | Fun        | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| tickle             | Tickle another user                                    | Fun        | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| wink               | Wink at other user                                     | Fun        | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| avatar             | Display avatar of another user                         | Utilities  | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| ip                 | Displays info about given ip                           | Utilities  | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
-| status             | Displays the status of the bot and database connection | Utilities  | <img src="./Assets/checkmark.gif" width="10%" height="10%"/> |
+| Command            | Description                                            | Group      | Working                                                       |
+| ------------------ | ------------------------------------------------------ | ---------- | ------------------------------------------------------------- |
+| info               | Displays information on bot & this repo.               | Developer  | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| reload commands    | Reloads the bot commands                               | Developer  | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| reload events      | Reloads the events                                     | Developer  | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| infractions remove | Remove user's infraction count                         | Moderation | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| infractions view   | View user's infraction count                           | Moderation | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| ban                | Bans user from server                                  | Moderation | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| kick               | Kicks user from server                                 | Moderation | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| cuddle             | Cuddle another user                                    | Fun        | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| 8ball              | A 8ball that answers all your questions                | Fun        | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| hug                | Hug another user                                       | Fun        | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| kiss               | Kiss another user                                      | Fun        | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| size               | Displays 8====D size of other user                     | Fun        | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| slap               | Slap another user                                      | Fun        | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| tickle             | Tickle another user                                    | Fun        | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| wink               | Wink at other user                                     | Fun        | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| avatar             | Display avatar of another user                         | Utilities  | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| ip                 | Displays info about given ip                           | Utilities  | <img src="./Assets/checkmark.gif" width="15%" height="15%"/>  |
+| status             | Displays the status of the bot and database connection | Utilities  | <img src="./Assets/notworking.gif" width="15%" height="15%"/> |
 
 ## Future Command & Systems
 
 | System / Command            | Description                 | Status                                                        |
 | --------------------------- | --------------------------- | ------------------------------------------------------------- |
-| Image Manipulation Commands | Alter another user's avatar | <img src="./Assets/comingsoon.gif" width="10%" height="10%"/> |
-| More Moderation Commands    | Moderation Commands         | <img src="./Assets/comingsoon.gif" width="10%" height="10%"/> |
-| More Fun Commands           | Fun Commands                | <img src="./Assets/comingsoon.gif" width="10%" height="10%"/> |
-| Giveaway System             | Alter another user's avatar | Researching                                                   |
-| Ticket System               | Alter another user's avatar | Researching                                                   |
-| Music System                | Alter another user's avatar | .....                                                         |
+| Image Manipulation Commands | Alter another user's avatar | <img src="./Assets/comingsoon.gif" width="15%" height="15%"/> |
+| More Moderation Commands    | Moderation Commands         | <img src="./Assets/comingsoon.gif" width="15%" height="15%"/> |
+| More Fun Commands           | Fun Commands                | <img src="./Assets/comingsoon.gif" width="15%" height="15%"/> |
+| Giveaway System             | Giveaway System             | Researching                                                   |
+| Ticket System               | Ticket System               | Researching                                                   |
+| Music System                | Music System                | .....                                                         |
 
 ## Acknowledgements
 
