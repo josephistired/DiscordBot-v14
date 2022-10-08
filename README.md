@@ -8,6 +8,7 @@ A very simple discord bot based on [discord.js](https://discord.js.org/#/) v14!
 
 1. Discord Bot Token **[Guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)**  
    1.1. Enable MESSAGE CONTENT INTENT & PRESENCE INTENT & SERVER MEMBERS INTENT & MESSAGE CONTENT INTENT in your Discord Developer Portal. **[Image](https://ibb.co/sgLLypg)**
+2. Discord Account Token **[Guide](https://www.businessinsider.com/guides/tech/discord-id)**
 2. Node.js 16.17.1 LTS or newer. **[Download](https://nodejs.org/en/)**
 3. MongoDB Database Needed **[Please Follow This Guide](https://youtu.be/BEkyfqlbVRw)**
 
@@ -65,9 +66,15 @@ if (command.developer && interaction.user.id !== "Place Your Discord Account ID 
 
 | System / Command            | Description                 | Status                                                        |
 | --------------------------- | --------------------------- | ------------------------------------------------------------- |
+<<<<<<< HEAD
 | Image Manipulation Commands | Alter another user's avatar | <img src="./Assets/comingsoon.gif" width="15%" height="15%"/> |
 | More Moderation Commands    | Moderation Commands         | <img src="./Assets/comingsoon.gif" width="15%" height="15%"/> |
 | More Fun Commands           | Fun Commands                | <img src="./Assets/comingsoon.gif" width="15%" height="15%"/> |
+=======
+| Image Manipulation Commands | Alter another user's avatar | <img src="./Assets/comingsoon.gif" width="10%" height="10%"/> |
+| More Moderation Commands    | Moderation Commands         | <img src="./Assets/comingsoon.gif" width="10%" height="10%"/> |
+| More Fun Commands           | Fun Commands                | <img src="./Assets/comingsoon.gif" width="10%" height="10%"/> |
+>>>>>>> 5e0b460f8b327ae5e20e946c3ca0aa62293c29f7
 | Giveaway System             | Giveaway System             | Researching                                                   |
 | Ticket System               | Ticket System               | Researching                                                   |
 | Music System                | Music System                | .....                                                         |
