@@ -88,4 +88,4 @@ Shout to others using code-share on Lyx's Discord Server, I took a few of their 
 
 ## License
 
-[](https://choosealicense.com/licenses/mit/)
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details
