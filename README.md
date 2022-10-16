@@ -90,6 +90,13 @@ Shout to others using code-share on Lyx's Discord Server, I took a few of their 
 
 1. [Status Command](https://github.com/KevinFoged)
 
+
+## 🆘 Contribution
+
+**Please submit all contributions to the test branch!**
+[branch](https://github.com/josephistired/DiscordBot-v14/tree/test)
+
+
 ## 📖 License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details
