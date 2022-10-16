@@ -49,6 +49,7 @@ if (command.developer && interaction.user.id !== "Place Your Discord Account ID 
 | infractions remove | Remove user's infraction count                         | Moderation | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
 | infractions view   | View user's infraction count                           | Moderation | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
 | ban                | Bans user from server                                  | Moderation | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
+| unban              | Unbans user from server                                | Moderation | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
 | kick               | Kicks user from server                                 | Moderation | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
 | cuddle             | Cuddle another user                                    | Fun        | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
 | 8ball              | A 8ball that answers all your questions                | Fun        | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
