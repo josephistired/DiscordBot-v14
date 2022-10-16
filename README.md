@@ -1,10 +1,10 @@
 ![discord.js](https://discordjs.guide/meta-image.png)
 
-# DiscordBot-v14
+# ⬆️ DiscordBot-v14
 
 A very simple discord bot based on [discord.js](https://discord.js.org/#/) v14!
 
-## Prerequisites
+## 🏳️ Prerequisites
 
 1. Discord Bot Token **[Guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)**  
    1.1. Enable MESSAGE CONTENT INTENT & PRESENCE INTENT & SERVER MEMBERS INTENT & MESSAGE CONTENT INTENT in your Discord Developer Portal. **[Image](https://ibb.co/sgLLypg)**
@@ -39,8 +39,8 @@ _Edit the SlashCommand.js file in the Events/Interactions Folder_
 if (command.developer && interaction.user.id !== "Place Your Discord Account ID Here.")
 ```
 
-## Commands
-
+## 💬 Commands
+ 
 | Command            | Description                                            | Group      | Working                                                      |
 | ------------------ | ------------------------------------------------------ | ---------- | ------------------------------------------------------------ |
 | info               | Displays information on bot & this repo.               | Developer  | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
@@ -63,7 +63,7 @@ if (command.developer && interaction.user.id !== "Place Your Discord Account ID 
 | status             | Displays the status of the bot and database connection | Utilities  | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
 | song               | Displays lyrics of a song                              | Utilities  | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
 
-## Future Commands & Systems
+## ⏲️ Future Commands & Systems
 
 | System / Command         | Description         | Status                                                        |
 | ------------------------ | ------------------- | ------------------------------------------------------------- |
@@ -74,7 +74,7 @@ if (command.developer && interaction.user.id !== "Place Your Discord Account ID 
 | Leveling System          | XP System           | Researching                                                   |
 | Ticket System            | Ticket System       | NO ETA                                                        |
 
-## Acknowledgements
+## 🙏 Acknowledgements
 
 Shout to Lyxcode on Youtube, this bot is based off his series with a twist of my own.
 
@@ -87,6 +87,6 @@ Shout to others using code-share on Lyx's Discord Server, I took a few of their 
 
 1. [Status Command](https://github.com/KevinFoged)
 
-## License
+## 📖 License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details
