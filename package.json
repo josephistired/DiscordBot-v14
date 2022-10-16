@@ -5,7 +5,6 @@
   "main": "./src/index.js",
   "scripts": {
     "start": "nodemon"
-    "test": "nodemon"
   },
   "keywords": [],
   "author": "josephistired",

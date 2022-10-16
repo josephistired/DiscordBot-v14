@@ -43,7 +43,7 @@ module.exports = {
 
     const user = options.getMember("user");
     const messages = options.getString("messages");
-    const reason = options.getString("reason") || "Not Specified";
+    const reason = options.getString("reason") || "Not Specified.";
 
     const errorsArray = [];
 
@@ -95,7 +95,7 @@ module.exports = {
       .setColor("Green")
       .addFields(
         {
-          name: "User:",
+          name: "User Banned:",
           value: `\`\`\`${user.user.tag}\`\`\``,
         },
         {
