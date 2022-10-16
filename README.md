@@ -61,7 +61,7 @@ if (command.developer && interaction.user.id !== "Place Your Discord Account ID 
 | avatar             | Display avatar of another user                         | Utilities  | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
 | ip                 | Displays info about given ip                           | Utilities  | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
 | status             | Displays the status of the bot and database connection | Utilities  | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
-| song               | Displays Lyrics Of A Song                              | Utilities  | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
+| song               | Displays lyrics of a song                              | Utilities  | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
 
 ## Future Commands & Systems
 
