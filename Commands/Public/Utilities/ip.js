@@ -13,7 +13,7 @@ module.exports = {
     .setName("ip")
     .setDescription("Displays Info About Given IP")
     .addStringOption((options) =>
-      options.setName("ip").setDescription("What's the IP?").setRequired(true)
+      options.setName("ip").setDescription("What's The IP?").setRequired(true)
     ),
   /**
    *

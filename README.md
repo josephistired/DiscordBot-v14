@@ -61,17 +61,18 @@ if (command.developer && interaction.user.id !== "Place Your Discord Account ID 
 | avatar             | Display avatar of another user                         | Utilities  | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
 | ip                 | Displays info about given ip                           | Utilities  | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
 | status             | Displays the status of the bot and database connection | Utilities  | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
+| song               | Displays Lyrics Of A Song                              | Utilities  | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
 
-## Future Command & Systems
+## Future Commands & Systems
 
-| System / Command            | Description                 | Status                                                        |
-| --------------------------- | --------------------------- | ------------------------------------------------------------- |
-| Image Manipulation Commands | Alter another user's avatar | <img src="./Assets/comingsoon.gif" width="25%" height="25%"/> |
-| More Moderation Commands    | Moderation Commands         | <img src="./Assets/comingsoon.gif" width="25%" height="25%"/> |
-| More Fun Commands           | Fun Commands                | <img src="./Assets/comingsoon.gif" width="25%" height="25%"/> |
-| Giveaway System             | Giveaway System             | Researching                                                   |
-| Ticket System               | Ticket System               | Researching                                                   |
-| Music System                | Music System                | .....                                                         |
+| System / Command         | Description         | Status                                                        |
+| ------------------------ | ------------------- | ------------------------------------------------------------- |
+| More Moderation Commands | Moderation Commands | <img src="./Assets/comingsoon.gif" width="25%" height="25%"/> |
+| More Fun Commands        | Fun Commands        | <img src="./Assets/comingsoon.gif" width="25%" height="25%"/> |
+| Giveaway System          | Giveaway System     | Researching                                                   |
+| Music System             | Music System        | Researching                                                   |
+| Leveling System          | XP System           | Researching                                                   |
+| Ticket System            | Ticket System       | NO ETA                                                        |
 
 ## Acknowledgements
 

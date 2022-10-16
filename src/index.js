@@ -13,14 +13,11 @@ const {
 const { Guilds, GuildMembers, GuildMessages, GuildVoiceStates } =
   GatewayIntentBits;
 const { User, Message, GuildMember, ThreadMember } = Partials;
-const { DiscordTogether } = require("discord-together");
 
 const client = new Client({
   intents: [Guilds, GuildMembers, GuildMessages, GuildVoiceStates],
   partials: [User, Message, GuildMember, ThreadMember],
 });
-
-client.discordTogether = new DiscordTogether(client);
 
 client.config = require("../Configuration/config.json");
 client.events = new Collection();

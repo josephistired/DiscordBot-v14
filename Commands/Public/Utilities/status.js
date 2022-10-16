@@ -22,7 +22,12 @@ module.exports = {
    * @param {Client} client
    */
   async execute(interaction, client) {
-    const status = ["Disconnected", "Connected", "Connecting", "Disconnecting"];
+    const status = [
+      "Disconnected ❌",
+      "Connected ✅",
+      "Connecting 🔃",
+      "Disconnecting 🔚",
+    ];
 
     await client.user.fetch();
     await client.application.fetch();
@@ -46,12 +51,12 @@ module.exports = {
                 `📆 **Created: ** <t:${parseInt(
                   client.user.createdTimestamp / 1000
                 )}:R>`,
-                `👑 **Owner: ** ${
+                `👑 **Owner:** ${
                   client.application.owner
                     ? `<@${client.application.owner.id}> (${client.application.owner.tag})`
                     : "None"
                 }`,
-                `✅ **Verified** ${
+                `✅ **Verified:** ${
                   client.user.flags & UserFlags.VerifiedBot ? "Yes" : "No"
                 }`,
                 `💬 **Commands:** ${client.commands.size}`,
@@ -67,7 +72,7 @@ module.exports = {
                 `⏰ **Up Since:** <t:${parseInt(
                   client.readyTimestamp / 1000
                 )}:R>`,
-                `🏓 **Ping: ** ${client.ws.ping}ms`,
+                `🏓 **Ping:** ${client.ws.ping}ms`,
                 `🧠 **CPU Model:** ${os.cpus()[0].model}`,
                 `💾 **CPU Usage:** ${(
                   process.memoryUsage().heapUsed /
