@@ -65,6 +65,8 @@ if (command.developer && interaction.user.id !== "Place Your Discord Account ID 
 
 ## ⏲️ Future Commands & Systems
 
+Want more information on when things are coming? [Click Here](https://github.com/users/josephistired/projects/4)
+
 | System / Command         | Description         | Status                                                        |
 | ------------------------ | ------------------- | ------------------------------------------------------------- |
 | More Moderation Commands | Moderation Commands | <img src="./Assets/comingsoon.gif" width="25%" height="25%"/> |
