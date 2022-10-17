@@ -63,6 +63,12 @@ module.exports = {
         .setTitle("⛔ Error Executing Command")
         .setColor("Red");
 
+      console.log(`
+      \nWarning: Moderator Unbanned A User - Look Above For User Who Executed The Ban.
+      \nID Of User Who Was Banned:\n${user}
+      \nReason For Unban:\n${reason}
+      `);
+
       return interaction.reply({
         embeds: [
           errorEmbed.addFields(
