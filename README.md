@@ -80,11 +80,10 @@ if (command.developer && interaction.user.id !== "Place Your Discord Account ID 
 
 Want more information on when things are coming? [Click Here](https://github.com/users/josephistired/projects/4)
 
-| System          | Description     | Status                                                        |
-| --------------- | --------------- | ------------------------------------------------------------- |
-| Music System    | Music System    | <img src="./Assets/comingsoon.gif" width="25%" height="25%"/> |
-| Giveaway System | Giveaway System | Researching                                                   |
-| Leveling System | XP System       | Researching                                                   |
+| System          | Description     | Status      |
+| --------------- | --------------- | ----------- |
+| Giveaway System | Giveaway System | Researching |
+| Leveling System | XP System       | Researching |
 
 ## 🙏 Acknowledgements
 

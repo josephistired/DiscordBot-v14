@@ -19,18 +19,7 @@ const client = new Client({
   partials: [User, Message, GuildMember, ThreadMember],
 });
 
-// const { DisTube } = require("distube");
-// const { SpotifyPlugin } = require("@distube/spotify");
-
-// client.distube = new DisTube(client, {
-// emitNewSongOnly: true,                                       // TESTING PURPOSES DON'T TOUCH
-//leaveOnFinish: true,
-// emitAddSongWhenCreatingQueue: false,
-// plugins: [new SpotifyPlugin()],
-// });
-//module.exports = client;
-
-client.config = require("../Development Test/config.json"); // Change back to public folder # Developer Note
+client.config = require("../Configuration/config.json"); // Change back to public folder # Developer Note
 client.events = new Collection();
 client.subCommands = new Collection();
 client.commands = new Collection();
