@@ -14,7 +14,7 @@ _The Bot Won't Work Unless A MongoDB Link Is Placed In The Config File_
 1. Discord Bot Token - **[Guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)**  
    1.1. Enable MESSAGE CONTENT INTENT & PRESENCE INTENT & SERVER MEMBERS INTENT & MESSAGE CONTENT INTENT in your Discord Developer Portal. - **[Image](https://ibb.co/sgLLypg)**
 2. Discord Account ID - **[Guide](https://www.businessinsider.com/guides/tech/discord-id)**
-3. Node.js 16.17.1 LTS or newer. - **[Download](https://nodejs.org/en/)**
+3. Node.js 16.17.1 LTS Or Newer - **[Download](https://nodejs.org/en/)**
 4. MongoDB Database Needed - **[Please Follow This Guide](https://youtu.be/BEkyfqlbVRw)**
 
 ## 🖥️ First Things To Do
