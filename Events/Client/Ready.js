@@ -13,5 +13,11 @@ module.exports = {
     connect(client.config.DatabaseURL, {}).then(() =>
       console.log(`\n\n\nClient Is Connected To The Database\n\n\n`)
     );
+
+    let xp = require("simply-xp");
+
+    xp.connect(client.config.DatabaseURL, {
+      notify: true,
+    });
   },
 };

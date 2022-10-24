@@ -19,18 +19,6 @@ module.exports = {
     )
     .addStringOption((options) =>
       options
-        .setName("messages")
-        .setDescription(
-          "Choose A Number Of Days For Their To Messages To Be Deleted Up To."
-        )
-        .setRequired(true)
-        .addChoices(
-          { name: "Don't Delete Any.", value: "0" },
-          { name: "Delete Up To Seven Days.", value: "7" }
-        )
-    )
-    .addStringOption((options) =>
-      options
         .setName("reason")
         .setDescription("Provide A Reason For The Ban.")
         .setMaxLength(512)
@@ -42,14 +30,14 @@ module.exports = {
     const { options, member } = interaction;
 
     const user = options.getMember("user");
-    const messages = options.getString("messages");
     const reason = options.getString("reason") || "Not Specified.";
 
     const errorsArray = [];
 
     const errorEmbed = new EmbedBuilder()
       .setTitle("⛔ Error Executing Command")
-      .setColor("Red");
+      .setColor("Red")
+      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
 
     if (!user)
       return interaction.reply({
@@ -83,7 +71,7 @@ module.exports = {
       });
 
     await user.ban({
-      messages: messages,
+      days: 7,
       reason: reason,
     });
 
@@ -105,10 +93,6 @@ module.exports = {
         {
           name: "Moderator:",
           value: `\`\`\`${member.user.username}\`\`\``,
-        },
-        {
-          name: "Messages Deleted:",
-          value: `\`\`\`${messages} Days\`\`\``,
         }
       );
 
@@ -118,7 +102,13 @@ module.exports = {
       \nReason For Ban:\n${reason}
       `);
 
-    user.send(`${successEmbed}`);
+    user
+      .send(`${successEmbed}`)
+      .catch((error) =>
+        console.log(
+          "User's DM's Are Closed! Still Banning But Not Going To DM!"
+        )
+      );
     return interaction.reply({ embeds: [successEmbed] });
   },
 };

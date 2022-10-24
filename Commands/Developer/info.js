@@ -25,7 +25,7 @@ module.exports = {
         iconURL: `${interaction.member.displayAvatarURL()}`,
       })
       .setDescription(
-        "This Is A Multi-Purpose Bot Based Off josephistired's Github Project & Discord.js & Lyx's Command & Event Handler. If You Want More Information Click The Buttons Below."
+        "A Multi-Purpose Bot Based Off josephistired's Github Project. If You Want More Information Click The Buttons Below."
       )
       .setTimestamp()
       .addFields(

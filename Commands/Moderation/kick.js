@@ -49,7 +49,8 @@ module.exports = {
 
     const errorEmbed = new EmbedBuilder()
       .setTitle("⛔ Error Executing Command")
-      .setColor("Red");
+      .setColor("Red")
+      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
 
     if (!user)
       return interaction.reply({

@@ -4,13 +4,18 @@
 
 A very simple discord bot based on [discord.js](https://discord.js.org/#/) v14!
 
+## ❌ Disclaimer
+
+_The Bot Won't Work Unless A MongoDB Link Is Placed In The Config File_
+**[ISSUE](https://github.com/josephistired/DiscordBot-v14/issues/8)**
+
 ## 🏳️ Prerequisites
 
-1. Discord Bot Token **[Guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)**  
-   1.1. Enable MESSAGE CONTENT INTENT & PRESENCE INTENT & SERVER MEMBERS INTENT & MESSAGE CONTENT INTENT in your Discord Developer Portal. **[Image](https://ibb.co/sgLLypg)**
-2. Discord Account ID **[Guide](https://www.businessinsider.com/guides/tech/discord-id)**
-3. Node.js 16.17.1 LTS or newer. **[Download](https://nodejs.org/en/)**
-4. MongoDB Database Needed **[Please Follow This Guide](https://youtu.be/BEkyfqlbVRw)**
+1. Discord Bot Token - **[Guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)**  
+   1.1. Enable MESSAGE CONTENT INTENT & PRESENCE INTENT & SERVER MEMBERS INTENT & MESSAGE CONTENT INTENT in your Discord Developer Portal. - **[Image](https://ibb.co/sgLLypg)**
+2. Discord Account ID - **[Guide](https://www.businessinsider.com/guides/tech/discord-id)**
+3. Node.js 16.17.1 LTS or newer. - **[Download](https://nodejs.org/en/)**
+4. MongoDB Database Needed - **[Please Follow This Guide](https://youtu.be/BEkyfqlbVRw)**
 
 ## 🖥️ First Things To Do
 
@@ -40,7 +45,7 @@ if (command.developer && interaction.user.id !== "Place Your Discord Account ID 
 ```
 
 ## 💬 Commands
- 
+
 | Command            | Description                                            | Group      | Working                                                      |
 | ------------------ | ------------------------------------------------------ | ---------- | ------------------------------------------------------------ |
 | info               | Displays information on bot & this repo.               | Developer  | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
@@ -64,18 +69,22 @@ if (command.developer && interaction.user.id !== "Place Your Discord Account ID 
 | status             | Displays the status of the bot and database connection | Utilities  | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
 | song               | Displays lyrics of a song                              | Utilities  | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
 
-## ⏲️ Future Commands & Systems
+## 🎊 Current Systems
+
+| System            | Description                                       | Status                                                       |
+| ----------------- | ------------------------------------------------- | ------------------------------------------------------------ |
+| Leveling System   | Gives User XP                                     | Working - However, not fully completed                       |
+| Infraction System | Gives User Infractions When They Become Timed Out | <img src="./Assets/checkmark.gif" width="25%" height="25%"/> |
+
+## ⏲️ Future Systems
 
 Want more information on when things are coming? [Click Here](https://github.com/users/josephistired/projects/4)
 
-| System / Command         | Description         | Status                                                        |
-| ------------------------ | ------------------- | ------------------------------------------------------------- |
-| More Moderation Commands | Moderation Commands | <img src="./Assets/comingsoon.gif" width="25%" height="25%"/> |
-| More Fun Commands        | Fun Commands        | <img src="./Assets/comingsoon.gif" width="25%" height="25%"/> |
-| Giveaway System          | Giveaway System     | Researching                                                   |
-| Music System             | Music System        | Researching                                                   |
-| Leveling System          | XP System           | Researching                                                   |
-| Ticket System            | Ticket System       | NO ETA                                                        |
+| System          | Description     | Status                                                        |
+| --------------- | --------------- | ------------------------------------------------------------- |
+| Music System    | Music System    | <img src="./Assets/comingsoon.gif" width="25%" height="25%"/> |
+| Giveaway System | Giveaway System | Researching                                                   |
+| Leveling System | XP System       | Researching                                                   |
 
 ## 🙏 Acknowledgements
 
@@ -90,12 +99,10 @@ Shout to others using code-share on Lyx's Discord Server, I took a few of their 
 
 1. [Status Command](https://github.com/KevinFoged)
 
-
 ## 🆘 Contribution
 
 **Please submit all contributions to the test branch!**
 [branch](https://github.com/josephistired/DiscordBot-v14/tree/test)
-
 
 ## 📖 License
 

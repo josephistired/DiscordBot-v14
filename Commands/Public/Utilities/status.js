@@ -51,6 +51,7 @@ module.exports = {
                 `📆 **Created: ** <t:${parseInt(
                   client.user.createdTimestamp / 1000
                 )}:R>`,
+                `👩🏻‍🔧 **Developer:** joseph#5678`,
                 `👑 **Owner:** ${
                   client.application.owner
                     ? `<@${client.application.owner.id}> (${client.application.owner.tag})`

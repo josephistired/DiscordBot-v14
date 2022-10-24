@@ -1,10 +1,12 @@
 const {
   ChatInputCommandInteraction,
   EmbedBuilder,
-  AttachmentBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
 } = require("discord.js");
-const cooldown = new Map();
 const Converter = require("timestamp-conv");
+const { connection } = require("mongoose");
 
 module.exports = {
   name: "interactionCreate",
@@ -21,16 +23,52 @@ module.exports = {
       new Converter.timestamp(interaction.createdTimestamp).formatSeconds
     }`;
 
-    if (!command)
-      return interaction.reply({
-        content: "💤 Command Is Outdated.",
-        ephemeral: true,
-      });
+    const errorsArray = [];
+
+    const errorEmbed = new EmbedBuilder()
+      .setTitle("⛔ Error Executing Command")
+      .setColor("Red")
+      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif")
+      .setTimestamp();
+
+    if (connection == 0)
+      errorsArray.push(
+        "Hoster Of This Bot Failed To Provide Their Database URL! The Bot Won't Work Unless One Is Provided. Please Tell Them Provide It In The Config File!"
+      );
+
+    if (!command) errorsArray.push("💤 Command Is Outdated.");
 
     if (command.developer && interaction.user.id !== "")
       // Provide Your ID!
+      errorsArray.push("Command Is Only Available To The Hoster Of This Bot!");
+
+    if (command.testing == true)
+      errorsArray.push(
+        "Command Is In Testing Phase! Vist The Github For More Infortmation!"
+      );
+
+    if (errorsArray.length)
       return interaction.reply({
-        content: "⛔ Command Is Only Available To The Owner Of This Bot.",
+        embeds: [
+          errorEmbed.addFields(
+            {
+              name: "User:",
+              value: `\`\`\`${interaction.user.username}\`\`\``,
+            },
+            {
+              name: "Reasons:",
+              value: `\`\`\`${errorsArray.join("\n")}\`\`\``,
+            }
+          ),
+        ],
+        components: [
+          new ActionRowBuilder().setComponents(
+            new ButtonBuilder()
+              .setLabel("Report Errors On The Bot's Github")
+              .setStyle(ButtonStyle.Link)
+              .setURL("https://github.com/josephistired")
+          ),
+        ],
         ephemeral: true,
       });
 

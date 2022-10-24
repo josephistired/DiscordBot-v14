@@ -30,6 +30,7 @@ module.exports = {
       .setTitle("⛔ Error Executing Command")
       .setColor("Red")
       .setFooter({ text: "https://github.com/josephistired" })
+      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif")
       .addFields(
         {
           name: "User:",

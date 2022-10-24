@@ -35,6 +35,12 @@ module.exports = {
     try {
       await interaction.guild.members.unban(user);
 
+      console.log(`
+      \nWarning: Moderator Unbanned A User - Look Above For User Who Executed The Ban.
+      \nID Of User Who Was Banned:\n${user}
+      \nReason For Unban:\n${reason}
+      `);
+
       const successEmbed = new EmbedBuilder()
         .setTimestamp()
         .setFooter({
@@ -61,13 +67,10 @@ module.exports = {
     } catch (err) {
       const errorEmbed = new EmbedBuilder()
         .setTitle("⛔ Error Executing Command")
-        .setColor("Red");
-
-      console.log(`
-      \nWarning: Moderator Unbanned A User - Look Above For User Who Executed The Ban.
-      \nID Of User Who Was Banned:\n${user}
-      \nReason For Unban:\n${reason}
-      `);
+        .setColor("Red")
+        .setImage(
+          "https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif"
+        );
 
       return interaction.reply({
         embeds: [
