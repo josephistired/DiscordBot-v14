@@ -1,13 +1,17 @@
 {
   "name": "discord-bot-v14",
   "version": "1.0.0",
-  "description": "A very simple discord bot based on [discord.js](https://discord.js.org/#/) v14!",
+  "description": "An open-source discord bot based on discord.js v14, and that is easy to run yourself!",
   "main": "./src/index.js",
   "scripts": {
     "start": "node .",
-    "test":  "nodemon"
+    "test": "nodemon"
   },
-  "keywords": [],
+  "keywords": [
+    "discord-bot",
+    "discord-js",
+    "discordbot"
+  ],
   "author": "josephistired",
   "license": "MIT",
   "dependencies": {
