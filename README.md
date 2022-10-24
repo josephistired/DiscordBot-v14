@@ -7,7 +7,7 @@ A very simple discord bot based on [discord.js](https://discord.js.org/#/) v14!
 ## ❌ Disclaimer
 
 _The Bot Won't Work Unless A MongoDB Link Is Placed In The Config File_
-**[ISSUE](https://github.com/josephistired/DiscordBot-v14/issues/8)**
+**[ISSUE] - (https://github.com/josephistired/DiscordBot-v14/issues/8)**
 
 ## 🏳️ Prerequisites
 
