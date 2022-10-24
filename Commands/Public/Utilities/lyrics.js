@@ -63,7 +63,7 @@ module.exports = {
           components: [
             new ActionRowBuilder().setComponents(
               new ButtonBuilder()
-                .setLabel("Lyrics-Finder")
+                .setLabel("Lyrics-Finder NPM Package")
                 .setStyle(ButtonStyle.Link)
                 .setURL("https://www.npmjs.com/package/lyrics-finder")
             ),
