@@ -19,6 +19,11 @@ An open-source discord bot based on [discord.js](https://discord.js.org/#/) v14,
    * Utilities commands 💻
    * And much more coming [soon](https://github.com/users/josephistired/projects/4) 🎊
    
-# Setup
-Vist the [wiki](https://github.com/josephistired/DiscordBot-v14/wiki) page to learn how to run this bot!
+# Wiki
+Vist the [wiki](https://www.josephcarmosino.website/discordbotv14#wiki) page to learn how to run this bot!
 
+
+# Contribution
+_Any new code you create must be submitted to TEST BRANCH! - No merges will be performed on MAIN branch!_
+
+**Please submit all contributions to the test [branch](https://github.com/josephistired/DiscordBot-v14/tree/test)!**
