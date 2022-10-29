@@ -22,6 +22,8 @@ An open-source discord bot based on [discord.js](https://discord.js.org/#/) v14,
 # Wiki
 Vist the [wiki](https://www.josephcarmosino.website/discordbotv14#wiki) page to learn how to run this bot!
 
+# Miscellaneous
+To view the commands, and more info about the bot, vist the [wiki](https://www.josephcarmosino.website/discordbotv14#miscellanous)!
 
 # Contribution
 _Any new code you create must be submitted to TEST BRANCH! - No merges will be performed on MAIN branch!_
