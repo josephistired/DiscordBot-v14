@@ -11,17 +11,17 @@ const lyricsFinder = require("lyrics-finder");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("lyrics")
-    .setDescription("Displays Lyrics Of A Song")
+    .setDescription("Displays information about a given song")
     .addStringOption((options) =>
       options
         .setName("song")
-        .setDescription("What's The Song?")
+        .setDescription("What is the title of the song?")
         .setRequired(true)
     )
     .addStringOption((options) =>
       options
         .setName("artist")
-        .setDescription("Who Is The Artist Of This Song?")
+        .setDescription("Who is the artist of the song?")
         .setRequired(true)
     ),
   /**
@@ -36,7 +36,7 @@ module.exports = {
       .then((lyrics) => {
         const lyricsembed = new EmbedBuilder()
           .setDescription(lyrics)
-          .setTitle(`Here's Your Lyrics For **${song}**!`)
+          .setTitle(`Here are the lyrics for **${song}**!`)
           .setTimestamp()
           .setFooter({
             text: "Github -> https://github.com/josephistired",
@@ -72,7 +72,7 @@ module.exports = {
       })
       .catch((error) => {
         const errorEmbed = new EmbedBuilder()
-          .setTitle("⛔ Error Executing Command")
+          .setTitle("⛔ Error executing command")
           .setColor("Red")
           .setImage(
             "https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif"
@@ -87,7 +87,7 @@ module.exports = {
               },
               {
                 name: "Reasons:",
-                value: `\`\`\`Song Not Found! Try Again!\`\`\``,
+                value: `\`\`\`Song not found! Try again!\`\`\``,
               }
             ),
           ],

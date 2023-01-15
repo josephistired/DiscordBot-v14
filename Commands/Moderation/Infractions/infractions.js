@@ -4,34 +4,34 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("infractions")
     .setDescription(
-      "View User's Infraction Count Or Remove Their Infraction Count."
+      "View the infraction count of a user or reset their infraction count. "
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addSubcommand((options) =>
       options
-        .setName("remove")
-        .setDescription("Remove Infractions")
+        .setName("reset")
+        .setDescription("Reset infractions")
         .addUserOption((options) =>
           options
             .setName("user")
-            .setDescription("Select The User.")
+            .setDescription("Select the user")
             .setRequired(true)
         )
         .addStringOption((options) =>
           options
             .setName("reason")
-            .setDescription("Reason For Infraction Removal.")
+            .setDescription("The reason for the removal of the infractions?")
             .setRequired(true)
         )
     )
     .addSubcommand((options) =>
       options
         .setName("view")
-        .setDescription("View Infractions ")
+        .setDescription("View infractions")
         .addUserOption((options) =>
           options
             .setName("user")
-            .setDescription("Select The User.")
+            .setDescription("Select The user")
             .setRequired(true)
         )
     ),

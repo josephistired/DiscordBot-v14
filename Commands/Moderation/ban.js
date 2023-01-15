@@ -8,19 +8,19 @@ const {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("ban")
-    .setDescription("Bans User From Server.")
+    .setDescription("Bans user from the server")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
     .setDMPermission(false)
     .addUserOption((options) =>
       options
         .setName("user")
-        .setDescription("Select The User.")
+        .setDescription("Select the user")
         .setRequired(true)
     )
     .addStringOption((options) =>
       options
         .setName("reason")
-        .setDescription("Provide A Reason For The Ban.")
+        .setDescription("The reason for the ban of this user?")
         .setMaxLength(512)
     ),
   /**
@@ -30,28 +30,32 @@ module.exports = {
     const { options, member } = interaction;
 
     const user = options.getMember("user");
-    const reason = options.getString("reason") || "Not Specified.";
+    const reason = options.getString("reason") || "Not specified";
+
+    const logChannel = interaction.guild.channels.cache.get(""); // CHANGE TO YOUR LOGGING CHANNEL
 
     const errorsArray = [];
 
     const errorEmbed = new EmbedBuilder()
-      .setTitle("⛔ Error Executing Command")
+      .setTitle("⛔ Error executing command")
       .setColor("Red")
       .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
 
     if (!user)
       return interaction.reply({
         embeds: [
-          errorEmbed.setDescription("User Has Most Likely Left The Server."),
+          errorEmbed.setDescription(
+            "The user has most likely abandoned the server."
+          ),
         ],
         ephemeral: true,
       });
 
     if (!user.manageable || !user.moderatable)
-      errorsArray.push("Selected User Is Not Moderatable By This Bot.");
+      errorsArray.push("This bot cannot moderate the selected user.");
 
     if (member.roles.highest.position < user.roles.highest.position)
-      errorsArray.push("Selected User Has A Higher Role Than You.");
+      errorsArray.push("Selected user has a higher role than you.");
 
     if (errorsArray.length)
       return interaction.reply({
@@ -75,40 +79,38 @@ module.exports = {
       reason: reason,
     });
 
-    const successEmbed = new EmbedBuilder()
-      .setTimestamp()
-      .setFooter({
-        text: "Github -> https://github.com/josephistired",
-      })
+    const successEmbed = new EmbedBuilder().setColor("Green");
+    const logEmbed = new EmbedBuilder()
       .setColor("Green")
+      .setAuthor({ name: "🔨 Ban Command Executed!" })
+      .setTimestamp()
       .addFields(
         {
-          name: "User Banned:",
+          name: "👤 User:",
           value: `\`\`\`${user.user.tag}\`\`\``,
         },
         {
-          name: "Reason:",
+          name: "❔ Reason:",
           value: `\`\`\`${reason}\`\`\``,
         },
         {
-          name: "Moderator:",
+          name: "👮🏻 Moderator:",
           value: `\`\`\`${member.user.username}\`\`\``,
         }
       );
 
-    console.log(`
-      \nWarning: Moderator Banned A User - Look Above For User Who Executed The Ban.
-      \nUser Who Was Banned:\n${user.user.tag}
-      \nReason For Ban:\n${reason}
-      `);
-
-    user
-      .send(`${successEmbed}`)
-      .catch((error) =>
-        console.log(
-          "User's DM's Are Closed! Still Banning But Not Going To DM!"
-        )
-      );
-    return interaction.reply({ embeds: [successEmbed] });
+    return (
+      interaction.reply({
+        embeds: [
+          successEmbed.setDescription(
+            `🔨 \n Banned \`${user}\` from the server!`
+          ),
+        ],
+        ephemeral: true,
+      }),
+      logChannel.send({
+        embeds: [logEmbed],
+      })
+    );
   },
 };

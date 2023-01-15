@@ -11,7 +11,7 @@ module.exports = {
   execute(interaction, client) {
     loadAllCommands(client);
     interaction.reply({
-      content: "✅ Commands Have Been Reloaded",
+      content: "✅ Commands have been reloaded.",
       ephemeral: true,
     });
   },

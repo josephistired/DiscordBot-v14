@@ -8,20 +8,20 @@ const {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("kick")
-    .setDescription("Kicks User From Server.")
+    .setDescription("Kicks user from the server")
     .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
     .setDMPermission(false)
     .addUserOption((options) =>
       options
         .setName("user")
-        .setDescription("Select The User.")
+        .setDescription("Select the user")
         .setRequired(true)
     )
     .addStringOption((options) =>
       options
         .setName("messages")
         .setDescription(
-          "Choose A Number Of Days For Their To Messages To Be Deleted Up To."
+          "Select the number of days for which their to messages will be deleted."
         )
         .setRequired(true)
         .addChoices(
@@ -45,26 +45,30 @@ module.exports = {
     const messages = options.getString("messages");
     const reason = options.getString("reason") || "Not Specified";
 
+    const logChannel = interaction.guild.channels.cache.get(""); // CHANGE TO YOUR LOGGING CHANNEL
+
     const errorsArray = [];
 
     const errorEmbed = new EmbedBuilder()
-      .setTitle("⛔ Error Executing Command")
+      .setTitle("⛔ Error executing command")
       .setColor("Red")
       .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
 
     if (!user)
       return interaction.reply({
         embeds: [
-          errorEmbed.setDescription("User Has Most Likely Left The Server."),
+          errorEmbed.setDescription(
+            "The user has most likely abandoned the server."
+          ),
         ],
         ephemeral: true,
       });
 
     if (!user.manageable || !user.moderatable)
-      errorsArray.push("Selected User Is Not Moderatable By This Bot.");
+      errorsArray.push("This bot cannot moderate the selected user.");
 
     if (member.roles.highest.position < user.roles.highest.position)
-      errorsArray.push("Selected User Has A Higher Role Than You.");
+      errorsArray.push("Selected user has a higher role than you.");
 
     if (errorsArray.length)
       return interaction.reply({
@@ -88,38 +92,42 @@ module.exports = {
       reason: reason,
     });
 
-    const successEmbed = new EmbedBuilder()
-      .setTimestamp()
-      .setFooter({
-        text: "Github -> https://github.com/josephistired",
-      })
+    const successEmbed = new EmbedBuilder().setColor("Green").setTimestamp();
+    const logEmbed = new EmbedBuilder()
       .setColor("Green")
+      .setAuthor({ name: "👟 Kick Command Executed!" })
+      .setTimestamp()
       .addFields(
         {
-          name: "User:",
+          name: "👤 User:",
           value: `\`\`\`${user.user.tag}\`\`\``,
         },
         {
-          name: "Reason:",
+          name: "❔ Reason:",
           value: `\`\`\`${reason}\`\`\``,
         },
         {
-          name: "Moderator:",
-          value: `\`\`\`${member.user.username}\`\`\``,
+          name: "📅 Messages Deleted:",
+          value: `\`\`\`${messages} Days Of Messages\`\`\``,
         },
         {
-          name: "Messages Deleted:",
-          value: `\`\`\`${messages} Days\`\`\``,
+          name: "👮🏻 Moderator:",
+          value: `\`\`\`${member.user.username}\`\`\``,
         }
       );
 
-    console.log(`
-      \nWarning: Moderator Kicked A User - Look Above For User Who Executed The Kick.
-      \nUser Who Was Kicked:\n${user.user.tag}
-      \nReason For Kick:\n${reason}
-      `);
-
-    user.send(`${successEmbed}`);
-    return interaction.reply({ embeds: [successEmbed] });
+    return (
+      interaction.reply({
+        embeds: [
+          successEmbed.setDescription(
+            `👟 \n Kicked \`${user.user.tag}\` from the server!`
+          ),
+        ],
+        ephemeral: true,
+      }),
+      logChannel.send({
+        embeds: [logEmbed],
+      })
+    );
   },
 };

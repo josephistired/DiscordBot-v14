@@ -8,19 +8,19 @@ const {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("unban")
-    .setDescription("Unbans User From Server.")
+    .setDescription("Unbans user from the server")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
     .setDMPermission(false)
     .addStringOption((options) =>
       options
         .setName("userid")
-        .setDescription("Provide The ID Of The User.")
+        .setDescription("Please enter the user's ID.")
         .setRequired(true)
     )
     .addStringOption((options) =>
       options
         .setName("reason")
-        .setDescription("Provide A Reason For The Unban.")
+        .setDescription("The reason for the unban of this user?")
         .setMaxLength(512)
     ),
   /**
@@ -30,43 +30,47 @@ module.exports = {
     const { options, member } = interaction;
 
     const user = options.getString("userid");
-    const reason = options.getString("reason") || "Not Specified.";
+    const reason = options.getString("reason") || "Not specified";
+
+    const logChannel = interaction.guild.channels.cache.get(""); // CHANGE TO YOUR LOGGING CHANNEL
 
     try {
       await interaction.guild.members.unban(user);
 
-      console.log(`
-      \nWarning: Moderator Unbanned A User - Look Above For User Who Executed The Ban.
-      \nID Of User Who Was Banned:\n${user}
-      \nReason For Unban:\n${reason}
-      `);
-
-      const successEmbed = new EmbedBuilder()
-        .setTimestamp()
-        .setFooter({
-          text: "Github -> https://github.com/josephistired",
-        })
+      const successEmbed = new EmbedBuilder().setColor("Green");
+      const logEmbed = new EmbedBuilder()
         .setColor("Green")
+        .setAuthor({ name: "⌀ Unban Command Executed!" })
+        .setTimestamp()
         .addFields(
           {
-            name: "User Unbanned:",
+            name: "👤 User:",
             value: `\`\`\`${user}\`\`\``,
           },
           {
-            name: "Reason:",
+            name: "❔ Reason:",
             value: `\`\`\`${reason}\`\`\``,
           },
           {
-            name: "Moderator:",
+            name: "👮🏻 Moderator:",
             value: `\`\`\`${member.user.username}\`\`\``,
           }
         );
+
       await interaction.reply({
-        embeds: [successEmbed],
-      });
+        embeds: [
+          successEmbed.setDescription(
+            ` \n ⌀ Unbanned \`${user}\` from the server!`
+          ),
+        ],
+        ephemeral: true,
+      }),
+        logChannel.send({
+          embeds: [logEmbed],
+        });
     } catch (err) {
       const errorEmbed = new EmbedBuilder()
-        .setTitle("⛔ Error Executing Command")
+        .setTitle("⛔ Error executing command")
         .setColor("Red")
         .setImage(
           "https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif"

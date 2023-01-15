@@ -11,11 +11,11 @@ const superagent = require("superagent");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("cuddle")
-    .setDescription("Cuddle Another User")
+    .setDescription("Cuddle another user")
     .addUserOption((options) =>
       options
         .setName("user")
-        .setDescription("Select The User.")
+        .setDescription("Select the user")
         .setRequired(true)
     ),
   /**
@@ -33,13 +33,13 @@ module.exports = {
     const errorsArray = [];
 
     const errorEmbed = new EmbedBuilder()
-      .setTitle("⛔ Error Executing Command")
+      .setTitle("⛔ Error executing command")
       .setColor("Red")
       .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
 
     if (user.id === interaction.member.id)
       errorsArray.push(
-        "You Must Be So Lonely To Try, And Cuddle With Yourself. I'll Stop You From Being Embarrassed."
+        "You must be extremely lonely to try and cuddle with yourself. I'll save you from embarrassment."
       );
 
     if (body.error == true) errorsArray.push(`${body.message}`);
@@ -77,12 +77,12 @@ module.exports = {
       });
 
     interaction.reply({
-      content: `${member} Cuddles With ${user}`,
+      content: `${member} cuddles with ${user}`,
       embeds: [cuddleembed],
       components: [
         new ActionRowBuilder().setComponents(
           new ButtonBuilder()
-            .setLabel("Purrbot Docs")
+            .setLabel("Purrbot docs")
             .setStyle(ButtonStyle.Link)
             .setURL("https://docs.purrbot.site/api/")
         ),

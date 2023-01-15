@@ -11,11 +11,11 @@ const superagent = require("superagent");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("wink")
-    .setDescription("Wink At Another User")
+    .setDescription("Wink at another user")
     .addUserOption((options) =>
       options
         .setName("user")
-        .setDescription("Select The User.")
+        .setDescription("Select the user")
         .setRequired(true)
     ),
   /**
@@ -33,12 +33,12 @@ module.exports = {
     const errorsArray = [];
 
     const errorEmbed = new EmbedBuilder()
-      .setTitle("⛔ Error Executing Command")
+      .setTitle("⛔ Error executing command")
       .setColor("Red")
       .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
 
     if (user.id === interaction.member.id)
-      errorsArray.push("Winking At Yourself... Is Kinda Weird....");
+      errorsArray.push("Winking at yourself... is kinda weird....");
 
     if (body.error == true) errorsArray.push(`${body.message}`);
 
@@ -75,12 +75,12 @@ module.exports = {
       });
 
     interaction.reply({
-      content: `${member} Winks At ${user}`,
+      content: `${member} winks at ${user}`,
       embeds: [winkembed],
       components: [
         new ActionRowBuilder().setComponents(
           new ButtonBuilder()
-            .setLabel("Some Random Api Docs")
+            .setLabel("Some Random Api docs")
             .setStyle(ButtonStyle.Link)
             .setURL("https://some-random-api.ml")
         ),
