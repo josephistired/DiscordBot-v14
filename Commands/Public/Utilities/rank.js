@@ -12,9 +12,9 @@ const { connection } = require("mongoose");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("rank")
-    .setDescription("Displays User's Rank")
+    .setDescription("Displays user's rank")
     .addUserOption((options) =>
-      options.setName("user").setDescription("Select The User.")
+      options.setName("user").setDescription("Select the user")
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
