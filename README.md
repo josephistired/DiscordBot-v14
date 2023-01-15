@@ -4,7 +4,8 @@
 
 ![Discord.js](https://discord.js.org/static/logo.svg)
 
-An open-source discord bot based on [discord.js](https://discord.js.org/#/) v14, and that is easy to run yourself! </p>
+An open-source discord bot based on [discord.js](https://discord.js.org/#/) v14 that is simple to maintain!
+</p> 
 
 ![Github Issues](https://img.shields.io/github/issues/josephistired/DiscordBot-v14?color=red&style=for-the-badge)
 ![Github License](https://img.shields.io/github/license/josephistired/DiscordBot-v14?color=black&style=for-the-badge)
@@ -20,12 +21,13 @@ An open-source discord bot based on [discord.js](https://discord.js.org/#/) v14,
    * And much more coming [soon](https://github.com/users/josephistired/projects/4) 🎊
    
 # Wiki
-Vist the [wiki](https://www.josephcarmosino.website/discordbotv14#wiki) page to learn how to run this bot!
+To learn how to use this bot, go to the [wiki](https://www.josephcarmosino.website/discordbotv14#wiki). 
 
 # Miscellaneous
-To view the commands, and more info about the bot, vist the [wiki](https://www.josephcarmosino.website/discordbotv14#miscellanous)!
+Visit the [wiki](https://www.josephcarmosino.website/discordbotv14#miscellaneous) to see the commands and learn more about the bot. 
 
 # Contribution
-_Any new code you create must be submitted to TEST BRANCH! - No merges will be performed on MAIN branch!_
+_All new code must be submitted to TEST BRANCH! There will be no merges on the MAIN branch!_
 
-**Please submit all contributions to the test [branch](https://github.com/josephistired/DiscordBot-v14/tree/test)!**
+
+**All contributions should be directed to the test [branch](https://github.com/josephistired/DiscordBot-v14/tree/test)!** 
