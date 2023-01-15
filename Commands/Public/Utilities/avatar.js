@@ -7,9 +7,9 @@ const {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("avatar")
-    .setDescription("Displays Avatar Of You Or Another User.")
+    .setDescription("Displays your or another user's avatar")
     .addUserOption((options) =>
-      options.setName("user").setDescription("Select The User.")
+      options.setName("user").setDescription("Select the user.")
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction

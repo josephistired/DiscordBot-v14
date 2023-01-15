@@ -11,9 +11,12 @@ const superagent = require("superagent");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("ip")
-    .setDescription("Displays Info About Given IP")
+    .setDescription("Displays information about a given IP address")
     .addStringOption((options) =>
-      options.setName("ip").setDescription("What's The IP?").setRequired(true)
+      options
+        .setName("ip")
+        .setDescription("What is the IP address? ")
+        .setRequired(true)
     ),
   /**
    *
@@ -27,7 +30,7 @@ module.exports = {
     const country = body.country_code;
 
     const error = new EmbedBuilder()
-      .setTitle("⛔ Error Executing Command")
+      .setTitle("⛔ Error executing command")
       .setColor("Red")
       .setFooter({ text: "https://github.com/josephistired" })
       .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif")
@@ -49,7 +52,7 @@ module.exports = {
       });
 
     const ipembed = new EmbedBuilder()
-      .setTitle(`Here's Your Info On **${ip}**!`)
+      .setTitle(`Here is some information for you on **${ip}**!`)
       .setTimestamp()
       .setFooter({
         text: "Github -> https://github.com/josephistired",
@@ -61,7 +64,7 @@ module.exports = {
       .setColor("Green")
       .addFields(
         {
-          name: "Type Of IP:",
+          name: "Type of IP:",
           value: `\`\`\`${body.type}\`\`\``,
         },
         {
@@ -99,7 +102,7 @@ module.exports = {
       components: [
         new ActionRowBuilder().setComponents(
           new ButtonBuilder()
-            .setLabel("IPWHOIS Docs")
+            .setLabel("IPWHOIS docs")
             .setStyle(ButtonStyle.Link)
             .setURL("https://ipwhois.io/documentation")
         ),

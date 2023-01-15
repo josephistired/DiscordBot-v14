@@ -11,7 +11,7 @@ const superagent = require("superagent");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("8ball")
-    .setDescription("A 8ball That Answers All Your Questions")
+    .setDescription("A magic 8-Ball that answers all of your questions")
     .addStringOption((options) =>
       options
         .setName("question")
@@ -31,12 +31,12 @@ module.exports = {
     const errorsArray = [];
 
     const errorEmbed = new EmbedBuilder()
-      .setTitle("⛔ Error Executing Command")
+      .setTitle("⛔ Error executing command")
       .setColor("Red")
       .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
 
     if (question.length > 1024)
-      errorsArray.push("Question Can't Be More Than 2000 Characters.");
+      errorsArray.push("The question cannot exceed 2000 characters.");
 
     if (errorsArray.length)
       return interaction.reply({
@@ -83,7 +83,7 @@ module.exports = {
       components: [
         new ActionRowBuilder().setComponents(
           new ButtonBuilder()
-            .setLabel("8ball Delegator Docs")
+            .setLabel("8ball Delegator docs")
             .setStyle(ButtonStyle.Link)
             .setURL("https://8ball.delegator.com")
         ),

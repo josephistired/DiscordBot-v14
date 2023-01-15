@@ -13,7 +13,7 @@ const {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("info")
-    .setDescription("Displays Information On Bot"),
+    .setDescription("Shows information on the bot."),
 
   /**
    * @param {ChatInputCommandInteraction} interaction
@@ -25,17 +25,17 @@ module.exports = {
         iconURL: `${interaction.member.displayAvatarURL()}`,
       })
       .setDescription(
-        "A Multi-Purpose Bot Based Off josephistired's Github Project. If You Want More Information Click The Buttons Below."
+        "A Multi-Purpose bot based off josephistired's Github project. If you want more information click the buttons below."
       )
       .setTimestamp()
       .addFields(
         {
-          name: "Developer's Discord",
+          name: "Developer's discord",
           value: `\`\`\`josephistired#5678\`\`\``,
         },
         {
           name: "Discord.js",
-          value: `\`\`\`This Bot Is Based On Discord.js v14\`\`\``,
+          value: `\`\`\`This bot Is based on Discord.js v14\`\`\``,
         }
       );
     interaction.reply({
@@ -49,7 +49,7 @@ module.exports = {
             .setURL("https://github.com/josephistired"),
 
           new ButtonBuilder()
-            .setLabel("Discord.js Docs")
+            .setLabel("Discord.js docs")
             .setStyle(ButtonStyle.Link)
             .setURL("https://discord.js.org/#/docs")
         ),

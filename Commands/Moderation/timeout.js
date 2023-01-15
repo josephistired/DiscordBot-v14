@@ -7,29 +7,30 @@ const {
 const { connection } = require("mongoose");
 const Database = require("../../Schemas/infractions");
 const ms = require("ms");
+const logChannel = require("../../src/index.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("timeout")
-    .setDescription("Timeout A User.")
+    .setDescription("Timeouts a user from the server")
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
     .setDMPermission(false)
     .addUserOption((options) =>
       options
         .setName("user")
-        .setDescription("Select The User.")
+        .setDescription("Select the user")
         .setRequired(true)
     )
     .addStringOption((options) =>
       options
         .setName("duration")
-        .setDescription("Provide A Duration For The Timeout (1m, 1h, 1d).")
+        .setDescription("Give the timeout a duration (1m, 1h, 1d).")
         .setRequired(true)
     )
     .addStringOption((options) =>
       options
         .setName("reason")
-        .setDescription("Provide A Reason For The Timeout.")
+        .setDescription("The reason for the timeout of this user?")
         .setMaxLength(512)
     ),
   /**
@@ -40,31 +41,37 @@ module.exports = {
 
     const user = options.getMember("user");
     const duration = options.getString("duration");
-    const reason = options.getString("reason") || "Not Specified";
+    const reason = options.getString("reason") || "Not specified";
+
+    const logChannel = interaction.guild.channels.cache.get(
+      "1064030969176277073"
+    ); // CHANGE TO YOUR LOGGING CHANNEL
 
     const errorsArray = [];
 
     const errorEmbed = new EmbedBuilder()
-      .setTitle("⛔ Error Executing Command")
+      .setTitle("⛔ Error executing command")
       .setColor("Red")
       .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
 
     if (!user)
       return interaction.reply({
         embeds: [
-          errorEmbed.setDescription("User Has Most Likely Left The Server."),
+          errorEmbed.setDescription(
+            "The user has most likely abandoned the server."
+          ),
         ],
         ephemeral: true,
       });
 
     if (!ms(duration) || ms(duration) > ms("28d"))
-      errorsArray.push("Invaild Duration / Also Higher Than 28 Day Limit.");
+      errorsArray.push("Invade Duration / Also Exceeds the 28-Day Limit.");
 
     if (!user.manageable || !user.moderatable)
-      errorsArray.push("Selected User Is Not Moderatable By This Bot.");
+      errorsArray.push("This bot cannot moderate the selected user.");
 
     if (member.roles.highest.position < user.roles.highest.position)
-      errorsArray.push("Selected User Has A Higher Role Than You.");
+      errorsArray.push("Selected user has a higher role than you.");
 
     if (errorsArray.length)
       return interaction.reply({
@@ -87,11 +94,11 @@ module.exports = {
       interaction.reply({
         embeds: [
           errorEmbed.setDescription(
-            "Could Not Timeout User Due To An Unknown Error."
+            "Due to an unknown error, we were unable to timeout the user."
           ),
         ],
       });
-      return console.log("Error Occured In timeout.js", err);
+      return console.log("Error occured in timeout.js", err);
     });
 
     const newInfractionObject = {
@@ -111,40 +118,48 @@ module.exports = {
     else
       userData.Infractions.push(newInfractionObject) && (await userData.save());
 
-    const successEmbed = new EmbedBuilder()
-      .setTimestamp()
-      .setFooter({
-        text: "Github -> https://github.com/josephistired",
-      })
+    const successEmbed = new EmbedBuilder().setColor("Green");
+    const logEmbed = new EmbedBuilder()
       .setColor("Green")
+      .setAuthor({ name: "⌛ Timeout Command Executed!" })
+      .setTimestamp()
       .addFields(
         {
-          name: "User:",
+          name: "👤 User:",
           value: `\`\`\`${user.user.tag}\`\`\``,
         },
         {
-          name: "Duration:",
+          name: "🎟️ Infraction total:",
+          value: `\`\`\`${userData.Infractions.length} Infractions\`\`\``,
+        },
+        {
+          name: "⌚ Duration:",
           value: `\`\`\`${ms(ms(duration, { long: true }))}\`\`\``,
         },
         {
-          name: "Reason:",
+          name: "❔ Reason:",
           value: `\`\`\`${reason}\`\`\``,
         },
         {
-          name: "Moderator:",
+          name: "👮🏻 Moderator:",
           value: `\`\`\`${member.user.username}\`\`\``,
-        },
-        {
-          name: "Infraction Total:",
-          value: `\`\`\`${userData.Infractions.length} Infractions\`\`\``,
         }
       );
 
-    console.log(`
-      \nWarning: Moderator Timeout A User - Look Above For User Who Executed The Timeout.
-      \nUser Who Was Muted:\n${user.user.tag}
-      \nReason For Mute:\n${reason}
-      `);
-    return interaction.reply({ embeds: [successEmbed] });
+    return (
+      interaction.reply({
+        embeds: [
+          successEmbed.setDescription(
+            `⌛ \n Timeouted \`${user.user.tag} for ${ms(
+              ms(duration, { long: true })
+            )}!\` `
+          ),
+        ],
+        ephemeral: true,
+      }),
+      logChannel.send({
+        embeds: [logEmbed],
+      })
+    );
   },
 };

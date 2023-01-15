@@ -2,7 +2,7 @@ const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
 const Database = require("../../../Schemas/infractions");
 
 module.exports = {
-  subCommand: "infractions.remove",
+  subCommand: "infractions.reset",
   /**
    *
    * @param {ChatInputCommandInteraction} interaction
@@ -13,38 +13,46 @@ module.exports = {
     const user = options.getMember("user");
     const reason = options.getString("reason");
 
+    const logChannel = interaction.guild.channels.cache.get(""); // CHANGE TO YOUR LOGGING CHANNEL
+
     let userData = await Database.findOneAndUpdate({
       Guild: guild.id,
       User: user.id,
       Infractions: [],
     });
 
-    const successEmbed = new EmbedBuilder()
-      .setTimestamp()
-      .setFooter({
-        text: "Github -> https://github.com/josephistired",
-      })
+    const successEmbed = new EmbedBuilder().setColor("Green");
+    const logEmbed = new EmbedBuilder()
       .setColor("Green")
+      .setAuthor({ name: "➖ Infraction Reset Command Executed" })
+      .setTimestamp()
       .addFields(
         {
-          name: "User:",
+          name: "👤 User:",
           value: `\`\`\`${user.user.tag}\`\`\``,
         },
         {
-          name: "Reason:",
+          name: "❔ Reason:",
           value: `\`\`\`${reason}\`\`\``,
         },
         {
-          name: "Moderator:",
+          name: "👮🏻 Moderator:",
           value: `\`\`\`${member.user.username}\`\`\``,
         }
       );
 
-    console.log(`
-    \nWarning: Moderator Reset's A User's Infraction Count - Look Above For User Who Executed The Reset.
-    \nUser Whose's Infractions Were Reset:\n${user.user.tag}
-    `);
-
-    interaction.reply({ embeds: [successEmbed], ephemeral: true });
+    return (
+      interaction.reply({
+        embeds: [
+          successEmbed.setDescription(
+            `➖ \n Reset \`${user.user.tag}\` infraction count`
+          ),
+        ],
+        ephemeral: true,
+      }),
+      logChannel.send({
+        embeds: [logEmbed],
+      })
+    );
   },
 };

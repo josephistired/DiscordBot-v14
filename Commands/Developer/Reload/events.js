@@ -13,7 +13,7 @@ module.exports = {
       client.removeListener(`${key}`, value, true);
     loadAllEvents(client);
     interaction.reply({
-      content: "✅ Events Have Been Reloaded",
+      content: "✅ Events have been reloaded.",
       ephemeral: true,
     });
   },

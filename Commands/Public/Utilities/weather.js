@@ -11,11 +11,11 @@ const weather = require("weather-js");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("weather")
-    .setDescription("Displays Weather About Given Location")
+    .setDescription("Weather Information for a Specific Location")
     .addStringOption((options) =>
       options
         .setName("degree-type")
-        .setDescription("Choose The Unit Of Temperature")
+        .setDescription("Select a Temperature Unit")
         .setRequired(true)
         .setChoices(
           {
@@ -31,7 +31,7 @@ module.exports = {
     .addStringOption((options) =>
       options
         .setName("location")
-        .setDescription("Provide The Location Name Or Zip Code")
+        .setDescription("Please enter the location's name or zip code.")
         .setRequired(true)
     ),
   /**
@@ -45,7 +45,7 @@ module.exports = {
     const errorsArray = [];
 
     const errorEmbed = new EmbedBuilder()
-      .setTitle("⛔ Error Executing Command")
+      .setTitle("⛔ Error executing command")
       .setColor("Red")
       .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
 
@@ -57,7 +57,7 @@ module.exports = {
             function (error, result) {
               if (error) errorsArray.push(error);
               if (result === undefined)
-                errorsArray.push("Invalid Location Provided!");
+                errorsArray.push("Invalid location provided!");
 
               if (errorsArray.length)
                 return interaction.reply({
@@ -81,7 +81,7 @@ module.exports = {
 
               const Cembed = new EmbedBuilder()
                 .setTitle(
-                  `Here's Your Weather Information For **${location.name}**!`
+                  `Here is your weather forecast for **${location.name}**!`
                 )
                 .setAuthor({
                   name: `${interaction.member.user.tag}`,
@@ -142,7 +142,7 @@ module.exports = {
             function (error, result) {
               if (error) errorsArray.push(error);
               if (result === undefined || result === 0)
-                errorsArray.push("Invalid Location Provided!");
+                errorsArray.push("Invalid location provided!");
 
               if (errorsArray.length)
                 return interaction.reply({
@@ -166,7 +166,7 @@ module.exports = {
 
               const Cembed = new EmbedBuilder()
                 .setTitle(
-                  `Here's Your Weather Information For **${location.name}**!`
+                  `Here is your weather forecast for **${location.name}**!`
                 )
                 .setAuthor({
                   name: `${interaction.member.user.tag}`,
@@ -212,7 +212,7 @@ module.exports = {
                 components: [
                   new ActionRowBuilder().setComponents(
                     new ButtonBuilder()
-                      .setLabel("Weather NPM Package")
+                      .setLabel("Weather NPM package")
                       .setStyle(ButtonStyle.Link)
                       .setURL("https://www.npmjs.com/package/weather-js")
                   ),

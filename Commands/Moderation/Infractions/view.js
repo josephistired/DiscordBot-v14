@@ -22,9 +22,6 @@ module.exports = {
 
     const successEmbed = new EmbedBuilder()
       .setTimestamp()
-      .setFooter({
-        text: "Github -> https://github.com/josephistired",
-      })
       .setColor("Green")
       .addFields(
         {
