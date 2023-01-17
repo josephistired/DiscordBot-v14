@@ -1,3 +1,6 @@
+const mongoose = require("mongoose"); // Testing Purposes
+mongoose.set("strictQuery", false); // Testing Purposes
+
 console.clear(); // Testing Purposes
 
 process.on("unhandledRejection", (error) => {
@@ -19,7 +22,7 @@ const client = new Client({
   partials: [User, Message, GuildMember, ThreadMember],
 });
 
-client.config = require("../Development Test/config.json"); 
+client.config = require("../Development Test/config.json");
 client.events = new Collection();
 client.subCommands = new Collection();
 client.commands = new Collection();
