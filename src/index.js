@@ -19,7 +19,7 @@ const client = new Client({
   partials: [User, Message, GuildMember, ThreadMember],
 });
 
-client.config = require("../Configuration/config.json"); // Change back to public folder # Developer Note
+client.config = require("../Development Test/config.json"); 
 client.events = new Collection();
 client.subCommands = new Collection();
 client.commands = new Collection();
