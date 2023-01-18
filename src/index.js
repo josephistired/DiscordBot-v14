@@ -13,15 +13,38 @@ const {
   Partials,
   Collection,
 } = require("discord.js");
-const { Guilds, GuildMembers, GuildMessages, GuildVoiceStates } =
-  GatewayIntentBits;
+const {
+  Guilds,
+  GuildMembers,
+  GuildMessages,
+  GuildVoiceStates,
+  GuildMessageReactions,
+} = GatewayIntentBits;
 const { User, Message, GuildMember, ThreadMember } = Partials;
 
 const client = new Client({
-  intents: [Guilds, GuildMembers, GuildMessages, GuildVoiceStates],
+  intents: [
+    Guilds,
+    GuildMembers,
+    GuildMessages,
+    GuildVoiceStates,
+    GuildMessageReactions,
+  ],
   partials: [User, Message, GuildMember, ThreadMember],
 });
 
+const { GiveawaysManager } = require("discord-giveaways");
+const manager = new GiveawaysManager(client, {
+  storage: "../Data/giveawaydata.json",
+  default: {
+    botsCanWin: false,
+    embedColor: "#00FF00",
+    embedColorEnd: "#FF0000",
+    reaction: "🎉",
+  },
+});
+
+client.giveawaysManager = manager;
 client.config = require("../Development Test/config.json");
 client.events = new Collection();
 client.subCommands = new Collection();

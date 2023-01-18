@@ -18,6 +18,7 @@
     "@discordjs/opus": "^0.9.0",
     "ascii-table": "^0.0.9",
     "discord-gamecord": "^4.1.0",
+    "discord-giveaways": "^6.0.1",
     "discord-html-transcripts": "^3.1.2",
     "discord.js": "^14.7.1",
     "glob": "^8.1.0",
