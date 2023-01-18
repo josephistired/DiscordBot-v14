@@ -41,9 +41,7 @@ module.exports = {
 
     const channelMessages = await interaction.channel.messages.fetch();
 
-    const logChannel = interaction.guild.channels.cache.get(
-      "1064030969176277073"
-    ); // CHANGE TO YOUR LOGGING CHANNEL
+    const logChannel = interaction.guild.channels.cache.get(""); // CHANGE TO YOUR LOGGING CHANNEL
 
     const successEmbed = new EmbedBuilder().setColor("Green");
     const logEmbed = new EmbedBuilder()
