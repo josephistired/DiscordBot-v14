@@ -51,7 +51,7 @@ module.exports = {
       .addFields(
         {
           name: "👤 User:",
-          value: `\`\`\`${user.tag || "No specified user"}\`\`\``,
+          value: `\`\`\`${user.username || "No specified user"}\`\`\``,
         },
         {
           name: "🔘 Channel:",
