@@ -1,6 +1,5 @@
-const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
+const { ChatInputCommandInteraction } = require("discord.js");
 const ms = require("ms");
-const manager = require("../../../src/index");
 
 module.exports = {
   subCommand: "giveaway.start",
@@ -14,14 +13,12 @@ module.exports = {
     const winnerCount = options.getInteger("winners");
     const prize = options.getString("prize");
 
-    client.manager
-      .start(interaction.channel, {
-        duration: ms(duration),
-        winnerCount,
-        prize,
-      })
-      .then((data) => {
-        console.log(data);
-      });
+    client.giveawaysManager.start(interaction.channel, {
+      duration: ms(duration),
+      winnerCount,
+      prize,
+      hostedBy: interaction.user.username,
+      thumbnail: interaction.user.displayAvatarURL(),
+    });
   },
 };
