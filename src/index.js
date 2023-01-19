@@ -33,9 +33,34 @@ const client = new Client({
   partials: [User, Message, GuildMember, ThreadMember],
 });
 
+const giveawayModel = require("../Schemas/giveaway");
+
 const { GiveawaysManager } = require("discord-giveaways");
-const manager = new GiveawaysManager(client, {
-  storage: "../Data/giveawaydata.json",
+const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
+  async getAllGiveaways() {
+    return await giveawayModel.find().lean().exec();
+  }
+
+  async saveGiveaway(messageId, giveawayData) {
+    await giveawayModel.create(giveawayData);
+
+    return true;
+  }
+
+  async editGiveaway(messageId, giveawayData) {
+    await giveawayModel.updateOne({ messageId }, giveawayData).exec();
+
+    return true;
+  }
+
+  async deleteGiveaway(messageId) {
+    await giveawayModel.deleteOne({ messageId }).exec();
+
+    return true;
+  }
+};
+
+const manager = new GiveawayManagerWithOwnDatabase(client, {
   default: {
     botsCanWin: false,
     embedColor: "#00FF00",

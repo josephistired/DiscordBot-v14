@@ -21,7 +21,7 @@ async function loadAllEvents(client) {
       else client.on(event.name, execute);
     }
 
-    table.addRow(event.name, "Running");
+    table.addRow(event.name, "✅");
   });
 
   return console.log(table.toString(), "\nEvents Loaded");
