@@ -9,21 +9,41 @@ module.exports = {
   async execute(interaction, client) {
     const id = interaction.options.getString("id");
 
+    const errorsArray = [];
+
     const errorEmbed = new EmbedBuilder()
+      .setTitle("⛔ Error executing command")
       .setColor("Red")
-      .setDescription("An error has occurred, please check and try again.")
-      .addFields({
-        name: "Error:",
-        value: `\`\`\`No giveaway found with message Id ${id}\`\`\``,
-      });
+      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
 
     let giveawayData = await Database.findOne({
       guildId: interaction.guildId,
       messageId: id,
     });
     if (!giveawayData) {
+      errorsArray.push(`\`\`\`No giveaway found with message Id ${id}\`\`\``);
+
       interaction.reply({
-        embeds: [errorEmbed],
+        embeds: [
+          errorEmbed.addFields({
+            name: "Reasons:",
+            value: `${errorsArray.join("\n")}`,
+          }),
+        ],
+        ephemeral: true,
+      });
+    } else if (giveawayData.ended === true) {
+      errorsArray.push(
+        `\`\`\`The giveaway found with message Id ${id} has already ended.\`\`\``
+      );
+
+      interaction.reply({
+        embeds: [
+          errorEmbed.addFields({
+            name: "Reasons:",
+            value: `${errorsArray.join("\n")}`,
+          }),
+        ],
         ephemeral: true,
       });
     } else {

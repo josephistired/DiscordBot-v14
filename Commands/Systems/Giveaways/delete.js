@@ -11,8 +11,9 @@ module.exports = {
     const id = options.getString("id");
 
     const errorEmbed = new EmbedBuilder()
+      .setTitle("⛔ Error executing command")
       .setColor("Red")
-      .setDescription("An error has occurred, please check and try again.")
+      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif")
       .addFields({
         name: "Error:",
         value: `\`\`\`No giveaway found with message Id ${id}\`\`\``,
