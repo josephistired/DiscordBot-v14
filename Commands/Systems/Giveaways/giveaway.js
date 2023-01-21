@@ -35,7 +35,7 @@ module.exports = {
         .addStringOption((options) =>
           options
             .setName("id")
-            .setDescription("Provide the message id of the giveaway")
+            .setDescription("Provide the message ID of the giveaway")
             .setRequired(true)
         )
     )
@@ -46,7 +46,7 @@ module.exports = {
         .addStringOption((options) =>
           options
             .setName("id")
-            .setDescription("Provide the message id of the giveaway")
+            .setDescription("Provide the message ID of the giveaway")
             .setRequired(true)
         )
     )
@@ -57,7 +57,7 @@ module.exports = {
         .addStringOption((options) =>
           options
             .setName("id")
-            .setDescription("Provide the message id of the giveaway")
+            .setDescription("Provide the message ID of the giveaway")
             .setRequired(true)
         )
         .addIntegerOption((options) =>
@@ -86,7 +86,7 @@ module.exports = {
         .addStringOption((options) =>
           options
             .setName("id")
-            .setDescription("Provide the message id of the giveaway")
+            .setDescription("Provide the message ID of the giveaway")
             .setRequired(true)
         )
     )
@@ -97,7 +97,7 @@ module.exports = {
         .addStringOption((options) =>
           options
             .setName("id")
-            .setDescription("Provide the message id of the giveaway")
+            .setDescription("Provide the message ID of the giveaway")
             .setRequired(true)
         )
     )
@@ -108,7 +108,7 @@ module.exports = {
         .addStringOption((options) =>
           options
             .setName("id")
-            .setDescription("Provide the message id of the giveaway")
+            .setDescription("Provide the message ID of the giveaway")
             .setRequired(true)
         )
     ),

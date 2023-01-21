@@ -21,7 +21,9 @@ module.exports = {
       messageId: id,
     });
     if (!giveawayData) {
-      errorsArray.push(`\`\`\`No giveaway found with message Id ${id}\`\`\``);
+      errorsArray.push(
+        `\`\`\`There were no giveaways found with the provided message ID. - ${id}\`\`\``
+      );
 
       interaction.reply({
         embeds: [
@@ -34,7 +36,7 @@ module.exports = {
       });
     } else if (giveawayData.ended === true) {
       errorsArray.push(
-        `\`\`\`The giveaway found with message Id ${id} has already ended.\`\`\``
+        `\`\`\`The giveaway with message ID ${id} discovered has already ended. \`\`\``
       );
 
       interaction.reply({

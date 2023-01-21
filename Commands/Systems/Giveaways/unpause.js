@@ -9,22 +9,43 @@ module.exports = {
   async execute(interaction, client) {
     const id = interaction.options.getString("id");
 
+    const errorsArray = [];
+
     const errorEmbed = new EmbedBuilder()
+      .setTitle("⛔ Error executing command")
       .setColor("Red")
-      .setDescription("An error has occurred, please check and try again.")
-      .addFields({
-        name: "Error:",
-        value: `\`\`\`No giveaway found with message Id ${id}\`\`\``,
-      });
+      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
 
     let giveawayData = await Database.findOne({
       guildId: interaction.guildId,
       messageId: id,
     });
     if (!giveawayData) {
-      // also need to add to check if the giveaway is not paused to begin with.
+      errorsArray.push(
+        `\`\`\`There were no giveaways found with the provided message ID. - ${id}\`\`\``
+      );
+
       interaction.reply({
-        embeds: [errorEmbed],
+        embeds: [
+          errorEmbed.addFields({
+            name: "Reasons:",
+            value: `${errorsArray.join("\n")}`,
+          }),
+        ],
+        ephemeral: true,
+      });
+    } else if (!giveawayData.pauseOptions.isPaused) {
+      errorsArray.push(
+        `\`\`\`The giveaway with message ID ${id} discovered has not been paused. \`\`\``
+      );
+
+      interaction.reply({
+        embeds: [
+          errorEmbed.addFields({
+            name: "Reasons:",
+            value: `${errorsArray.join("\n")}`,
+          }),
+        ],
         ephemeral: true,
       });
     } else {
