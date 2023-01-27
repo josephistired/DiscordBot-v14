@@ -7,13 +7,11 @@ module.exports = {
    *
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction) {
+  async execute(interaction, client) {
     const { options, guild, member } = interaction;
 
     const user = options.getMember("user");
     const reason = options.getString("reason");
-
-    const logChannel = interaction.guild.channels.cache.get(""); // CHANGE TO YOUR LOGGING CHANNEL
 
     let userData = await Database.findOneAndUpdate({
       Guild: guild.id,
@@ -22,24 +20,6 @@ module.exports = {
     });
 
     const successEmbed = new EmbedBuilder().setColor("Green");
-    const logEmbed = new EmbedBuilder()
-      .setColor("Green")
-      .setAuthor({ name: "➖ Infraction Reset Command Executed" })
-      .setTimestamp()
-      .addFields(
-        {
-          name: "👤 User:",
-          value: `\`\`\`${user.user.tag}\`\`\``,
-        },
-        {
-          name: "❔ Reason:",
-          value: `\`\`\`${reason}\`\`\``,
-        },
-        {
-          name: "👮🏻 Moderator:",
-          value: `\`\`\`${member.user.username}\`\`\``,
-        }
-      );
 
     return (
       interaction.reply({
@@ -50,9 +30,16 @@ module.exports = {
         ],
         ephemeral: true,
       }),
-      logChannel.send({
-        embeds: [logEmbed],
-      })
+      client.logs(
+        {
+          action: "Infraction Remove",
+          moderator: `${member.user.username}`,
+          user: `${user.user.tag}`,
+          reason: `${reason}`,
+          emoji: "➖",
+        },
+        interaction
+      )
     );
   },
 };

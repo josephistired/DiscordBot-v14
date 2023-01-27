@@ -4,6 +4,7 @@ const {
   ChatInputCommandInteraction,
   EmbedBuilder,
 } = require("discord.js");
+const { logSend } = require("../../Functions/logSend");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -26,56 +27,25 @@ module.exports = {
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction) {
+  async execute(interaction, client) {
     const { options, member } = interaction;
 
-    const user = options.getString("userid");
+    const userid = options.getString("userid");
     const reason = options.getString("reason") || "Not specified";
 
-    const logChannel = interaction.guild.channels.cache.get(""); // CHANGE TO YOUR LOGGING CHANNEL
+    const errorsArray = [];
 
-    try {
-      await interaction.guild.members.unban(user);
+    const errorEmbed = new EmbedBuilder()
+      .setTitle("⛔ Error executing command")
+      .setColor("Red")
+      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
 
-      const successEmbed = new EmbedBuilder().setColor("Green");
-      const logEmbed = new EmbedBuilder()
-        .setColor("Green")
-        .setAuthor({ name: "⌀ Unban Command Executed!" })
-        .setTimestamp()
-        .addFields(
-          {
-            name: "👤 User:",
-            value: `\`\`\`${user}\`\`\``,
-          },
-          {
-            name: "❔ Reason:",
-            value: `\`\`\`${reason}\`\`\``,
-          },
-          {
-            name: "👮🏻 Moderator:",
-            value: `\`\`\`${member.user.username}\`\`\``,
-          }
-        );
+    const bannedUser = await interaction.guild.bans.fetch();
+    const user = bannedUser.get(userid);
 
-      await interaction.reply({
-        embeds: [
-          successEmbed.setDescription(
-            ` \n ⌀ Unbanned \`${user}\` from the server!`
-          ),
-        ],
-        ephemeral: true,
-      }),
-        logChannel.send({
-          embeds: [logEmbed],
-        });
-    } catch (err) {
-      const errorEmbed = new EmbedBuilder()
-        .setTitle("⛔ Error executing command")
-        .setColor("Red")
-        .setImage(
-          "https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif"
-        );
+    if (!user) errorsArray.push("That user is not banned.");
 
+    if (errorsArray.length)
       return interaction.reply({
         embeds: [
           errorEmbed.addFields(
@@ -85,12 +55,34 @@ module.exports = {
             },
             {
               name: "Reasons:",
-              value: `\`\`\`${err}\`\`\``,
+              value: `\`\`\`${errorsArray.join("\n")}\`\`\``,
             }
           ),
         ],
         ephemeral: true,
       });
-    }
+
+    await interaction.guild.members.unban(userid);
+
+    const successEmbed = new EmbedBuilder().setColor("Green");
+
+    await interaction.reply({
+      embeds: [
+        successEmbed.setDescription(
+          `🔀 \n Unbanned \`${userid}\` from the server!`
+        ),
+      ],
+      ephemeral: true,
+    }),
+      logSend(
+        {
+          action: "Unban",
+          moderator: `${member.user.username}`,
+          user: `${userid}`,
+          reason: `${reason}`,
+          emoji: "🔀",
+        },
+        interaction
+      );
   },
 };

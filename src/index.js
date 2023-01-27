@@ -70,7 +70,7 @@ const manager = new GiveawayManagerWithOwnDatabase(client, {
 });
 
 client.giveawaysManager = manager;
-client.config = require("../Configuration/config.json");
+client.config = require("../Development Test/config.json");
 client.events = new Collection();
 client.subCommands = new Collection();
 client.commands = new Collection();
