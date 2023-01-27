@@ -11,7 +11,7 @@ const weather = require("weather-js");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("weather")
-    .setDescription("Weather Information for a Specific Location")
+    .setDescription("Weather information for a specific location")
     .addStringOption((options) =>
       options
         .setName("degree-type")
