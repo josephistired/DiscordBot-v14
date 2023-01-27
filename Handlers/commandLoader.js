@@ -20,7 +20,7 @@ async function loadAllCommands(client) {
 
     commmandsArray.push(command.data.toJSON());
 
-    table.addRow(command.data.name, "Running");
+    table.addRow(command.data.name, "✅");
   });
 
   client.application.commands.set(commmandsArray);

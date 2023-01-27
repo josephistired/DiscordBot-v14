@@ -8,7 +8,7 @@ module.exports = {
    *
    * @param {Message} message
    */
-  execute(message, client) {
+  execute(message) {
     if (message.author.bot) return;
 
     if (connection == 0) return;

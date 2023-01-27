@@ -35,9 +35,4 @@ module.exports = {
             .setRequired(true)
         )
     ),
-  /**
-   *
-   * @param {ChatInputCommandInteraction} interaction
-   * @param {Client} client
-   */
 };
