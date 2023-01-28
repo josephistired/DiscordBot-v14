@@ -6,7 +6,7 @@ const {
 } = require("discord.js");
 const Database = require("../../Schemas/infractions");
 const ms = require("ms");
-const { logSend } = require("../../Functions/logSend");
+const { moderationlogSend } = require("../../Functions/moderationlogSend");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -126,7 +126,7 @@ module.exports = {
         ],
         ephemeral: true,
       }),
-      logSend(
+      moderationlogSend(
         {
           action: "Timeout",
           moderator: `${member.user.username}`,

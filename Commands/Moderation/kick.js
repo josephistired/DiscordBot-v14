@@ -4,7 +4,7 @@ const {
   ChatInputCommandInteraction,
   EmbedBuilder,
 } = require("discord.js");
-const { logSend } = require("../../Functions/logSend");
+const { moderationlogSend } = require("../../Functions/moderationlogSend");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -102,7 +102,7 @@ module.exports = {
         ],
         ephemeral: true,
       }),
-      logSend(
+      moderationlogSend(
         {
           action: "Kick",
           moderator: `${member.user.username}`,

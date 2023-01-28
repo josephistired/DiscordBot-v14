@@ -1,8 +1,7 @@
-const { EmbedBuilder } = require("discord.js");
-
+const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const logModel = require("../Schemas/logs");
 
-async function logSend(
+async function moderationlogSend(
   {
     action,
     moderator,
@@ -21,13 +20,13 @@ async function logSend(
   const data = await logModel.findOne({ Guild: interaction.guild.id });
   if (!data) return;
 
+  const attachment = new AttachmentBuilder("assets/moderation.gif");
+
   const channel = interaction.guild.channels.cache.get(data.Channel);
   const logsEmbed = new EmbedBuilder()
-    .setAuthor({ name: `${emoji} ${action} Command Executed!` })
+    .setAuthor({ name: `${emoji} ${action} Executed!` })
     .setColor("Green")
-    .setImage(
-      "https://toppng.com/uploads/preview/engagement-punchh-com-mod-pizza-logo-vector-11562898893i77wtdx1h8.png"
-    )
+    .setImage("attachment://moderation.gif")
     .setTimestamp()
     .addFields(
       {
@@ -40,7 +39,7 @@ async function logSend(
       },
       {
         name: "❔ Reason:",
-        value: `\`\`\`${reason}\`\`\``,
+        value: `\`\`\`${reason || "Not applicable"} \`\`\``,
       },
       {
         name: "📅 Days Of Messages Deleted:",
@@ -60,11 +59,15 @@ async function logSend(
       },
       {
         name: "👮🏻 Moderator:",
-        value: `\`\`\`${moderator}\`\`\``,
+        value: `\`\`\`${moderator || "Not applicable"}\`\`\``,
       }
     );
-  if (transcript) channel.send({ embeds: [logsEmbed], files: [transcript] });
-  else channel.send({ embeds: [logsEmbed] });
+  if (transcript)
+    channel.send({
+      embeds: [logsEmbed],
+      files: [transcript, attachment],
+    });
+  else channel.send({ embeds: [logsEmbed], files: [attachment] });
 }
 
-module.exports = { logSend };
+module.exports = { moderationlogSend };

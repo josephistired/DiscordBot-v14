@@ -1,5 +1,6 @@
 const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
 const Database = require("../../../Schemas/infractions");
+const { moderationlogSend } = require("../../../Functions/moderationlogSend");
 
 module.exports = {
   subCommand: "infractions.reset",
@@ -7,7 +8,7 @@ module.exports = {
    *
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction, client) {
+  async execute(interaction) {
     const { options, guild, member } = interaction;
 
     const user = options.getMember("user");
@@ -30,7 +31,7 @@ module.exports = {
         ],
         ephemeral: true,
       }),
-      client.logs(
+      moderationlogSend(
         {
           action: "Infraction Remove",
           moderator: `${member.user.username}`,

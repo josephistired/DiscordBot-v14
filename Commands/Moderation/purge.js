@@ -5,7 +5,7 @@ const {
   ChatInputCommandInteraction,
 } = require("discord.js");
 const Transcript = require("discord-html-transcripts");
-const { logSend } = require("../../Functions/logSend");
+const { moderationlogSend } = require("../../Functions/moderationlogSend");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -99,7 +99,7 @@ module.exports = {
           ephemeral: true,
         });
 
-        logSend(
+        moderationlogSend(
           {
             action: "Purge",
             moderator: `${member.user.username}`,
