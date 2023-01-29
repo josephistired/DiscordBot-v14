@@ -2,15 +2,14 @@
 
 # DiscordBot-v14
 
-![Discord.js](https://discord.js.org/static/logo.svg)
 
-An open-source discord bot based on [discord.js](https://discord.js.org/#/) v14 that is simple to maintain!
+An open-source Discord bot that offers ultimate control and flexibility for your server. With this bot, you have the ability to host and run it yourself, ensuring that you have the latest updates and features. The bot comes equipped with a variety of commands, including moderation commands for enforcing rules and keeping your server organized, etc. 
 
 </p>
 
 ![Github Issues](https://img.shields.io/github/issues/josephistired/DiscordBot-v14?color=red&style=for-the-badge)
 ![Github License](https://img.shields.io/github/license/josephistired/DiscordBot-v14?color=black&style=for-the-badge)
-![Maintenance](https://img.shields.io/maintenance/yes/2022?style=for-the-badge)
+![Maintenance](https://img.shields.io/maintenance/yes/2022?color=BLACK&style=for-the-badge)
 ![Last Commit](https://img.shields.io/github/last-commit/josephistired/DiscordBot-v14?style=for-the-badge)
 
 </div>
@@ -29,9 +28,4 @@ To learn how to use this bot, go to the [wiki](https://www.josephcarmosino.websi
 # Miscellaneous
 
 Visit the [wiki](https://www.josephcarmosino.website/discordbotv14#miscellaneous) to see the commands and learn more about the bot.
-
-# Contribution
-
-_All new code must be submitted to TEST BRANCH! There will be no merges on the MAIN branch!_
-
-**All contributions should be directed to the test [branch](https://github.com/josephistired/DiscordBot-v14/tree/test)!**
+**Please be patient, I am in the process of rehauling it.**
