@@ -1,23 +1,54 @@
+require("dotenv").config();
+
 const { loadAllCommands } = require("../../Handlers/commandLoader");
+const boxen = require("boxen");
+const colors = require("chalk");
+
+const status = ["ERROR", "OK"];
+
 module.exports = {
   name: "ready",
   once: true,
-  execute(client) {
+  async execute(client) {
     client.user.setActivity(`${client.guilds.cache.size} Guilds`);
 
     loadAllCommands(client);
 
-    console.log(`\nClient Logged In As: ${client.user.username}\n`);
+    const { connect, connection } = require("mongoose");
 
-    const { connect } = require("mongoose");
-    connect(client.config.DatabaseURL, {}).then(() =>
-      console.log(`\n\n\nClient Is Connected To The Database\n\n\n`)
-    );
+    await connect(process.env.DATABASEURL);
 
     let xp = require("simply-xp");
 
-    xp.connect(client.config.DatabaseURL, {
-      notify: true,
+    xp.connect(process.env.DATABASEURL, {
+      notify: false,
     });
+
+    const green = colors.hex("#46ff00");
+
+    console.log(
+      boxen(
+        `\n ${green.bold("         🟢 ONLINE")}    \n           ${colors.gray(
+          client.user.username
+        )}  \n\n     Commands:   ${green.bold(
+          "OK"
+        )}    \n     Events:     ${green.bold("OK")}
+
+            \n     Mongoose DB: ${green.bold(
+              status[connection.readyState]
+            )}            \n     XP DB: ${green.bold(
+          status[connection.readyState]
+        )}
+`,
+        {
+          title: "Information",
+          titleAlignment: "center",
+          padding: 2,
+          margin: 2,
+          borderColor: "green",
+          borderStyle: "classic",
+        }
+      )
+    );
   },
 };

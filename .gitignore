@@ -1,6 +1,7 @@
 node_modules/
-Development Test/
-Commands/Moderation/Level/
+.env
 .vscode/
 *.html*
 *.jsx*
+Commands/Systems/Welcome
+Schemas/welcome.js
