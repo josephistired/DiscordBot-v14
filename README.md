@@ -1,6 +1,6 @@
 <div align="center">
 
-# DiscordBot-v14
+# 🤖 DiscordBot-v14 🤖
 
 
 An open-source Discord bot that offers ultimate control and flexibility for your server. With this bot, you have the ability to host and run it yourself, ensuring that you have the latest updates and features. The bot comes equipped with a variety of commands, including moderation commands for enforcing rules and keeping your server organized, etc. 
@@ -14,18 +14,18 @@ An open-source Discord bot that offers ultimate control and flexibility for your
 
 </div>
 
-# Features
+# 📊 Features
 
 - Moderation commands ⛔
 - Fun commands 😁
 - Utilities commands 💻
 - And much more coming [soon](https://github.com/users/josephistired/projects/8) 🎊
 
-# Wiki
+# 📚 Wiki
 
 To learn how to use this bot, go to the [wiki](https://www.josephcarmosino.website/discordbotv14#wiki).
 
-# Miscellaneous
+# ❓ Miscellaneous
 
 Visit the [wiki](https://www.josephcarmosino.website/discordbotv14#miscellaneous) to see the commands and learn more about the bot.
 **Please be patient, I am in the process of rehauling it.**
