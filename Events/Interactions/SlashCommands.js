@@ -8,6 +8,7 @@ const {
 const Converter = require("timestamp-conv");
 const { connection } = require("mongoose");
 const { commandlogSend } = require("../../Functions/commandlogSend");
+require("dotenv").config();
 
 module.exports = {
   name: "interactionCreate",
@@ -15,7 +16,7 @@ module.exports = {
    *
    * @param {ChatInputCommandInteraction} interaction
    */
-  execute(interaction, client ) {
+  execute(interaction, client) {
     if (!interaction.isChatInputCommand()) return;
 
     const command = client.commands.get(interaction.commandName);
@@ -39,8 +40,7 @@ module.exports = {
 
     if (!command) errorsArray.push("💤 Command Is Outdated.");
 
-    if (command.developer && interaction.user.id !== "")
-      // Provide Your ID!
+    if (command.developer && interaction.user.id !== process.env.DEVELOPERID)
       errorsArray.push("Command Is Only Available To The Hoster Of This Bot!");
 
     if (command.testing == true)

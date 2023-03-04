@@ -10,10 +10,10 @@ module.exports = {
     .setName("log-set")
     .setDescription("Sets channel for mod logs to be sent to")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-    .addStringOption((options) =>
+    .addChannelOption((options) =>
       options
         .setName("channel")
-        .setDescription("Provide the channel ID")
+        .setDescription("Select the Channel.")
         .setRequired(true)
     ),
   /**
@@ -21,40 +21,13 @@ module.exports = {
    */
 
   async execute(interaction) {
-    const channel = interaction.options.getString("channel");
+    const channel = interaction.options.getChannel("channel");
 
-    const errorsArray = [];
-
-    const errorEmbed = new EmbedBuilder()
-      .setTitle("⛔ Error executing command")
-      .setColor("Red")
-      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
-
-    if (!interaction.guild.channels.cache.get(channel))
-      errorsArray.push("Please provide a valid channel ID.");
-
-    if (errorsArray.length)
-      return interaction.reply({
-        embeds: [
-          errorEmbed.addFields(
-            {
-              name: "User:",
-              value: `\`\`\`${interaction.user.username}\`\`\``,
-            },
-            {
-              name: "Reasons:",
-              value: `\`\`\`${errorsArray.join("\n")}\`\`\``,
-            }
-          ),
-        ],
-        ephemeral: true,
-      });
-
-    Database.findOne({ Guild: interaction.guild.id }, async (err, data) => {
+    Database.findOne({ Guild: interaction.guild.id }, async (data) => {
       if (data) data.delete();
       new Database({
         Guild: interaction.guild.id,
-        Channel: channel,
+        Channel: channel.id,
       }).save();
 
       interaction.reply({
