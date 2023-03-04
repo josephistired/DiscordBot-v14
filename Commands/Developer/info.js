@@ -46,7 +46,7 @@ module.exports = {
           new ButtonBuilder()
             .setLabel("Project's Github")
             .setStyle(ButtonStyle.Link)
-            .setURL("https://github.com/josephistired"),
+            .setURL("https://github.com/josephistired/DiscordBot-v14"),
 
           new ButtonBuilder()
             .setLabel("Discord.js docs")

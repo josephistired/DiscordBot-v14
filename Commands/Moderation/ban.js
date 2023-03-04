@@ -5,6 +5,8 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 
+const { moderationlogSend } = require("../../Functions/moderationlogSend");
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("ban")
@@ -26,13 +28,11 @@ module.exports = {
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction) {
+  async execute(interaction, client) {
     const { options, member } = interaction;
 
     const user = options.getMember("user");
     const reason = options.getString("reason") || "Not specified";
-
-    const logChannel = interaction.guild.channels.cache.get(""); // CHANGE TO YOUR LOGGING CHANNEL
 
     const errorsArray = [];
 
@@ -80,37 +80,26 @@ module.exports = {
     });
 
     const successEmbed = new EmbedBuilder().setColor("Green");
-    const logEmbed = new EmbedBuilder()
-      .setColor("Green")
-      .setAuthor({ name: "🔨 Ban Command Executed!" })
-      .setTimestamp()
-      .addFields(
-        {
-          name: "👤 User:",
-          value: `\`\`\`${user.user.tag}\`\`\``,
-        },
-        {
-          name: "❔ Reason:",
-          value: `\`\`\`${reason}\`\`\``,
-        },
-        {
-          name: "👮🏻 Moderator:",
-          value: `\`\`\`${member.user.username}\`\`\``,
-        }
-      );
 
     return (
       interaction.reply({
         embeds: [
           successEmbed.setDescription(
-            `🔨 \n Banned \`${user}\` from the server!`
+            `🔨 \n Banned \`${user.user.tag}\` from the server!`
           ),
         ],
         ephemeral: true,
       }),
-      logChannel.send({
-        embeds: [logEmbed],
-      })
+      moderationlogSend(
+        {
+          action: "Ban",
+          moderator: `${member.user.username}`,
+          user: `${user.user.tag}`,
+          reason: `${reason}`,
+          emoji: "🔨",
+        },
+        interaction
+      )
     );
   },
 };

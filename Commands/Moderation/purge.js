@@ -5,6 +5,7 @@ const {
   ChatInputCommandInteraction,
 } = require("discord.js");
 const Transcript = require("discord-html-transcripts");
+const { moderationlogSend } = require("../../Functions/moderationlogSend");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -32,7 +33,7 @@ module.exports = {
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction) {
+  async execute(interaction, client) {
     const { options, member } = interaction;
 
     const amount = options.getNumber("amount");
@@ -41,31 +42,7 @@ module.exports = {
 
     const channelMessages = await interaction.channel.messages.fetch();
 
-    const logChannel = interaction.guild.channels.cache.get(""); // CHANGE TO YOUR LOGGING CHANNEL
-
     const successEmbed = new EmbedBuilder().setColor("Green");
-    const logEmbed = new EmbedBuilder()
-      .setColor("Green")
-      .setAuthor({ name: "🧹 Purge Command Executed!" })
-      .setTimestamp()
-      .addFields(
-        {
-          name: "👤 User:",
-          value: `\`\`\`${user.username || "No specified user"}\`\`\``,
-        },
-        {
-          name: "🔘 Channel:",
-          value: `\`\`\`${interaction.channel.name}\`\`\``,
-        },
-        {
-          name: "❔ Reason:",
-          value: `\`\`\`${reason}\`\`\``,
-        },
-        {
-          name: "👮🏻 Moderator:",
-          value: `\`\`\`${member.user.username}\`\`\``,
-        }
-      );
 
     if (user) {
       let i = 0;
@@ -92,15 +69,19 @@ module.exports = {
           ephemeral: true,
         });
 
-        logChannel.send({
-          embeds: [
-            logEmbed.addFields({
-              name: "🔢 Total Messages:",
-              value: `\`\`\`${messages.size}\`\`\``,
-            }),
-          ],
-          files: [transcript],
-        });
+        client.logs(
+          {
+            action: "Purge",
+            moderator: `${member.user.username}`,
+            user: `${user.tag}`,
+            reason: `${reason}`,
+            emoji: "🧹",
+            place: `${interaction.channel.name}`,
+            size: `${messages.size}`,
+            transcript: transcript,
+          },
+          interaction
+        );
       });
     } else {
       const transcript = await Transcript.createTranscript(
@@ -118,15 +99,18 @@ module.exports = {
           ephemeral: true,
         });
 
-        logChannel.send({
-          embeds: [
-            logEmbed.addFields({
-              name: "🔢 Total messages:",
-              value: `\`\`\`${messages.size}\`\`\``,
-            }),
-          ],
-          files: [transcript],
-        });
+        moderationlogSend(
+          {
+            action: "Purge",
+            moderator: `${member.user.username}`,
+            reason: `${reason}`,
+            emoji: "🧹",
+            place: `${interaction.channel.name}`,
+            size: `${messages.size}`,
+            transcript: transcript,
+          },
+          interaction
+        );
       });
     }
   },

@@ -4,6 +4,7 @@ const {
   ChatInputCommandInteraction,
   EmbedBuilder,
 } = require("discord.js");
+const { moderationlogSend } = require("../../Functions/moderationlogSend");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -38,14 +39,12 @@ module.exports = {
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction) {
+  async execute(interaction, client) {
     const { options, member } = interaction;
 
     const user = options.getMember("user");
     const messages = options.getString("messages");
     const reason = options.getString("reason") || "Not Specified";
-
-    const logChannel = interaction.guild.channels.cache.get(""); // CHANGE TO YOUR LOGGING CHANNEL
 
     const errorsArray = [];
 
@@ -93,28 +92,6 @@ module.exports = {
     });
 
     const successEmbed = new EmbedBuilder().setColor("Green").setTimestamp();
-    const logEmbed = new EmbedBuilder()
-      .setColor("Green")
-      .setAuthor({ name: "👟 Kick Command Executed!" })
-      .setTimestamp()
-      .addFields(
-        {
-          name: "👤 User:",
-          value: `\`\`\`${user.user.tag}\`\`\``,
-        },
-        {
-          name: "❔ Reason:",
-          value: `\`\`\`${reason}\`\`\``,
-        },
-        {
-          name: "📅 Messages Deleted:",
-          value: `\`\`\`${messages} Days Of Messages\`\`\``,
-        },
-        {
-          name: "👮🏻 Moderator:",
-          value: `\`\`\`${member.user.username}\`\`\``,
-        }
-      );
 
     return (
       interaction.reply({
@@ -125,9 +102,17 @@ module.exports = {
         ],
         ephemeral: true,
       }),
-      logChannel.send({
-        embeds: [logEmbed],
-      })
+      moderationlogSend(
+        {
+          action: "Kick",
+          moderator: `${member.user.username}`,
+          user: `${user.user.tag}`,
+          reason: `${reason}`,
+          emoji: "👟",
+          messages: `${messages}`,
+        },
+        interaction
+      )
     );
   },
 };

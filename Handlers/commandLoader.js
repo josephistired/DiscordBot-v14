@@ -1,7 +1,5 @@
 async function loadAllCommands(client) {
-  const { loadAllFiles } = require("../Functions/fileLoader");
-  const ascii = require("ascii-table");
-  const table = new ascii().setHeading("Command Name", "Status Of Command");
+  const { loadAllFiles } = require("../functions/fileLoader");
 
   await client.commands.clear();
   await client.subCommands.clear();
@@ -19,13 +17,9 @@ async function loadAllCommands(client) {
     client.commands.set(command.data.name, command);
 
     commmandsArray.push(command.data.toJSON());
-
-    table.addRow(command.data.name, "✅");
   });
 
   client.application.commands.set(commmandsArray);
-
-  return console.log(table.toString(), "\nCommands Loaded");
 }
 
 module.exports = { loadAllCommands };

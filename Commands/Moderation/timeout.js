@@ -4,10 +4,9 @@ const {
   ChatInputCommandInteraction,
   EmbedBuilder,
 } = require("discord.js");
-const { connection } = require("mongoose");
 const Database = require("../../Schemas/infractions");
 const ms = require("ms");
-const logChannel = require("../../src/index.js");
+const { moderationlogSend } = require("../../Functions/moderationlogSend");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -36,16 +35,12 @@ module.exports = {
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction) {
+  async execute(interaction, client) {
     const { options, guild, member } = interaction;
 
     const user = options.getMember("user");
     const duration = options.getString("duration");
     const reason = options.getString("reason") || "Not specified";
-
-    const logChannel = interaction.guild.channels.cache.get(
-      "1064030969176277073"
-    ); // CHANGE TO YOUR LOGGING CHANNEL
 
     const errorsArray = [];
 
@@ -119,47 +114,30 @@ module.exports = {
       userData.Infractions.push(newInfractionObject) && (await userData.save());
 
     const successEmbed = new EmbedBuilder().setColor("Green");
-    const logEmbed = new EmbedBuilder()
-      .setColor("Green")
-      .setAuthor({ name: "⌛ Timeout Command Executed!" })
-      .setTimestamp()
-      .addFields(
-        {
-          name: "👤 User:",
-          value: `\`\`\`${user.user.tag}\`\`\``,
-        },
-        {
-          name: "🎟️ Infraction total:",
-          value: `\`\`\`${userData.Infractions.length} Infractions\`\`\``,
-        },
-        {
-          name: "⌚ Duration:",
-          value: `\`\`\`${ms(ms(duration, { long: true }))}\`\`\``,
-        },
-        {
-          name: "❔ Reason:",
-          value: `\`\`\`${reason}\`\`\``,
-        },
-        {
-          name: "👮🏻 Moderator:",
-          value: `\`\`\`${member.user.username}\`\`\``,
-        }
-      );
 
     return (
       interaction.reply({
         embeds: [
           successEmbed.setDescription(
-            `⌛ \n Timeouted \`${user.user.tag} for ${ms(
+            `⌛ \n Timeout \`${user.user.tag} for ${ms(
               ms(duration, { long: true })
             )}!\` `
           ),
         ],
         ephemeral: true,
       }),
-      logChannel.send({
-        embeds: [logEmbed],
-      })
+      moderationlogSend(
+        {
+          action: "Timeout",
+          moderator: `${member.user.username}`,
+          user: `${user.user.tag}`,
+          reason: `${reason}`,
+          emoji: "⌛",
+          total: `${userData.Infractions.length}`,
+          duration: `${ms(ms(duration, { long: true }))}`,
+        },
+        interaction
+      )
     );
   },
 };
