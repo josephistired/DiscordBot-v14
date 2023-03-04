@@ -3,5 +3,3 @@ node_modules/
 .vscode/
 *.html*
 *.jsx*
-Commands/Systems/Welcome
-Schemas/welcome.js
