@@ -2,8 +2,7 @@
 
 # 🤖 DiscordBot-v14 🤖
 
-
-An open-source Discord bot that offers ultimate control and flexibility for your server. With this bot, you have the ability to host and run it yourself, ensuring that you have the latest updates and features. The bot comes equipped with a variety of commands, including moderation commands for enforcing rules and keeping your server organized, etc. 
+An open-source Discord bot that offers ultimate control and flexibility for your server. With this bot, you have the ability to host and run it yourself, ensuring that you have the latest updates and features. The bot comes equipped with a variety of commands, including moderation commands for enforcing rules and keeping your server organized, etc.
 
 </p>
 
@@ -17,7 +16,7 @@ An open-source Discord bot that offers ultimate control and flexibility for your
 # 📊 Features
 
 - Moderation commands ⛔
-- Fun commands 😁
+- Fun commands 😊
 - Utilities commands 💻
 - And much more coming [soon](https://github.com/users/josephistired/projects/8) 🎊
 

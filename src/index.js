@@ -2,7 +2,7 @@ require("dotenv").config();
 
 process.on("unhandledRejection", (error) => {
   console.error(error);
-});
+}); 
 
 const {
   Client,
