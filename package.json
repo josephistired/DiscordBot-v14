@@ -17,7 +17,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.9.0",
     "ascii-table": "^0.0.9",
-    "discord-gamecord": "^4.2.0",
+    "discord-gamecord": "^4.3.0",
     "boxen": "^7.0.2",
     "chalk": "^5.2.0",
     "discord-giveaways": "^6.0.1",
