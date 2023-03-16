@@ -12,6 +12,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("weather")
     .setDescription("Weather information for a specific location")
+    .setDMPermission(false)
     .addStringOption((options) =>
       options
         .setName("degree-type")

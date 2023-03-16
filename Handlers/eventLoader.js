@@ -1,23 +1,31 @@
-async function loadAllEvents(client) {
-  const { loadAllFiles } = require("../Functions/fileLoader");
-  await client.events.clear();
+const { loadAllFiles, loadFiles } = require("../Functions/fileLoader");
 
-  const Files = await loadAllFiles("Events");
+async function loadEvents(client) {
+  console.time("Events Loaded");
 
-  Files.forEach((file) => {
-    const event = require(file);
+  client.events = new Map();
+  const events = new Array();
 
-    const execute = (...args) => event.execute(...args, client);
-    client.events.set(event.name, execute);
+  const files = await loadFiles("Events");
 
-    if (event.rest) {
-      if (event.once) client.rest.once(event.name, execute);
-      else client.rest.on(event.name, execute);
-    } else {
-      if (event.once) client.once(event.name, execute);
-      else client.on(event.name, execute);
+  for (const file of files) {
+    try {
+      const event = require(file);
+      const execute = (...args) => event.execute(...args, client);
+      const target = event.rest ? client.rest : client;
+
+      target[event.once ? "once" : "on"](event.name, execute);
+      client.events.set(event.name, execute);
+
+      events.push({ Event: event.name, Status: "✅" });
+    } catch (error) {
+      events.push({ Event: file.split("/").pop().slice(0, -3), Status: "🛑" });
     }
-  });
+  }
+
+  console.table(events, ["Event", "Status"]);
+  console.info("\n\x1b[36m%s\x1b[0m", "Loaded Events.");
+  console.timeEnd("Events Loaded");
 }
 
-module.exports = { loadAllEvents };
+module.exports = { loadEvents };

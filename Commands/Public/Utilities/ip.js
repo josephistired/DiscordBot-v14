@@ -12,6 +12,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("ip")
     .setDescription("Displays information about a given IP address")
+    .setDMPermission(false)
     .addStringOption((options) =>
       options
         .setName("ip")

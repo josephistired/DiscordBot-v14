@@ -7,6 +7,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("games")
     .setDescription("Play classic games with your friend.")
+    .setDMPermission(false)
     .addSubcommand((options) =>
       options
         .setName("connect-four")

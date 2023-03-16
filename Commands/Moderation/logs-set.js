@@ -10,6 +10,7 @@ module.exports = {
     .setName("log-set")
     .setDescription("Sets channel for mod logs to be sent to")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+    .setDMPermission(false)
     .addChannelOption((options) =>
       options
         .setName("channel")

@@ -7,6 +7,5 @@ module.exports = model(
     WelcomeChannel: String,
     WelcomeMessage: String,
     WelcomeColor: String,
-    WelcomeRole: String,
   })
 );

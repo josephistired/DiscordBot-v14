@@ -5,6 +5,7 @@ module.exports = {
     .setName("welcome")
     .setDescription("Control the welcome system")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+    .setDMPermission(false)
     .addSubcommand((options) =>
       options
         .setName("setup")
@@ -15,14 +16,6 @@ module.exports = {
           options
             .setName("welcome-channel")
             .setDescription("Select the channel.")
-            .setRequired(true)
-        )
-        .addRoleOption((options) =>
-          options
-            .setName("welcome-role")
-            .setDescription(
-              "Provide the role you want a new member to recieve when joining."
-            )
             .setRequired(true)
         )
         .addStringOption((options) =>

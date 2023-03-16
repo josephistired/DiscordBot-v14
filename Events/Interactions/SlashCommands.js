@@ -87,15 +87,19 @@ module.exports = {
         });
       subCommandFile.execute(interaction, client);
     } else command.execute(interaction, client);
-    commandlogSend(
-      {
-        command: `${interaction.commandName}`,
-        user: `${interaction.member.user.tag}`,
-        place: `${interaction.channel.name}`,
-        time: `${sent}`,
-        emoji: "💬",
-      },
-      interaction
-    );
+    if (interaction.isDMBased) {
+      commandlogSend(
+        {
+          command: `${interaction.commandName}`,
+          user: `${interaction.member.user.tag}`,
+          place: `${interaction.channel.name}`,
+          time: `${sent}`,
+          emoji: "💬",
+        },
+        interaction
+      );
+    } else {
+      // do nothing
+    }
   },
 };

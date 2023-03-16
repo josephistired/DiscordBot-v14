@@ -32,3 +32,4 @@ Visit the [wiki](https://www.josephcarmosino.website/discordbotv14#miscellaneous
 # 🛑 Warning
 
 Please don't use test branches to run the bot. As they are test branches, some things might be broken & not completed.
+**Always grab the latest release to run the bot**

@@ -16,7 +16,8 @@ const os = require("os");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("status")
-    .setDescription("Displays the bot's and database connection's status!"),
+    .setDescription("Displays the bot's and database connection's status!")
+    .setDMPermission(false),
   /**
    * @param {ChatInputCommandInteraction} interaction
    * @param {Client} client

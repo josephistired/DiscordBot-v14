@@ -1,12 +1,12 @@
 async function loadAllCommands(client) {
-  const { loadAllFiles } = require("../functions/fileLoader");
+  const { loadFiles } = require("../functions/fileLoader");
 
   await client.commands.clear();
   await client.subCommands.clear();
 
   let commmandsArray = [];
 
-  const Files = await loadAllFiles("Commands");
+  const Files = await loadFiles("Commands");
 
   Files.forEach((file) => {
     const command = require(file);

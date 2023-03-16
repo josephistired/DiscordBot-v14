@@ -8,6 +8,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("avatar")
     .setDescription("Displays your or another user's avatar")
+    .setDMPermission(false)
     .addUserOption((options) =>
       options.setName("user").setDescription("Select the user.")
     ),

@@ -11,21 +11,20 @@ module.exports = {
         data.WelcomeMessage ||
         `Welcome ${member.user} to ${member.guild}, enjoy your stay!`;
       let color = data.WelcomeColor;
-      let role = data.WelcomeRole;
 
       const { guild } = member;
       const WelcomeChannel = guild.channels.cache.get(channel);
       const icon = guild.iconURL();
 
       const welcomeEmbed = new EmbedBuilder()
-        .setTitle(`***New member***`)
+        .setTitle(`***New member!***`)
         .setDescription(message)
+        .setImage(member.displayAvatarURL({ dynamic: true }))
         .setColor(color)
         .setThumbnail(icon)
         .setTimestamp();
 
       WelcomeChannel.send({ embeds: [welcomeEmbed] });
-      member.roles.add(role);
     });
   },
 };

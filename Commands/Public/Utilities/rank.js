@@ -13,6 +13,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("rank")
     .setDescription("Displays user's rank")
+    .setDMPermission(false)
     .addUserOption((options) =>
       options.setName("user").setDescription("Select the user")
     ),

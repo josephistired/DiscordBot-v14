@@ -2,7 +2,7 @@ require("dotenv").config();
 
 process.on("unhandledRejection", (error) => {
   console.error(error);
-}); 
+});
 
 const {
   Client,
@@ -70,8 +70,9 @@ client.giveawaysManager = manager;
 client.events = new Collection();
 client.subCommands = new Collection();
 client.commands = new Collection();
+client.guildConfig = new Collection();
 
-const { loadAllEvents } = require("../Handlers/eventLoader");
-loadAllEvents(client);
+const { loadEvents } = require("../Handlers/eventLoader")
+loadEvents(client);
 
 client.login(process.env.TOKEN);

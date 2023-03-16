@@ -12,6 +12,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("slap")
     .setDescription("Slap another user")
+    .setDMPermission(false)
     .addUserOption((options) =>
       options
         .setName("user")

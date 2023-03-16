@@ -3,6 +3,7 @@ const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("infractions")
+    .setDMPermission(false)
     .setDescription(
       "View the infraction count of a user or reset their infraction count. "
     )

@@ -12,6 +12,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("8ball")
     .setDescription("A magic 8-Ball that answers all of your questions")
+    .setDMPermission(false)
     .addStringOption((options) =>
       options
         .setName("question")

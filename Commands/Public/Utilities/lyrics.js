@@ -12,6 +12,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("lyrics")
     .setDescription("Displays information about a given song")
+    .setDMPermission(false)
     .addStringOption((options) =>
       options
         .setName("song")

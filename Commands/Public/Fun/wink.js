@@ -12,6 +12,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("wink")
     .setDescription("Wink at another user")
+    .setDMPermission(false)
     .addUserOption((options) =>
       options
         .setName("user")
