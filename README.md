@@ -28,3 +28,7 @@ To learn how to use this bot, go to the [wiki](https://www.josephcarmosino.websi
 
 Visit the [wiki](https://www.josephcarmosino.website/discordbotv14#miscellaneous) to see the commands and learn more about the bot.
 **Please be patient, I am in the process of rehauling it.**
+
+# 🛑 Warning
+
+Please don't use test branches to run the bot. As they are test branches, some things might be broken & not completed.
