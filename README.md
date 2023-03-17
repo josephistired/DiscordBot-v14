@@ -22,12 +22,11 @@ An open-source Discord bot that offers ultimate control and flexibility for your
 
 # 📚 Wiki
 
-To learn how to use this bot, go to the [wiki](https://www.josephcarmosino.website/discordbotv14#wiki).
+To learn how to use this bot, go to the [wiki](https://discord-bot-v14-docs.vercel.app/).
 
 # ❓ Miscellaneous
 
-Visit the [wiki](https://www.josephcarmosino.website/discordbotv14#miscellaneous) to see the commands and learn more about the bot.
-**Please be patient, I am in the process of rehauling it.**
+Visit the [wiki](https://discord-bot-v14-docs.vercel.app/) to see the commands and learn more about the bot.
 
 # 🛑 Warning
 
