@@ -22,7 +22,7 @@ An open-source Discord bot that offers ultimate control and flexibility for your
 
 # 📚 Wiki
 
-To learn how to use this bot, go to the [wiki](https://discord-bot-v14-docs.vercel.app/).
+To learn how to setup the bot, go to the [wiki](https://discord-bot-v14-docs.vercel.app/).
 
 # ❓ Miscellaneous
 
