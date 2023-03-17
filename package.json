@@ -19,6 +19,7 @@
     "ascii-table": "^0.0.9",
     "boxen": "^5.1.2",
     "chalk": "^4.1.2",
+    "discord-arts": "^0.4.0",
     "discord-gamecord": "^4.2.0",
     "discord-giveaways": "^6.0.1",
     "discord-html-transcripts": "^3.1.3",

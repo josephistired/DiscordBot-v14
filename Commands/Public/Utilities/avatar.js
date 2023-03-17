@@ -28,9 +28,6 @@ module.exports = {
         })
       )
       .setTimestamp()
-      .setFooter({
-        text: "Github -> https://github.com/josephistired",
-      })
       .addFields(
         {
           name: "User:",
