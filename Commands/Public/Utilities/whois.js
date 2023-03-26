@@ -13,7 +13,7 @@ function addSuffix(number) {
 }
 
 function addBadges(badgeNames) {
-  if (!badgeNames.length) return ["X"];
+  if (!badgeNames.length) return ["No badges"];
   const badgeMap = {
     ActiveDeveloper: "<:activedeveloper:1086315311973802004>",
     BugHunterLevel1: "<:discordbughunter1:1086315317241852025>",
@@ -54,10 +54,11 @@ module.exports = {
    */
   async execute(interaction) {
     await interaction.deferReply();
-    const member = interaction.options.getUser("user") || interaction.member;
+    const member = interaction.options.getMember("user") || interaction.member;
 
     if (member.user.bot)
       return interaction.editReply({
+        ephemeral: true,
         embeds: [
           new EmbedBuilder()
             .setTitle("⛔ Error executing command")
@@ -76,7 +77,6 @@ module.exports = {
               }
             ),
         ],
-        ephemeral: true,
       });
 
     try {
@@ -101,11 +101,11 @@ module.exports = {
       const userBadges = member.user.flags.toArray();
 
       const joinTime = parseInt(member.joinedTimestamp / 1000);
-      const createdTime = parseInt(member.user.createdTimeStamp / 1000);
+      const createdTime = parseInt(member.user.createdTimestamp / 1000);
 
       const Booster = member.premiumSince
         ? "<:discordboost7:1086315313458593982>"
-        : "✖";
+        : "Not a booster";
 
       const whoisembed = new EmbedBuilder()
         .setAuthor({
@@ -118,58 +118,63 @@ module.exports = {
             member.user.username
           } joined  as the **${addSuffix(joinedPosition)}** member of ${
             interaction.guild.name
-          } `
+          }.`
         )
         .setImage("attachment://profile.png")
         .addFields([
           {
-            name: "Badges",
+            name: "Badges:",
             value: `${addBadges(userBadges).join("")}`,
             inline: true,
           },
           {
-            name: "Booster",
+            name: "Booster:",
             value: `${Booster}`,
             inline: true,
           },
           {
-            name: "Roles",
+            name: "Roles:",
             value: `${topRoles.join("").replace(`<@${interaction.guildId}>`)}`,
             inline: false,
           },
           {
-            name: "Created",
+            name: "Created:",
             value: `<t:${createdTime}:R>`,
             inline: true,
           },
           {
-            name: "Joined",
+            name: "Joined:",
             value: `<t:${joinTime}:R>`,
             inline: true,
           },
           {
-            name: "Identifier",
+            name: "Identifier:",
             value: `${member.id}`,
             inline: false,
           },
           {
-            name: "Avatar",
+            name: "Avatar:",
             value: `[Link](${member.displayAvatarURL()})`,
             inline: true,
           },
           {
-            name: "Banner",
-            value: `[Link](${(await member.fetch()).bannerURL()})`,
+            name: "Banner:",
+            value: `[Link](${(await member.user.fetch()).bannerURL()})`,
             inline: true,
           },
         ])
-        .setTimestamp();
+        .setTimestamp()
+        .setFooter({ text: `Requested By ${interaction.user.tag}` });
 
-      interaction.editReply({ embeds: [whoisembed], files: [imageAttachment] });
-    } catch (error) {
+      interaction.editReply({
+        embeds: [whoisembed],
+        files: [imageAttachment],
+        ephemeral: true,
+      });
+    } catch (err) {
       interaction.reply({
-        content:
-          "An error occured. Try again later or contact the hoster of this bot.",
+        content: `The ${err} has occured. Try again later or contact the hoster of this bot.`,
+        ephemeral: true,
       });
     }
   },

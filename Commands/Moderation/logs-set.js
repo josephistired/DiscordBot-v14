@@ -6,10 +6,11 @@ const {
 const Database = require("../../Schemas/logs");
 
 module.exports = {
+  moderation: true,
   data: new SlashCommandBuilder()
     .setName("log-set")
     .setDescription("Sets channel for mod logs to be sent to")
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .setDMPermission(false)
     .addChannelOption((options) =>
       options
@@ -21,20 +22,35 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
 
-  async execute(interaction) {
-    const channel = interaction.options.getChannel("channel");
+  async execute(interaction, client) {
+    const channelObject = interaction.options.getChannel("channel");
 
-    Database.findOne({ Guild: interaction.guild.id }, async (data) => {
-      if (data) data.delete();
-      new Database({
-        Guild: interaction.guild.id,
-        Channel: channel.id,
-      }).save();
+    await Database.findOneAndUpdate(
+      { Guild: interaction.guild.id },
+      {
+        logChannel: channelObject.id,
+      },
+      {
+        new: true,
+        upsert: true,
+      }
+    );
 
-      interaction.reply({
-        content: `${channel} has been set as the logs channel.`,
-        ephemeral: true,
+    client.guildConfig.set(interaction.guild.id, {
+      logChannel: channelObject.id,
+    });
+
+    const success = new EmbedBuilder()
+      .setColor("Green")
+      .setDescription("Successfully set logs channel!")
+      .addFields({
+        name: "Channel:",
+        value: channelObject.name,
       });
+
+    interaction.reply({
+      embeds: [success],
+      ephemeral: true,
     });
   },
 };

@@ -2,9 +2,6 @@ const {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
   EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
 } = require("discord.js");
 const superagent = require("superagent");
 
@@ -72,22 +69,11 @@ module.exports = {
         `${body.link}
     `
       )
-      .setTimestamp()
-      .setFooter({
-        text: "Github -> https://github.com/josephistired",
-      });
+      .setTimestamp();
 
     interaction.reply({
       content: `${member} kisses ${user}`,
       embeds: [kissembed],
-      components: [
-        new ActionRowBuilder().setComponents(
-          new ButtonBuilder()
-            .setLabel("Purrbot docs")
-            .setStyle(ButtonStyle.Link)
-            .setURL("https://docs.purrbot.site/api/")
-        ),
-      ],
     });
   },
 };

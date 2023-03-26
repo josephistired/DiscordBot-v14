@@ -2,9 +2,6 @@ const {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
   EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
 } = require("discord.js");
 const superagent = require("superagent");
 
@@ -70,22 +67,11 @@ module.exports = {
         `${body.link}
     `
       )
-      .setTimestamp()
-      .setFooter({
-        text: "Github -> https://github.com/josephistired",
-      });
+      .setTimestamp();
 
     interaction.reply({
       content: `${member} winks at ${user}`,
       embeds: [winkembed],
-      components: [
-        new ActionRowBuilder().setComponents(
-          new ButtonBuilder()
-            .setLabel("Some Random Api docs")
-            .setStyle(ButtonStyle.Link)
-            .setURL("https://some-random-api.ml")
-        ),
-      ],
     });
   },
 };

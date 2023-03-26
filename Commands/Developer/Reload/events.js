@@ -1,5 +1,5 @@
 const { ChatInputCommandInteraction, Client } = require("discord.js");
-const { loadAllEvents } = require("../../../Handlers/eventLoader");
+const { loadEvents } = require("../../../Handlers/eventLoader");
 
 module.exports = {
   subCommand: "reload.events",
@@ -11,7 +11,7 @@ module.exports = {
   execute(interaction, client) {
     for (const [key, value] of client.events)
       client.removeListener(`${key}`, value, true);
-    loadAllEvents(client);
+    loadEvents(client);
     interaction.reply({
       content: "✅ Events have been reloaded.",
       ephemeral: true,

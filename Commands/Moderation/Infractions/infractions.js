@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 
 module.exports = {
+  moderation: true,
   data: new SlashCommandBuilder()
     .setName("infractions")
     .setDMPermission(false)

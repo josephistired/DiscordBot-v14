@@ -9,6 +9,7 @@ const ms = require("ms");
 const { moderationlogSend } = require("../../Functions/moderationlogSend");
 
 module.exports = {
+  moderation: true,
   data: new SlashCommandBuilder()
     .setName("timeout")
     .setDescription("Timeouts a user from the server")

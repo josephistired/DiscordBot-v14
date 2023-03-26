@@ -4,7 +4,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("welcome")
     .setDescription("Control the welcome system")
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .setDMPermission(false)
     .addSubcommand((options) =>
       options
@@ -16,6 +16,14 @@ module.exports = {
           options
             .setName("welcome-channel")
             .setDescription("Select the channel.")
+            .setRequired(true)
+        )
+        .addRoleOption((options) =>
+          options
+            .setName("welcome-role")
+            .setDescription(
+              "Provide the role you want a new member to recieve when joining."
+            )
             .setRequired(true)
         )
         .addStringOption((options) =>

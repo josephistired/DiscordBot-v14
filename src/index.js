@@ -72,7 +72,7 @@ client.subCommands = new Collection();
 client.commands = new Collection();
 client.guildConfig = new Collection();
 
-const { loadEvents } = require("../Handlers/eventLoader")
+const { loadEvents } = require("../Handlers/eventLoader");
 loadEvents(client);
 
 client.login(process.env.TOKEN);

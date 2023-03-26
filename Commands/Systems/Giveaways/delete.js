@@ -7,7 +7,7 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction, client) {
-    const { options, guild, guildId } = interaction;
+    const { options } = interaction;
     const id = options.getString("id");
 
     const errorEmbed = new EmbedBuilder()

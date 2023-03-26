@@ -14,7 +14,7 @@ module.exports = {
     const user = options.getMember("user");
     const reason = options.getString("reason");
 
-    let userData = await Database.findOneAndUpdate({
+    await Database.findOneAndUpdate({
       Guild: guild.id,
       User: user.id,
       Infractions: [],

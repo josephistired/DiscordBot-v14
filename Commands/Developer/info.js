@@ -26,19 +26,13 @@ module.exports = {
         iconURL: `${interaction.member.displayAvatarURL()}`,
       })
       .setDescription(
-        "A Multi-Purpose bot based off josephistired's Github project. If you want more information click the buttons below."
+        "A Multi-Purpose bot based off josephistired's Github project."
       )
       .setTimestamp()
-      .addFields(
-        {
-          name: "Developer's discord",
-          value: `\`\`\`josephistired#5678\`\`\``,
-        },
-        {
-          name: "Discord.js",
-          value: `\`\`\`This bot Is based on Discord.js v14\`\`\``,
-        }
-      );
+      .addFields({
+        name: "Developer's discord",
+        value: `\`\`\`josephistired#5678\`\`\``,
+      });
     interaction.reply({
       embeds: [infoembed],
       ephemeral: true,
@@ -47,12 +41,7 @@ module.exports = {
           new ButtonBuilder()
             .setLabel("Project's Github")
             .setStyle(ButtonStyle.Link)
-            .setURL("https://github.com/josephistired/DiscordBot-v14"),
-
-          new ButtonBuilder()
-            .setLabel("Discord.js docs")
-            .setStyle(ButtonStyle.Link)
-            .setURL("https://discord.js.org/#/docs")
+            .setURL("https://github.com/josephistired/DiscordBot-v14")
         ),
       ],
     });

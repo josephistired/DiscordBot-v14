@@ -88,7 +88,6 @@ module.exports = {
               inline: true,
             },
             {
-              // Using the caches for some of these isn't always reliable, but it would be a waste of resources to loop through all servers every single time someone used this command.
               name: "Statistics",
               value: [
                 `🌍 **Servers:** ${client.guilds.cache.size}`,

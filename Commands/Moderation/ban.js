@@ -8,6 +8,7 @@ const {
 const { moderationlogSend } = require("../../Functions/moderationlogSend");
 
 module.exports = {
+  moderation: true,
   data: new SlashCommandBuilder()
     .setName("ban")
     .setDescription("Bans user from the server")
@@ -28,7 +29,7 @@ module.exports = {
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction, client) {
+  async execute(interaction) {
     const { options, member } = interaction;
 
     const user = options.getMember("user");

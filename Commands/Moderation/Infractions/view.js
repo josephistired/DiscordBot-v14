@@ -8,7 +8,7 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
-    const { options, guild, member } = interaction;
+    const { options, guild } = interaction;
 
     const user = options.getMember("user");
 

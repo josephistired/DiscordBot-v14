@@ -2,9 +2,6 @@ const {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
   EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
 } = require("discord.js");
 const superagent = require("superagent");
 
@@ -66,9 +63,6 @@ module.exports = {
       )
       .setColor("Green")
       .setTimestamp()
-      .setFooter({
-        text: "Github -> https://github.com/josephistired",
-      })
       .addFields(
         {
           name: "Question:",
@@ -81,14 +75,6 @@ module.exports = {
       );
     interaction.reply({
       embeds: [eightballembed],
-      components: [
-        new ActionRowBuilder().setComponents(
-          new ButtonBuilder()
-            .setLabel("8ball Delegator docs")
-            .setStyle(ButtonStyle.Link)
-            .setURL("https://8ball.delegator.com")
-        ),
-      ],
     });
   },
 };

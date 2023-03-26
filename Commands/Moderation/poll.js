@@ -6,6 +6,7 @@ const {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  AttachmentBuilder,
 } = require("discord.js");
 
 module.exports = {
@@ -27,14 +28,15 @@ module.exports = {
   async execute(interaction) {
     const pollQuestion = interaction.options.getString("question");
 
+    const attachment = new AttachmentBuilder("assets/poll.gif");
+
     const pollEmbed = new EmbedBuilder()
       .setDescription("Question: \n" + pollQuestion)
-      .setThumbnail("https://img.icons8.com/ios/256/poll-topic.png") // I'll be changing this to an hardcoded image in assets, if i don't forget (:
+      .setImage("attachment://poll.gif")
       .setAuthor({
         name: `${interaction.member.user.tag}`,
         iconURL: `${interaction.member.displayAvatarURL()}`,
       })
-      .setImage("https://i.ibb.co/vxdBKFd/Untitled-1.gif") // I'll be changing this to an hardcoded image in assets, if i don't forget (:
       .addFields([
         { name: "Yes's", value: "0", inline: true },
         { name: "No's", value: "0", inline: true },
@@ -57,6 +59,6 @@ module.exports = {
         .setStyle(ButtonStyle.Danger)
     );
 
-    interaction.editReply({ components: [pollButtons] });
+    interaction.editReply({ components: [pollButtons], files: [attachment] });
   },
 };

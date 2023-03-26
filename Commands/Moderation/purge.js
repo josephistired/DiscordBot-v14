@@ -8,6 +8,7 @@ const Transcript = require("discord-html-transcripts");
 const { moderationlogSend } = require("../../Functions/moderationlogSend");
 
 module.exports = {
+  moderation: true,
   data: new SlashCommandBuilder()
     .setName("purge")
     .setDescription("Deletes messages in the server")
@@ -69,7 +70,7 @@ module.exports = {
           ephemeral: true,
         });
 
-        client.logs(
+        moderationlogSend(
           {
             action: "Purge",
             moderator: `${member.user.username}`,

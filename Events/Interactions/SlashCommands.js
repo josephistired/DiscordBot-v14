@@ -4,10 +4,12 @@ const {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  AttachmentBuilder,
 } = require("discord.js");
-const Converter = require("timestamp-conv");
+const moment = require("moment");
 const { connection } = require("mongoose");
 const { commandlogSend } = require("../../Functions/commandlogSend");
+const { moderationlogSend } = require("../../Functions/moderationlogSend");
 require("dotenv").config();
 
 module.exports = {
@@ -21,16 +23,16 @@ module.exports = {
 
     const command = client.commands.get(interaction.commandName);
 
-    const sent = `${
-      new Converter.timestamp(interaction.createdTimestamp).formatSeconds
-    }`;
+    const sent = parseInt(interaction.createdTimestamp / 1000);
 
     const errorsArray = [];
+
+    const attachment = new AttachmentBuilder("assets/error.gif");
 
     const errorEmbed = new EmbedBuilder()
       .setTitle("⛔ Error Executing Command")
       .setColor("Red")
-      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif")
+      .setImage("attachment://error.gif")
       .setTimestamp();
 
     if (connection.readyState == 0)
@@ -73,6 +75,7 @@ module.exports = {
           ),
         ],
         ephemeral: true,
+        files: [attachment],
       });
 
     const subCommand = interaction.options.getSubcommand(false);
@@ -87,19 +90,15 @@ module.exports = {
         });
       subCommandFile.execute(interaction, client);
     } else command.execute(interaction, client);
-    if (interaction.isDMBased) {
-      commandlogSend(
-        {
-          command: `${interaction.commandName}`,
-          user: `${interaction.member.user.tag}`,
-          place: `${interaction.channel.name}`,
-          time: `${sent}`,
-          emoji: "💬",
-        },
-        interaction
-      );
-    } else {
-      // do nothing
-    }
+    if (command.moderation == true) return;
+    commandlogSend(
+      {
+        command: `${interaction.commandName}`,
+        user: `${interaction.member.user.tag}`,
+        place: `${interaction.channel.name}`,
+        time: `${sent}`,
+      },
+      interaction
+    );
   },
 };
