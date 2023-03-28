@@ -30,7 +30,6 @@ module.exports = {
     const city = interaction.options.getString("city"); // I'm now taking note of the user's response and assigning a variable to it.
 
     const temperature = "57"; // Of course, not every city has a temperature of 57 degrees, but I'm not going to use an api or a npm module to complicate this example. If that is something you would an example on how to do (using an api) in a command. Create an issue! I'll be more happy to help.
-    
 
     const embed = new EmbedBuilder() // Creating a new embed
       .setTitle(
@@ -54,7 +53,7 @@ module.exports = {
           value: `${temperature}`, // this would be the conventional formatting.
         }
       ); // now we are adding fields to the embed.
-      
+
     interaction.reply({
       // Now we are executing / replying to the user with the embed.
       embeds: [embed],
