@@ -51,91 +51,93 @@ module.exports = {
 
     try {
       switch (type) {
-        case "C": {
-          weather.find(
-            { search: L, degreeType: "C" },
-            function (error, result) {
-              if (error) errorsArray.push(error);
-              if (result === undefined)
-                errorsArray.push("Invalid location provided!");
+        case "C":
+          {
+            weather.find(
+              { search: L, degreeType: "C" },
+              function (error, result) {
+                if (error) errorsArray.push(error);
+                if (result === undefined)
+                  errorsArray.push("Invalid location provided!");
 
-              if (errorsArray.length)
-                return interaction.reply({
-                  embeds: [
-                    errorEmbed.addFields(
-                      {
-                        name: "User:",
-                        value: `\`\`\`${interaction.user.username}\`\`\``,
-                      },
-                      {
-                        name: "Reasons:",
-                        value: `\`\`\`${errorsArray.join("\n")}\`\`\``,
-                      }
+                if (errorsArray.length)
+                  return interaction.reply({
+                    embeds: [
+                      errorEmbed.addFields(
+                        {
+                          name: "User:",
+                          value: `\`\`\`${interaction.user.username}\`\`\``,
+                        },
+                        {
+                          name: "Reasons:",
+                          value: `\`\`\`${errorsArray.join("\n")}\`\`\``,
+                        }
+                      ),
+                    ],
+                    ephemeral: true,
+                  });
+
+                const current = result[0].current;
+                const location = result[0].location;
+
+                const Cembed = new EmbedBuilder()
+                  .setTitle(
+                    `Here is your weather forecast for **${location.name}**!`
+                  )
+                  .setAuthor({
+                    name: `${interaction.member.user.tag}`,
+                    iconURL: `${interaction.user.displayAvatarURL()}`,
+                  })
+                  .setTimestamp()
+                  .setThumbnail(current.imageUrl)
+                  .setColor("Green")
+                  .addFields(
+                    {
+                      name: "⏲️ Timezone:",
+                      value: `\`\`\`UTC${location.timezone}\`\`\``,
+                    },
+                    {
+                      name: "℃ Unit Of Temperature:",
+                      value: `\`\`\`Celsius\`\`\``,
+                    },
+                    {
+                      name: "🌡️ Temperature:",
+                      value: `\`\`\`${current.temperature}\`\`\``,
+                    },
+                    {
+                      name: "😤 Feels Like:",
+                      value: `\`\`\`${current.feelslike}\`\`\``,
+                    },
+                    {
+                      name: "▶️ Current Condition:",
+                      value: `\`\`\`${current.skytext}\`\`\``,
+                    },
+                    {
+                      name: "💦 Humidity:",
+                      value: `\`\`\`${current.humidity}\`\`\``,
+                    },
+                    {
+                      name: "💨 Wind",
+                      value: `\`\`\`${current.winddisplay}\`\`\``,
+                    }
+                  );
+
+                interaction.reply({
+                  embeds: [Cembed],
+                  ephemeral: false, // Everyone can see this embed, change this to true if you don't want that.
+                  components: [
+                    new ActionRowBuilder().setComponents(
+                      new ButtonBuilder()
+                        .setLabel("Weather NPM Package")
+                        .setStyle(ButtonStyle.Link)
+                        .setURL("https://www.npmjs.com/package/weather-js")
                     ),
                   ],
-                  ephemeral: true,
                 });
-
-              const current = result[0].current;
-              const location = result[0].location;
-
-              const Cembed = new EmbedBuilder()
-                .setTitle(
-                  `Here is your weather forecast for **${location.name}**!`
-                )
-                .setAuthor({
-                  name: `${interaction.member.user.tag}`,
-                  iconURL: `${interaction.user.displayAvatarURL()}`,
-                })
-                .setTimestamp()
-                .setThumbnail(current.imageUrl)
-                .setColor("Green")
-                .addFields(
-                  {
-                    name: "⏲️ Timezone:",
-                    value: `\`\`\`UTC${location.timezone}\`\`\``,
-                  },
-                  {
-                    name: "℃ Unit Of Temperature:",
-                    value: `\`\`\`Celsius\`\`\``,
-                  },
-                  {
-                    name: "🌡️ Temperature:",
-                    value: `\`\`\`${current.temperature}\`\`\``,
-                  },
-                  {
-                    name: "😤 Feels Like:",
-                    value: `\`\`\`${current.feelslike}\`\`\``,
-                  },
-                  {
-                    name: "▶️ Current Condition:",
-                    value: `\`\`\`${current.skytext}\`\`\``,
-                  },
-                  {
-                    name: "💦 Humidity:",
-                    value: `\`\`\`${current.humidity}\`\`\``,
-                  },
-                  {
-                    name: "💨 Wind",
-                    value: `\`\`\`${current.winddisplay}\`\`\``,
-                  }
-                );
-
-              interaction.reply({
-                embeds: [Cembed],
-                ephemeral: false, // Everyone can see this embed, change this to true if you don't want that.
-                components: [
-                  new ActionRowBuilder().setComponents(
-                    new ButtonBuilder()
-                      .setLabel("Weather NPM Package")
-                      .setStyle(ButtonStyle.Link)
-                      .setURL("https://www.npmjs.com/package/weather-js")
-                  ),
-                ],
-              });
-            }
-          );
-        }
+              }
+            );
+          }
+          break;
         case "F": {
           weather.find(
             { search: L, degreeType: "F" },
@@ -222,6 +224,10 @@ module.exports = {
           );
         }
       }
-    } catch (err) {}
+    } catch (err) {
+      await interaction.reply({
+        content: `${err} has occured! Please try again later! If that doesn't work, contact the developer! Use /info`,
+      });
+    }
   },
 };

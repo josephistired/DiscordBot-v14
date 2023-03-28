@@ -33,7 +33,7 @@ module.exports = {
       .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif")
       .setTimestamp();
 
-    if (connection.readyState == 0)
+    if (connection.readyState === 0)
       errorsArray.push(
         "Hoster Of This Bot Failed To Provide Their Database URL! The Bot Won't Work Unless One Is Provided. Please Tell Them Provide It In The Config File!"
       );
@@ -43,7 +43,7 @@ module.exports = {
     if (command.developer && interaction.user.id !== process.env.DEVELOPERID)
       errorsArray.push("Command Is Only Available To The Hoster Of This Bot!");
 
-    if (command.testing == true)
+    if (command.testing === true)
       errorsArray.push(
         "Command Is In Testing Phase! Vist The Github For More Infortmation!"
       );

@@ -38,7 +38,7 @@ module.exports = {
           value: `\`\`\`This bot Is based on Discord.js v14\`\`\``,
         }
       );
-    interaction.reply({
+    await interaction.reply({
       embeds: [infoembed],
       ephemeral: true,
       components: [

@@ -23,14 +23,14 @@ module.exports = {
   async execute(interaction) {
     const channel = interaction.options.getChannel("channel");
 
-    Database.findOne({ Guild: interaction.guild.id }, async (data) => {
+    await Database.findOne({ Guild: interaction.guild.id }, async (data) => {
       if (data) data.delete();
       new Database({
         Guild: interaction.guild.id,
         Channel: channel.id,
       }).save();
 
-      interaction.reply({
+      await interaction.reply({
         content: `${channel} has been set as the logs channel.`,
         ephemeral: true,
       });

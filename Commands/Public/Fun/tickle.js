@@ -40,7 +40,7 @@ module.exports = {
     if (user.id === interaction.member.id)
       errorsArray.push("Tickleing yourself... is kinda weird....");
 
-    if (body.error == true) errorsArray.push(`${body.message}`);
+    if (body.error === true) errorsArray.push(`${body.message}`);
 
     if (errorsArray.length)
       return interaction.reply({

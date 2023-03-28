@@ -39,6 +39,6 @@ module.exports = {
         "{opponent} denied your request for a round of Connect Four {player}!",
     });
 
-    Game.startGame();
+    await Game.startGame();
   },
 };

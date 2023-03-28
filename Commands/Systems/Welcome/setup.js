@@ -15,19 +15,22 @@ module.exports = {
     const messageObject = options.getString("welcome-message");
     const colorObject = options.getString("welcome-color") || "Green";
 
-    Database.findOne({ Guild: interaction.guild.id }, async (err, data) => {
-      if (!data) {
-        const newWelcome = await Database.create({
-          Guild: interaction.guild.id,
-          WelcomeChannel: channelObject.id,
-          WelcomeMessage: messageObject,
-          WelcomeColor: colorObject,
-          WelcomeRole: roleObject.id,
-        });
+    await Database.findOne(
+      { Guild: interaction.guild.id },
+      async (err, data) => {
+        if (!data) {
+          const newWelcome = await Database.create({
+            Guild: interaction.guild.id,
+            WelcomeChannel: channelObject.id,
+            WelcomeMessage: messageObject,
+            WelcomeColor: colorObject,
+            WelcomeRole: roleObject.id,
+          });
+        }
       }
-    });
+    );
 
-    interaction.reply({
+    await interaction.reply({
       content: `The welcome system has been successfully setup.`,
       ephemeral: true,
     });

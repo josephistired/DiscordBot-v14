@@ -42,7 +42,7 @@ module.exports = {
         "You must be extremely lonely to try and hug yourself. I'll save you from embarrassment."
       );
 
-    if (body.error == true) errorsArray.push(`${body.message}`);
+    if (body.error === true) errorsArray.push(`${body.message}`);
 
     if (errorsArray.length)
       return interaction.reply({

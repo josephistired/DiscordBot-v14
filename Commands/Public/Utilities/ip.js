@@ -45,7 +45,7 @@ module.exports = {
         }
       );
 
-    if (body.success == false)
+    if (body.success === false)
       return interaction.reply({
         embeds: [error],
         ephemeral: true,
