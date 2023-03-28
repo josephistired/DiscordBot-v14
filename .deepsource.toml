@@ -6,4 +6,3 @@ name = "javascript"
 [[transformers]]
 name = "prettier"
 
-# skipcq: JS-R1004
