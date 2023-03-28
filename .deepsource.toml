@@ -5,3 +5,4 @@ name = "javascript"
 
 [[transformers]]
 name = "prettier"
+
