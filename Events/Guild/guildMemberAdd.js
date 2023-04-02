@@ -110,7 +110,10 @@ module.exports = {
               .setStyle(ButtonStyle.Danger)
           );
 
-          channel.send({ embeds: [riskEmbed], components: [Buttons] });
+          await channel.send({
+            embeds: [riskEmbed],
+            components: [Buttons],
+          });
         } else return channel.send({ embeds: [riskEmbed] });
       });
     });

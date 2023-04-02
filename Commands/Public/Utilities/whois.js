@@ -41,6 +41,8 @@ const {
 
 const { profileImage } = require("discord-arts");
 
+const { errorSend } = require("../../../Functions/errorlogSend");
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("whois")
@@ -53,31 +55,27 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
-    await interaction.deferReply();
     const member = interaction.options.getMember("user") || interaction.member;
 
-    if (member.user.bot)
-      return interaction.editReply({
-        ephemeral: true,
-        embeds: [
-          new EmbedBuilder()
-            .setTitle("⛔ Error executing command")
-            .setColor("Red")
-            .setImage(
-              "https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif"
-            )
-            .addFields(
-              {
-                name: "User:",
-                value: `\`\`\`${interaction.user.username}\`\`\``,
-              },
-              {
-                name: "Reasons:",
-                value: `\`\`\`At this moment, bots are not supported for this command. Sorry!\`\`\``,
-              }
-            ),
-        ],
-      });
+    const errorsArray = [];
+
+    if (member.user.bot) {
+      errorsArray.push(
+        "At this moment, bots are not supported for this command. Sorry!"
+      );
+    }
+
+    if (errorsArray.length) {
+      return errorSend(
+        {
+          user: `${interaction.member.user}`,
+          command: `${interaction.commandName}`,
+          error: `${errorsArray.join("\n")}`,
+          time: `${parseInt(interaction.createdTimestamp / 1000)}`,
+        },
+        interaction
+      );
+    }
 
     try {
       const fetchedMembers = await interaction.guild.members.fetch();
@@ -166,16 +164,13 @@ module.exports = {
         .setTimestamp()
         .setFooter({ text: `Requested By ${interaction.user.tag}` });
 
-      interaction.editReply({
+      interaction.reply({
         embeds: [whoisembed],
         files: [imageAttachment],
         ephemeral: true,
       });
     } catch (err) {
-      interaction.reply({
-        content: `The ${err} has occured. Try again later or contact the hoster of this bot.`,
-        ephemeral: true,
-      });
+      console.log(err);
     }
   },
 };

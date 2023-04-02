@@ -1,31 +1,45 @@
-const { loadAllFiles, loadFiles } = require("../Functions/fileLoader");
+const { loadFiles } = require("../Functions/fileLoader");
 
 async function loadEvents(client) {
   console.time("Events Loaded");
 
-  client.events = new Map();
-  const events = new Array();
+  const events = [];
 
-  const files = await loadFiles("Events");
+  try {
+    client.events = new Map();
 
-  for (const file of files) {
-    try {
-      const event = require(file);
-      const execute = (...args) => event.execute(...args, client);
-      const target = event.rest ? client.rest : client;
+    const files = await loadFiles("Events");
 
-      target[event.once ? "once" : "on"](event.name, execute);
-      client.events.set(event.name, execute);
+    for (const file of files) {
+      try {
+        const event = require(file);
+        const { name, execute, once, rest } = event;
 
-      events.push({ Event: event.name, Status: "✅" });
-    } catch (error) {
-      console.log(error);
-      events.push({ Event: file.split("/").pop().slice(0, -3), Status: "🛑" });
+        const target = rest ? client.rest : client;
+        const eventName = once ? "once" : "on";
+        const eventHandler = (...args) => execute(...args, client);
+
+        target[eventName](name, eventHandler);
+        client.events.set(name, eventHandler);
+
+        events.push({ Event: name, Status: "✅" });
+      } catch (error) {
+        console.error(error);
+
+        const eventName = file.split("/").pop().slice(0, -3);
+        const status = "🛑";
+        const errorMessage = error.stack;
+
+        events.push({ Event: eventName, Status: status, Error: errorMessage });
+      }
     }
+
+    console.table(events, ["Event", "Status", "Error"]);
+    console.info(`\n\x1b[36mLoaded ${events.length} events.\x1b[0m`);
+  } catch (error) {
+    console.error(error);
   }
 
-  console.table(events, ["Event", "Status"]);
-  console.info("\n\x1b[36m%s\x1b[0m", "Loaded Events.");
   console.timeEnd("Events Loaded");
 }
 

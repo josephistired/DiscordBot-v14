@@ -31,7 +31,7 @@ module.exports = {
 
     const success = new EmbedBuilder()
       .setColor("Green")
-      .setDescription("Successfully setup welcome system!")
+      .setDescription("Successfully setup the welcome system!")
       .addFields({
         name: "Channel:",
         value: channelObject.name,

@@ -5,6 +5,9 @@ const {
 } = require("discord.js");
 const superagent = require("superagent");
 
+const { errorSend } = require("../../../Functions/errorlogSend");
+const Cuddle = require("../../../Schemas/cuddle");
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("cuddle")
@@ -21,59 +24,86 @@ module.exports = {
    */
   async execute(interaction) {
     let { body } = await superagent.get(
-      `https://purrbot.site/api/img/sfw/cuddle/gif`
+      "https://purrbot.site/api/img/sfw/cuddle/gif"
     );
 
     const user = interaction.options.getMember("user");
     const member = interaction.user.username;
-    await user.fetch();
 
     const errorsArray = [];
 
-    const errorEmbed = new EmbedBuilder()
-      .setTitle("⛔ Error executing command")
-      .setColor("Red")
-      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
+    if (!user) {
+      errorsArray.push("The user has most likely left the server.");
+    } else {
+      if (user.id === interaction.member.id) {
+        errorsArray.push(
+          "You must be extremely lonely to try and cuddle with yourself."
+        );
+      }
 
-    if (user.id === interaction.member.id)
-      errorsArray.push(
-        "You must be extremely lonely to try and cuddle with yourself. I'll save you from embarrassment."
+      if (body.error === true)
+        errorsArray.push("The API had an error, try again later!");
+    }
+
+    if (errorsArray.length) {
+      return errorSend(
+        {
+          user: `${member}`,
+          command: `${interaction.commandName}`,
+          error: `${errorsArray.join("\n")}`,
+          time: `${parseInt(interaction.createdTimestamp / 1000)}`,
+        },
+        interaction
       );
+    }
 
-    if (body.error == true) errorsArray.push(`${body.message}`);
-
-    if (errorsArray.length)
-      return interaction.reply({
-        embeds: [
-          errorEmbed.addFields(
-            {
-              name: "User:",
-              value: `\`\`\`${interaction.user.username}\`\`\``,
-            },
-            {
-              name: "Reasons:",
-              value: `\`\`\`${errorsArray.join("\n")}\`\`\``,
-            }
-          ),
-        ],
-        ephemeral: true,
+    try {
+      const cuddle = await Cuddle.findOne({
+        userId: interaction.member.id,
+        targetId: user.id,
       });
 
-    const cuddleembed = new EmbedBuilder()
-      .setAuthor({
-        name: `${interaction.member.user.tag}`,
-        iconURL: `${interaction.member.displayAvatarURL()}`,
-      })
-      .setColor("Green")
-      .setImage(
-        `${body.link}
-    `
-      )
-      .setTimestamp();
+      let count = cuddle ? cuddle.count : 0;
 
-    interaction.reply({
-      content: `${member} cuddles with ${user}`,
-      embeds: [cuddleembed],
-    });
+      if (cuddle) {
+        cuddle.count++;
+        await cuddle.save();
+      } else {
+        let cuddle = new Cuddle({
+          userId: interaction.member.id,
+          targetId: user.id,
+          count: 1,
+        });
+        await cuddle.save();
+      }
+
+      const cuddleCountText = count === 1 ? "time" : "times";
+      const cuddleEmbed = new EmbedBuilder()
+        .setAuthor({
+          name: `${interaction.member.user.tag}`,
+          iconURL: `${interaction.member.displayAvatarURL()}`,
+        })
+        .setImage(
+          `${body.link}
+      `
+        )
+        .setColor("Green")
+        .setDescription(`${member} has cuddled ${user}!`)
+        .setTimestamp()
+        .setFooter({ text: ` Cuddled ${count} ${cuddleCountText}` });
+
+      interaction.reply({ embeds: [cuddleEmbed] });
+    } catch (error) {
+      console.error(error);
+      return errorSend(
+        {
+          user: `${user.username}#${user.discriminator}`,
+          command: `${interaction.commandName}`,
+          error: `An error occurred while processing this command.`,
+          time: `${parseInt(interaction.createdTimestamp / 1000)}`,
+        },
+        interaction
+      );
+    }
   },
 };

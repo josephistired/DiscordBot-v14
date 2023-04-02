@@ -4,9 +4,10 @@ const {
   ChatInputCommandInteraction,
   EmbedBuilder,
 } = require("discord.js");
-const Database = require("../../Schemas/infractions");
 const ms = require("ms");
+
 const { moderationlogSend } = require("../../Functions/moderationlogSend");
+const { errorSend } = require("../../Functions/errorlogSend");
 
 module.exports = {
   moderation: true,
@@ -36,7 +37,7 @@ module.exports = {
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction, client) {
+  async execute(interaction) {
     const { options, guild, member } = interaction;
 
     const user = options.getMember("user");
@@ -45,46 +46,31 @@ module.exports = {
 
     const errorsArray = [];
 
-    const errorEmbed = new EmbedBuilder()
-      .setTitle("⛔ Error executing command")
-      .setColor("Red")
-      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
+    if (!user) {
+      errorsArray.push("The user has most likely left the server.");
+    } else {
+      if (!user.manageable || !user.moderatable)
+        errorsArray.push("This bot cannot moderate the selected user.");
+    }
 
-    if (!user)
-      return interaction.reply({
-        embeds: [
-          errorEmbed.setDescription(
-            "The user has most likely abandoned the server."
-          ),
-        ],
-        ephemeral: true,
-      });
+    if (user && member.roles.highest.position < user.roles.highest.position) {
+      errorsArray.push("The user has a higher role than you.");
+    }
 
     if (!ms(duration) || ms(duration) > ms("28d"))
       errorsArray.push("Invade Duration / Also Exceeds the 28-Day Limit.");
 
-    if (!user.manageable || !user.moderatable)
-      errorsArray.push("This bot cannot moderate the selected user.");
-
-    if (member.roles.highest.position < user.roles.highest.position)
-      errorsArray.push("Selected user has a higher role than you.");
-
-    if (errorsArray.length)
-      return interaction.reply({
-        embeds: [
-          errorEmbed.addFields(
-            {
-              name: "User:",
-              value: `\`\`\`${interaction.user.username}\`\`\``,
-            },
-            {
-              name: "Reasons:",
-              value: `\`\`\`${errorsArray.join("\n")}\`\`\``,
-            }
-          ),
-        ],
-        ephemeral: true,
-      });
+    if (errorsArray.length) {
+      return errorSend(
+        {
+          user: `${member.user.username}`,
+          command: `${interaction.commandName}`,
+          error: `${errorsArray.join("\n")}`,
+          time: `${parseInt(interaction.createdTimestamp / 1000)}`,
+        },
+        interaction
+      );
+    }
 
     user.timeout(ms(duration), reason).catch((err) => {
       interaction.reply({
@@ -96,23 +82,6 @@ module.exports = {
       });
       return console.log("Error occured in timeout.js", err);
     });
-
-    const newInfractionObject = {
-      IssuerID: member.id,
-      IssuerTag: member.user.tag,
-      Reason: reason,
-      Date: Date.now(),
-    };
-
-    let userData = await Database.findOne({ Guild: guild.id, User: user.id });
-    if (!userData)
-      userData = await Database.create({
-        Guild: guild.id,
-        User: user.id,
-        Infractions: [newInfractionObject],
-      });
-    else
-      userData.Infractions.push(newInfractionObject) && (await userData.save());
 
     const successEmbed = new EmbedBuilder().setColor("Green");
 
@@ -133,8 +102,6 @@ module.exports = {
           moderator: `${member.user.username}`,
           user: `${user.user.tag}`,
           reason: `${reason}`,
-          emoji: "⌛",
-          total: `${userData.Infractions.length}`,
           duration: `${ms(ms(duration, { long: true }))}`,
         },
         interaction

@@ -1,5 +1,7 @@
 const { ButtonInteraction, EmbedBuilder } = require("discord.js");
+
 const { moderationlogSend } = require("../../Functions/moderationlogSend");
+const { errorSend } = require("../../Functions/errorlogSend");
 
 module.exports = {
   name: "interactionCreate",
@@ -14,13 +16,8 @@ module.exports = {
     if (!splitArray[0] === "MemberLogging") return;
 
     const member = (await interaction.guild.members.fetch()).get(splitArray[2]);
-    const embed = new EmbedBuilder();
-    const errorsArray = [];
 
-    const errorEmbed = new EmbedBuilder()
-      .setTitle("⛔ Error executing command")
-      .setColor("Red")
-      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
+    const errorsArray = [];
 
     if (!interaction.member.permissions.has("KickMembers"))
       errorsArray.push(
@@ -35,22 +32,17 @@ module.exports = {
         `${member.user.username} is not moderatable by this bot.`
       );
 
-    if (errorsArray.length)
-      return interaction.reply({
-        embeds: [
-          errorEmbed.addFields(
-            {
-              name: "User:",
-              value: `\`\`\`${interaction.user.username}\`\`\``,
-            },
-            {
-              name: "Reasons:",
-              value: `\`\`\`${errorsArray.join("\n")}\`\`\``,
-            }
-          ),
-        ],
-        ephemeral: true,
-      });
+    if (errorsArray.length) {
+      return errorSend(
+        {
+          user: `${member.user.username}`,
+          command: `${interaction.commandName}`,
+          error: `${errorsArray.join("\n")}`,
+          time: `${Math.floor(interaction.createdTimestamp / 1000)}`,
+        },
+        interaction
+      );
+    }
 
     const successEmbed = new EmbedBuilder().setColor("Green").setTimestamp();
 
@@ -58,57 +50,51 @@ module.exports = {
       case "Kick":
         {
           member.kick().then(() => {
-            interaction
-              .reply({
-                embeds: [
-                  successEmbed.setDescription(
-                    `👟 \n Kicked \`${member.user.username}\` from the server!`
-                  ),
-                ],
-                ephemeral: true,
-              })
-              .catch(() => {
-                errorsArray.push(
-                  `${member.user.username} could not be kicked.`
-                );
-              }),
-              moderationlogSend(
-                {
-                  action: "Kick",
-                  moderator: `${interaction.user.tag}`,
-                  user: `${member}`,
-                  reason: `Member Logging System`,
-                  emoji: "👟",
-                },
-                interaction
-              );
+            interaction.reply({
+              embeds: [
+                successEmbed.setDescription(
+                  `👟 \n Kicked \`${member.user.username}\` from the server!`
+                ),
+              ],
+              ephemeral: true,
+            });
+            moderationlogSend(
+              {
+                action: "Kick",
+                moderator: `${interaction.user.tag}`,
+                user: `${member}`,
+                reason: `Member Logging System`,
+                emoji: "👟",
+              },
+              interaction
+            ).catch(() => {
+              errorsArray.push(`${member.user.username} could not be kicked.`);
+            });
           });
         }
         break;
       case "Ban": {
         member.ban().then(() => {
-          interaction
-            .reply({
-              embeds: [
-                successEmbed.setDescription(
-                  `🔨 \n Banned \`${member.user.username}\` from the server!`
-                ),
-              ],
-              ephemeral: true,
-            })
-            .catch(() => {
-              errorsArray.push(`${member.user.username} could not be banned.`);
-            }),
-            moderationlogSend(
-              {
-                action: "Ban",
-                moderator: `${interaction.user.tag}`,
-                user: `${member}`,
-                reason: `Member Logging System`,
-                emoji: "🔨",
-              },
-              interaction
-            );
+          interaction.reply({
+            embeds: [
+              successEmbed.setDescription(
+                `🔨 \n Banned \`${member.user.username}\` from the server!`
+              ),
+            ],
+            ephemeral: true,
+          });
+          moderationlogSend(
+            {
+              action: "Ban",
+              moderator: `${interaction.user.tag}`,
+              user: `${member}`,
+              reason: `Member Logging System`,
+              emoji: "🔨",
+            },
+            interaction
+          ).catch(() => {
+            errorsArray.push(`${member.user.username} could not be banned.`);
+          });
         });
       }
     }

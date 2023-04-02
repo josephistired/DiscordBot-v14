@@ -1,25 +1,43 @@
-async function loadAllCommands(client) {
-  const { loadFiles } = require("../functions/fileLoader");
+const { loadFiles } = require("../functions/fileLoader");
+require("dotenv").config();
+
+async function loadCommands(client) {
+  console.time("Commands Loaded");
 
   await client.commands.clear();
   await client.subCommands.clear();
 
-  let commmandsArray = [];
+  const commands = [];
+  const files = await loadFiles("Commands");
 
-  const Files = await loadFiles("Commands");
+  for (const file of files) {
+    try {
+      const command = require(file);
 
-  Files.forEach((file) => {
-    const command = require(file);
+      if (command.subCommand) {
+        client.subCommands.set(command.subCommand, command);
+      } else {
+        const { name } = command.data;
+        command.cooldown = command.cooldown ?? process.env.DEFAULT_COOLDOWN;
+        client.commands.set(name, command);
+        commands.push({
+          Command: name,
+          Status: "✅",
+        });
+      }
+    } catch (error) {
+      const commandName = file.split("/").pop().slice(0, -3);
+      commands.push({
+        Command: commandName,
+        Status: "🛑",
+        Error: error.toString(),
+      });
+    }
+  }
 
-    if (command.subCommand)
-      return client.subCommands.set(command.subCommand, command);
-
-    client.commands.set(command.data.name, command);
-
-    commmandsArray.push(command.data.toJSON());
-  });
-
-  client.application.commands.set(commmandsArray);
+  console.table(commands, ["Command", "Status", "Error"]);
+  console.info(`\n\x1b[36mLoaded ${commands.length} commands.\x1b[0m`);
+  console.timeEnd("Commands Loaded");
 }
 
-module.exports = { loadAllCommands };
+module.exports = { loadCommands };

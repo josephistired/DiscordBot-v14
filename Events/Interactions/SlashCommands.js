@@ -1,15 +1,14 @@
 const {
   ChatInputCommandInteraction,
-  EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  AttachmentBuilder,
+  Collection,
+  PermissionFlagsBits,
 } = require("discord.js");
-const moment = require("moment");
 const { connection } = require("mongoose");
+
 const { commandlogSend } = require("../../Functions/commandlogSend");
-const { moderationlogSend } = require("../../Functions/moderationlogSend");
+const { errorSend } = require("../../Functions/errorlogSend");
+const { cooldownSend } = require("../../Functions/cooldownlogSend");
+
 require("dotenv").config();
 
 module.exports = {
@@ -27,56 +26,70 @@ module.exports = {
 
     const errorsArray = [];
 
-    const attachment = new AttachmentBuilder("assets/error.gif");
-
-    const errorEmbed = new EmbedBuilder()
-      .setTitle("⛔ Error Executing Command")
-      .setColor("Red")
-      .setImage("attachment://error.gif")
-      .setTimestamp();
-
-    if (connection.readyState == 0)
+    if (connection.readyState === 0)
       errorsArray.push(
-        "Hoster Of This Bot Failed To Provide Their Database URL! The Bot Won't Work Unless One Is Provided. Please Tell Them Provide It In The Config File!"
+        "Unable to connect to the database. Please check that you have provided a valid database URL in your configuration file. You can find instructions for setting up the database in our documentation at https://discord-bot-v14-docs.vercel.app/docs/intro"
       );
 
     if (!command) errorsArray.push("💤 Command Is Outdated.");
 
     if (command.developer && interaction.user.id !== process.env.DEVELOPERID)
-      errorsArray.push("Command Is Only Available To The Hoster Of This Bot!");
-
-    if (command.testing == true)
       errorsArray.push(
-        "Command Is In Testing Phase! Vist The Github For More Infortmation!"
+        "Sorry, this command is only available to the person who set up this bot. Maybe you can convince them to run it for you!"
       );
 
-    if (errorsArray.length)
-      return interaction.reply({
-        embeds: [
-          errorEmbed.addFields(
-            {
-              name: "User:",
-              value: `\`\`\`${interaction.user.username}\`\`\``,
-            },
-            {
-              name: "Reasons:",
-              value: `\`\`\`${errorsArray.join("\n")}\`\`\``,
-            }
-          ),
-        ],
-        components: [
-          new ActionRowBuilder().setComponents(
-            new ButtonBuilder()
-              .setLabel("Report Errors On The Bot's Github")
-              .setStyle(ButtonStyle.Link)
-              .setURL(
-                "https://github.com/josephistired/DiscordBot-v14/issues/new/choose"
-              )
-          ),
-        ],
-        ephemeral: true,
-        files: [attachment],
-      });
+    if (command.testing === true)
+      errorsArray.push(
+        "This command is currently in testing and is not available for use at this time."
+      );
+
+    const { cooldowns } = client;
+    if (!cooldowns.has(command.name)) {
+      cooldowns.set(command.name, new Collection());
+    }
+
+    const now = Date.now();
+    const timestamps = cooldowns.get(command.name);
+    const cooldownAmount = process.env.COMMAND_COOLDOWN * 1000;
+
+    if (interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+      timestamps.set(interaction.user.id, now);
+      setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
+    } else {
+      const expirationTime =
+        timestamps.get(interaction.user.id) + cooldownAmount;
+
+      if (now < expirationTime) {
+        const timeLeft = (expirationTime - now) / 1000;
+
+        cooldownSend(
+          {
+            left: `${timeLeft.toFixed(1)}`,
+            user: `${interaction.member.user.tag}`,
+            command: `${interaction.commandName}`,
+            time: `${sent}`,
+          },
+          interaction
+        );
+
+        return;
+      }
+    }
+
+    timestamps.set(interaction.user.id, now);
+    setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
+
+    if (errorsArray.length) {
+      return errorSend(
+        {
+          user: `${interaction.user.username}`,
+          command: `${interaction.commandName}`,
+          error: `${errorsArray.join("\n")}`,
+          time: `${parseInt(interaction.createdTimestamp / 1000)}`,
+        },
+        interaction
+      );
+    }
 
     const subCommand = interaction.options.getSubcommand(false);
     if (subCommand) {
@@ -90,7 +103,6 @@ module.exports = {
         });
       subCommandFile.execute(interaction, client);
     } else command.execute(interaction, client);
-    if (command.moderation == true) return;
     commandlogSend(
       {
         command: `${interaction.commandName}`,

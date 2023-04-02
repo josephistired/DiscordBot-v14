@@ -12,9 +12,4 @@ module.exports = {
     .addSubcommand((options) =>
       options.setName("commands").setDescription("Reload Commands.")
     ),
-  /**
-   *
-   * @param {ChatInputCommandInteraction} interaction
-   * @param {Client} client
-   */
 };

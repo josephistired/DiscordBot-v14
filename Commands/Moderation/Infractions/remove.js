@@ -37,7 +37,6 @@ module.exports = {
           moderator: `${member.user.username}`,
           user: `${user.user.tag}`,
           reason: `${reason}`,
-          emoji: "➖",
         },
         interaction
       )

@@ -5,6 +5,8 @@ const {
 } = require("discord.js");
 const superagent = require("superagent");
 
+const { errorSend } = require("../../../Functions/errorlogSend");
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("8ball")
@@ -21,6 +23,7 @@ module.exports = {
    */
   async execute(interaction) {
     const question = interaction.options.getString("question");
+    const member = interaction.user.username;
 
     let { body } = await superagent.get(
       `https://eightballapi.com/api?question=${question}`
@@ -28,30 +31,20 @@ module.exports = {
 
     const errorsArray = [];
 
-    const errorEmbed = new EmbedBuilder()
-      .setTitle("⛔ Error executing command")
-      .setColor("Red")
-      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
-
     if (question.length > 1024)
       errorsArray.push("The question cannot exceed 2000 characters.");
 
-    if (errorsArray.length)
-      return interaction.reply({
-        embeds: [
-          errorEmbed.addFields(
-            {
-              name: "User:",
-              value: `\`\`\`${interaction.user.username}\`\`\``,
-            },
-            {
-              name: "Reason:",
-              value: `\`\`\`${errorsArray.join("\n")}\`\`\``,
-            }
-          ),
-        ],
-        ephemeral: true,
-      });
+    if (errorsArray.length) {
+      return errorSend(
+        {
+          user: `${member}`,
+          command: `${interaction.commandName}`,
+          error: `${errorsArray.join("\n")}`,
+          time: `${parseInt(interaction.createdTimestamp / 1000)}`,
+        },
+        interaction
+      );
+    }
 
     const eightballembed = new EmbedBuilder()
       .setAuthor({

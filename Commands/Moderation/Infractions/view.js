@@ -12,28 +12,36 @@ module.exports = {
 
     const user = options.getMember("user");
 
-    let userData = await Database.findOne({ Guild: guild.id, User: user.id });
-    if (!userData)
-      userData = await Database({
-        Guild: guild.id,
-        User: user.id,
-        Infractions: [],
+    try {
+      let userData = await Database.findOne({ Guild: guild.id, User: user.id });
+      if (!userData)
+        userData = await Database({
+          Guild: guild.id,
+          User: user.id,
+          Infractions: [],
+        });
+
+      const successEmbed = new EmbedBuilder()
+        .setTimestamp()
+        .setColor("Green")
+        .addFields(
+          {
+            name: "User:",
+            value: `\`\`\`${user.user.tag}\`\`\``,
+          },
+          {
+            name: "Infraction Count:",
+            value: `\`\`\`${userData.Infractions.length}\`\`\``,
+          }
+        );
+
+      interaction.reply({ embeds: [successEmbed], ephemeral: true });
+    } catch (error) {
+      console.error(error);
+      interaction.reply({
+        content: "An error occurred while fetching the user's infraction data.",
+        ephemeral: true,
       });
-
-    const successEmbed = new EmbedBuilder()
-      .setTimestamp()
-      .setColor("Green")
-      .addFields(
-        {
-          name: "User:",
-          value: `\`\`\`${user.user.tag}\`\`\``,
-        },
-        {
-          name: "Infraction Count:",
-          value: `\`\`\`${userData.Infractions.length}\`\`\``,
-        }
-      );
-
-    interaction.reply({ embeds: [successEmbed], ephemeral: true });
+    }
   },
 };

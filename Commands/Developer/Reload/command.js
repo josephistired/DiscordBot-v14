@@ -1,18 +1,27 @@
 const { ChatInputCommandInteraction, Client } = require("discord.js");
-const { loadAllCommands } = require("../../../Handlers/commandLoader");
+const { loadCommands } = require("../../../Handlers/commandLoader");
 
 module.exports = {
   subCommand: "reload.commands",
   /**
    *
-   * @param {ChatInputCommandInteraction} interaction
-   * @param {Client} client
+   * @param {ChatInputCommandInteraction} commandInteraction
+   * @param {Client} discordClient
    */
-  execute(interaction, client) {
-    loadAllCommands(client);
-    interaction.reply({
-      content: "✅ Commands have been reloaded.",
-      ephemeral: true,
-    });
+  async execute(commandInteraction, discordClient) {
+    try {
+      await loadCommands(discordClient);
+      commandInteraction.reply({
+        content: "✅ Commands have been reloaded.",
+        ephemeral: true,
+      });
+      console.log("Commands reloaded successfully.");
+    } catch (error) {
+      console.error("Failed to reload commands:", error);
+      commandInteraction.reply({
+        content: "❌ Failed to reload commands.",
+        ephemeral: true,
+      });
+    }
   },
 };
