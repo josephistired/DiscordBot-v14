@@ -26,12 +26,12 @@ module.exports = {
 
       if (giveaway.pauseOptions.isPaused === true) {
         errors.push(
-          `The giveaway with message ID ${id} discovered has already been paused.`
+          `The giveaway with message ID ${giveawayId} discovered has already been paused.`
         );
         throw new Error(errors.join("\n"));
       }
 
-      await client.giveawaysManager.pause(id);
+      await client.giveawaysManager.pause(giveawayId);
       await interaction.reply("✅ Success! Giveaway paused!");
     } catch (error) {
       errorSend(

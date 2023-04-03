@@ -60,6 +60,12 @@ module.exports = {
     if (!ms(duration) || ms(duration) > ms("28d"))
       errorsArray.push("Invade Duration / Also Exceeds the 28-Day Limit.");
 
+    user.timeout(ms(duration), reason).catch((err) => {
+      errorsArray.push(
+        `Due to an unknown error, we were unable to timeout the user. ${err}`
+      );
+    });
+
     if (errorsArray.length) {
       return errorSend(
         {
@@ -71,17 +77,6 @@ module.exports = {
         interaction
       );
     }
-
-    user.timeout(ms(duration), reason).catch((err) => {
-      interaction.reply({
-        embeds: [
-          errorEmbed.setDescription(
-            "Due to an unknown error, we were unable to timeout the user."
-          ),
-        ],
-      });
-      return console.log("Error occured in timeout.js", err);
-    });
 
     const successEmbed = new EmbedBuilder().setColor("Green");
 

@@ -25,13 +25,13 @@ module.exports = {
       }
 
       if (!giveaway.pauseOptions.isPaused) {
-        errorsArray.push(
+        errors.push(
           `The giveaway with message ID ${id} discovered has not been paused.`
         );
         throw new Error(errors.join("\n"));
       }
 
-      await client.giveawaysManager.unpause(id);
+      await client.giveawaysManager.unpause(giveawayId);
       await interaction.reply("✅ Success! Giveaway unpaused!");
     } catch (error) {
       errorSend(

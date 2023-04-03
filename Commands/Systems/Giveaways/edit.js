@@ -30,7 +30,7 @@ module.exports = {
         throw new Error(errors.join("\n"));
       }
 
-      await client.giveawaysManager.edit(id, {
+      await client.giveawaysManager.edit(giveawayId, {
         addTime: ms(addTime),
         newWinnerCount,
         newPrize,

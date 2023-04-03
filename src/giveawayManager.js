@@ -3,7 +3,7 @@ const giveawayModel = require("../Schemas/giveaway");
 
 class GiveawayManagerWithOwnDatabase extends GiveawaysManager {
   async getAllGiveaways() {
-    return await giveawayModel.find().lean().exec();
+    return giveawayModel.find().lean().exec();
   }
 
   async saveGiveaway(messageId, giveawayData) {

@@ -25,8 +25,8 @@ module.exports = {
       }
 
       if (!giveaway.ended) {
-        errorsArray.push(
-          `The giveaway with message Id ${id} discovered has not ended.`
+        errors.push(
+          `The giveaway with message Id ${giveawayId} discovered has not ended.`
         );
         throw new Error(errors.join("\n"));
       }

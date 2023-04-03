@@ -24,7 +24,7 @@ module.exports = {
         throw new Error(errors.join("\n"));
       }
 
-      await client.giveawaysManager.delete(id);
+      await client.giveawaysManager.delete(giveawayId);
       await interaction.reply("✅ Success! Giveaway deleted!");
     } catch (error) {
       errorSend(
