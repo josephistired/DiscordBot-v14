@@ -29,7 +29,10 @@ async function moderationlogSend(
   const channel = (interaction?.guild || message.guild).channels.cache.get(
     data.logChannel
   );
-  const time = parseInt((interaction?.createdTimestamp ?? Date.now()) / 1000);
+  const time = parseInt(
+    (interaction?.createdTimestamp ?? Date.now()) / 1000,
+    10
+  );
 
   const commandEmbed = new EmbedBuilder()
     .setAuthor({

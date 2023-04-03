@@ -21,7 +21,7 @@ async function errorSend({ user, command, time, error }, interaction) {
     .setFooter({ text: "Error Ocurred" })
     .setTimestamp();
 
-  interaction.reply({
+  await interaction.reply({
     embeds: [errorEmbed],
     files: [attachment],
     ephemeral: true,

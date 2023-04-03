@@ -12,7 +12,7 @@ module.exports = {
 
     const discordlinksObject = options.getString("discord-links");
 
-    let onoff = discordlinksObject === "true" ? "On" : "Off";
+    const onoff = discordlinksObject === "true" ? "On" : "Off";
 
     try {
       await Database.findOneAndUpdate(
@@ -44,7 +44,7 @@ module.exports = {
           user: `${interaction.user.username}`,
           command: `${interaction.commandName}`,
           error: error.message,
-          time: `${parseInt(interaction.createdTimestamp / 1000)}`,
+          time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
         interaction
       );

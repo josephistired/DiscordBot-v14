@@ -1,5 +1,4 @@
 const {
-  ChatInputCommandInteraction,
   SlashCommandBuilder,
   EmbedBuilder,
   ActionRowBuilder,
@@ -13,7 +12,7 @@ module.exports = {
     .setDescription("Shows information on the bot.")
     .setDMPermission(false),
 
-  async execute(interaction) {
+  execute(interaction) {
     const infoEmbed = new EmbedBuilder()
       .setAuthor({
         name: `${interaction.member.user.tag}`,

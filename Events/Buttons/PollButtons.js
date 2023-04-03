@@ -38,8 +38,8 @@ module.exports = {
         const newYesCount = parseInt(yesField.value) + 1;
         yesField.value = newYesCount;
 
-        interaction.reply({ content: VoteCoutedReply, ephemeral: true });
-        interaction.message.edit({ embeds: [pollEmbed] });
+        await interaction.reply({ content: VoteCoutedReply, ephemeral: true });
+        await interaction.message.edit({ embeds: [pollEmbed] });
 
         break;
       case "No":

@@ -1,4 +1,3 @@
-const { Message, Client } = require("discord.js");
 const { connection } = require("mongoose");
 const xp = require("simply-xp");
 const Database = require("../../Schemas/links");
@@ -20,7 +19,7 @@ module.exports = {
         return;
       }
 
-      //xp.addXP(message, author.id, guild.id, { min: 50, max: 2 });
+      xp.addXP(message, author.id, guild.id, { min: 50, max: 2 });
 
       const settings = await Database.findOneAndUpdate(
         { Guild: guild.id },
@@ -75,7 +74,7 @@ module.exports = {
       );
 
       const deleteMessage = async (message) => {
-        await setTimeout(() => {
+        setTimeout(() => {
           message.delete();
         }, 5000);
       };

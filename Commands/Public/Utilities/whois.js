@@ -73,7 +73,7 @@ module.exports = {
           user: `${interaction.member.user}`,
           command: `${interaction.commandName}`,
           error: `${errorsArray.join("\n")}`,
-          time: `${parseInt(interaction.createdTimestamp / 1000)}`,
+          time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
         interaction
       );
@@ -100,8 +100,8 @@ module.exports = {
 
       const userBadges = member.user.flags.toArray();
 
-      const joinTime = parseInt(member.joinedTimestamp / 1000);
-      const createdTime = parseInt(member.user.createdTimestamp / 1000);
+      const joinTime = parseInt(member.joinedTimestamp / 1000, 10);
+      const createdTime = parseInt(member.user.createdTimestamp / 1000, 10);
 
       const Booster = member.premiumSince
         ? "<:discordboost7:1086315313458593982>"

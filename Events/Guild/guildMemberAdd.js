@@ -15,13 +15,13 @@ module.exports = {
    *
    * @param {GuildMember} member
    */
-  async execute(member, client) {
+  async execute(member) {
     // Welcome System
 
     welcomeDatabase.findOne({ Guild: member.guild.id }, async (err, data) => {
       if (!data) return;
 
-      let channel = data.welcomeChannel;
+      const channel = data.welcomeChannel;
       let message =
         data.welcomeMessage ||
         `Welcome ${member.user} to ${member.guild}, enjoy your stay!`;
@@ -56,8 +56,8 @@ module.exports = {
         let color = "#74e21e";
         let risk = "Fairly Safe";
 
-        const accountCreation = parseInt(member.user.createdTimestamp / 1000);
-        const joiningTime = parseInt(member.joinedAt / 1000);
+        const accountCreation = parseInt(member.user.createdTimestamp / 1000, 10);
+        const joiningTime = parseInt(member.joinedAt / 1000, 10);
 
         const monthsAgo = moment().subtract(2, "months").unix();
         const weeksAgo = moment().subtract(2, "weeks").unix();

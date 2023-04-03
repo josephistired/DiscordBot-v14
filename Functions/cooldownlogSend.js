@@ -22,7 +22,7 @@ async function cooldownSend({ user, command, time, left }, interaction) {
     .setFooter({ text: "Cooldown Alert" })
     .setTimestamp();
 
-  interaction.reply({
+  await interaction.reply({
     embeds: [errorEmbed],
     files: [attachment],
     ephemeral: true,

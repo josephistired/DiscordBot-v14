@@ -51,7 +51,7 @@ module.exports = {
           user: `${member}`,
           command: `${interaction.commandName}`,
           error: `${errorsArray.join("\n")}`,
-          time: `${parseInt(interaction.createdTimestamp / 1000)}`,
+          time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
         interaction
       );
@@ -63,13 +63,13 @@ module.exports = {
         targetId: user.id,
       });
 
-      let count = wink ? wink.count : 0;
+      const count = wink ? wink.count : 0;
 
       if (wink) {
         wink.count++;
         await wink.save();
       } else {
-        let wink = new Wink({
+        const wink = new Wink({
           userId: interaction.member.id,
           targetId: user.id,
           count: 1,
@@ -100,7 +100,7 @@ module.exports = {
           user: `${user.username}#${user.discriminator}`,
           command: `${interaction.commandName}`,
           error: `An error occurred while processing this command.`,
-          time: `${parseInt(interaction.createdTimestamp / 1000)}`,
+          time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
         interaction
       );

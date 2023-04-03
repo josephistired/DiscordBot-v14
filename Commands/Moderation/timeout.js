@@ -72,7 +72,7 @@ module.exports = {
           user: `${member.user.username}`,
           command: `${interaction.commandName}`,
           error: `${errorsArray.join("\n")}`,
-          time: `${parseInt(interaction.createdTimestamp / 1000)}`,
+          time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
         interaction
       );
@@ -80,8 +80,8 @@ module.exports = {
 
     const successEmbed = new EmbedBuilder().setColor("Green");
 
-    return (
-      interaction.reply({
+    try {
+      await interaction.reply({
         embeds: [
           successEmbed.setDescription(
             `⌛ \n Timeout \`${user.user.tag} for ${ms(
@@ -90,8 +90,8 @@ module.exports = {
           ),
         ],
         ephemeral: true,
-      }),
-      moderationlogSend(
+      });
+      await moderationlogSend(
         {
           action: "Timeout",
           moderator: `${member.user.username}`,
@@ -100,7 +100,17 @@ module.exports = {
           duration: `${ms(ms(duration, { long: true }))}`,
         },
         interaction
-      )
-    );
+      );
+    } catch (error) {
+      return errorSend(
+        {
+          user: `${member.user.username}`,
+          command: `${interaction.commandName}`,
+          error: `${error}`,
+          time: `${parseInt(interaction.createdTimestamp / 1000)}`,
+        },
+        interaction
+      );
+    }
   },
 };
