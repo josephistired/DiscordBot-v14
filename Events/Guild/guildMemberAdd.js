@@ -56,7 +56,10 @@ module.exports = {
         let color = "#74e21e";
         let risk = "Fairly Safe";
 
-        const accountCreation = parseInt(member.user.createdTimestamp / 1000, 10);
+        const accountCreation = parseInt(
+          member.user.createdTimestamp / 1000,
+          10
+        );
         const joiningTime = parseInt(member.joinedAt / 1000, 10);
 
         const monthsAgo = moment().subtract(2, "months").unix();
