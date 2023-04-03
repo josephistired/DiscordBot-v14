@@ -37,6 +37,6 @@ module.exports = {
       playerOnlyMessage: "Only {player} and {opponent} can use these buttons!",
     });
 
-    Game.startGame();
+    await Game.startGame();
   },
 };
