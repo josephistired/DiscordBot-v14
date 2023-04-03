@@ -50,7 +50,8 @@ module.exports = {
                 `👩🏻‍🔧 **Client:** ${client.user.tag}`,
                 `💳 **ID:** ${client.user.id}`,
                 `📆 **Created: ** <t:${parseInt(
-                  client.user.createdTimestamp / 1000, 10
+                  client.user.createdTimestamp / 1000,
+                  10
                 )}:R>`,
                 `👩🏻‍🔧 **Developer:** joseph#5678`,
                 `👑 **Owner:** ${
@@ -72,7 +73,8 @@ module.exports = {
                   .replace("Windows_NT", "Windows")
                   .replace("Darwin", "macOS")}`,
                 `⏰ **Up Since:** <t:${parseInt(
-                  client.readyTimestamp / 1000, 10
+                  client.readyTimestamp / 1000,
+                  10
                 )}:R>`,
                 `🏓 **Ping:** ${client.ws.ping}ms`,
                 `🧠 **CPU Model:** ${os.cpus()[0].model}`,

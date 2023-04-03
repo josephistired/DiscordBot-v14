@@ -14,7 +14,7 @@ async function loadFiles(dirName) {
       path.join(process.cwd(), dirName, "**/*.js").replace(/\\/g, "/")
     );
     const jsFiles = files.filter((file) => path.extname(file) === ".js");
-    await Promise.all(jsFiles.map(deleteCachedFile))
+    await Promise.all(jsFiles.map(deleteCachedFile));
     return jsFiles;
   } catch (error) {
     console.log(`Error loading files from ${dirName}: ${error}`);
