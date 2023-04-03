@@ -1,10 +1,13 @@
 const { model, Schema } = require("mongoose");
 
 module.exports = model(
-  "Infractions",
+  "infractions",
   new Schema({
     Guild: String,
     User: String,
-    Infractions: Array,
+    linkCount: {
+      type: Number,
+      default: 0,
+    },
   })
 );

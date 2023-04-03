@@ -1,5 +1,5 @@
 const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
-const logModel = require("../Schemas/logs");
+const logDatabase = require("../Schemas/logs");
 
 async function moderationlogSend(
   {
@@ -7,67 +7,68 @@ async function moderationlogSend(
     moderator,
     user,
     reason,
-    emoji,
     place,
     messages,
     size,
     duration,
     total,
     transcript,
+    link,
   },
+  message,
   interaction
 ) {
-  const data = await logModel.findOne({ Guild: interaction.guild.id });
+  const data = await logDatabase.findOne({
+    guild: interaction?.guild?.id ?? message?.guild?.id,
+  });
+
   if (!data) return;
 
   const attachment = new AttachmentBuilder("assets/moderation.gif");
 
-  const channel = interaction.guild.channels.cache.get(data.Channel);
-  const logsEmbed = new EmbedBuilder()
-    .setAuthor({ name: `${emoji} ${action} Executed!` })
+  const channel = (interaction?.guild || message.guild).channels.cache.get(
+    data.logChannel
+  );
+  const time = parseInt(
+    (interaction?.createdTimestamp ?? Date.now()) / 1000,
+    10
+  );
+
+  const commandEmbed = new EmbedBuilder()
+    .setAuthor({
+      name: `${interaction?.user?.tag ?? message?.author?.tag} | ${
+        interaction?.user?.id ?? message?.author?.id
+      }`,
+      iconURL: (interaction?.user ?? message?.author)?.displayAvatarURL({
+        dynamic: true,
+      }),
+    })
     .setColor("Green")
-    .setImage("attachment://moderation.gif")
-    .setTimestamp()
-    .addFields(
-      {
-        name: "👤 User:",
-        value: `\`\`\`${user || "Not applicable"}\`\`\``,
-      },
-      {
-        name: "🔘 Channel:",
-        value: `\`\`\`${place || "Not applicable"}\`\`\``,
-      },
-      {
-        name: "❔ Reason:",
-        value: `\`\`\`${reason || "Not applicable"} \`\`\``,
-      },
-      {
-        name: "📅 Days Of Messages Deleted:",
-        value: `\`\`\`${messages || "Not applicable"}\`\`\``,
-      },
-      {
-        name: "🔢 Total messages:",
-        value: `\`\`\`${size || "Not applicable"}\`\`\``,
-      },
-      {
-        name: "🎟️ Infraction total:",
-        value: `\`\`\`${total || "Not applicable"}\`\`\``,
-      },
-      {
-        name: "⌚ Duration:",
-        value: `\`\`\`${duration || "Not applicable"}\`\`\``,
-      },
-      {
-        name: "👮🏻 Moderator:",
-        value: `\`\`\`${moderator || "Not applicable"}\`\`\``,
-      }
-    );
+    .setThumbnail("attachment://moderation.gif")
+    .setDescription(
+      [
+        `🤔 Action: ${action}`,
+        `👤 User Punished: ${user || "Not applicable"}`,
+        `🔘 Channel: ${place || "Not applicable"}`,
+        `❔ Reason: ${reason || "Not applicable"}`,
+        `🔗 Link Deleted: ${link || "Not applicable"}`,
+        `📅 Days Of Messages Deleted: ${messages || "Not applicable"}`,
+        `🔢 Total Messages Deleted: ${size || "Not applicable"}`,
+        `🎟️ Infraction Total: ${total || "Not applicable"}`,
+        `⏲️ Duration: ${duration || "Not applicable"}`,
+        `⌚ Command Executed: <t:${time}:D> | <t:${time}:R>`,
+        `👮🏻 Moderator: ${moderator || "Not applicable"}`,
+      ].join("\n")
+    )
+    .setFooter({ text: `${action} Executed` })
+    .setTimestamp();
+
   if (transcript)
     channel.send({
-      embeds: [logsEmbed],
+      embeds: [commandEmbed],
       files: [transcript, attachment],
     });
-  else channel.send({ embeds: [logsEmbed], files: [attachment] });
+  else channel.send({ embeds: [commandEmbed], files: [attachment] });
 }
 
 module.exports = { moderationlogSend };

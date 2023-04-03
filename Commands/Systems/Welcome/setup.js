@@ -1,5 +1,5 @@
 const { EmbedBuilder, ChatInputCommandInteraction } = require("discord.js");
-const Database = require("../../../schemas/welcome");
+const Database = require("../../../Schemas/welcome");
 
 module.exports = {
   subCommand: "welcome.setup",
@@ -13,25 +13,32 @@ module.exports = {
     const channelObject = options.getChannel("welcome-channel");
     const roleObject = options.getRole("welcome-role");
     const messageObject = options.getString("welcome-message");
-    const colorObject = options.getString("welcome-color") || "Green";
+    const colorObject = options.getString("welcome-color");
 
-    await Database.findOne(
+    await Database.findOneAndUpdate(
       { Guild: interaction.guild.id },
-      async (err, data) => {
-        if (!data) {
-          const newWelcome = await Database.create({
-            Guild: interaction.guild.id,
-            WelcomeChannel: channelObject.id,
-            WelcomeMessage: messageObject,
-            WelcomeColor: colorObject,
-            WelcomeRole: roleObject.id,
-          });
-        }
+      {
+        welcomeChannel: channelObject.id,
+        welcomeMessage: messageObject,
+        welcomeColor: colorObject,
+        welcomeRole: roleObject.id,
+      },
+      {
+        new: true,
+        upsert: true,
       }
     );
 
-    await interaction.reply({
-      content: `The welcome system has been successfully setup.`,
+    const success = new EmbedBuilder()
+      .setColor("Green")
+      .setDescription("Successfully setup the welcome system!")
+      .addFields({
+        name: "Channel:",
+        value: channelObject.name,
+      });
+
+    interaction.reply({
+      embeds: [success],
       ephemeral: true,
     });
   },

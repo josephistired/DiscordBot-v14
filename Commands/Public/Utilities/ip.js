@@ -2,16 +2,16 @@ const {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
   EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
 } = require("discord.js");
 const superagent = require("superagent");
+
+const { errorSend } = require("../../../Functions/errorlogSend");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("ip")
     .setDescription("Displays information about a given IP address")
+    .setDMPermission(false)
     .addStringOption((options) =>
       options
         .setName("ip")
@@ -27,29 +27,31 @@ module.exports = {
 
     let { body } = await superagent.get(`https://ipwhois.app/json/${ip}`);
 
-    const country = body.country_code;
+    const errorsArray = [];
 
-    const error = new EmbedBuilder()
-      .setTitle("⛔ Error executing command")
-      .setColor("Red")
-      .setFooter({ text: "https://github.com/josephistired" })
-      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif")
-      .addFields(
+    if (body.success === false) {
+      errorsArray.push(`${body.message}`);
+    }
+
+    if (errorsArray.length) {
+      return errorSend(
         {
-          name: "User:",
-          value: `\`\`\`${interaction.user.username}\`\`\``,
+          user: `${interaction.member.user}`,
+          command: `${interaction.commandName}`,
+          error: `${errorsArray.join("\n")}`,
+          time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        {
-          name: "Reason:",
-          value: `\`\`\`${body.message}\`\`\``,
-        }
+        interaction
       );
+    }
 
-    if (body.success === false)
-      return interaction.reply({
-        embeds: [error],
-        ephemeral: true,
-      });
+    function getFlagEmoji(countryCode) {
+      const codePoints = countryCode
+        .toUpperCase()
+        .split("")
+        .map((char) => 127397 + char.charCodeAt());
+      return String.fromCodePoint(...codePoints);
+    }
 
     const ipembed = new EmbedBuilder()
       .setTitle(`Here is some information for you on **${ip}**!`)
@@ -93,20 +95,12 @@ module.exports = {
         },
         {
           name: "Flag:",
-          value: `:flag_${country}:`.toLocaleLowerCase(),
+          value: `\`\`\`${getFlagEmoji(body.country_code)}\`\`\``,
         }
       );
     interaction.reply({
       embeds: [ipembed],
       ephemeral: true,
-      components: [
-        new ActionRowBuilder().setComponents(
-          new ButtonBuilder()
-            .setLabel("IPWHOIS docs")
-            .setStyle(ButtonStyle.Link)
-            .setURL("https://ipwhois.io/documentation")
-        ),
-      ],
     });
   },
 };

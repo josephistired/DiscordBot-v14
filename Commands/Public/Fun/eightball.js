@@ -2,16 +2,16 @@ const {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
   EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
 } = require("discord.js");
 const superagent = require("superagent");
+
+const { errorSend } = require("../../../Functions/errorlogSend");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("8ball")
     .setDescription("A magic 8-Ball that answers all of your questions")
+    .setDMPermission(false)
     .addStringOption((options) =>
       options
         .setName("question")
@@ -23,6 +23,7 @@ module.exports = {
    */
   async execute(interaction) {
     const question = interaction.options.getString("question");
+    const member = interaction.user.username;
 
     let { body } = await superagent.get(
       `https://eightballapi.com/api?question=${question}`
@@ -30,30 +31,20 @@ module.exports = {
 
     const errorsArray = [];
 
-    const errorEmbed = new EmbedBuilder()
-      .setTitle("⛔ Error executing command")
-      .setColor("Red")
-      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
-
     if (question.length > 1024)
       errorsArray.push("The question cannot exceed 2000 characters.");
 
-    if (errorsArray.length)
-      return interaction.reply({
-        embeds: [
-          errorEmbed.addFields(
-            {
-              name: "User:",
-              value: `\`\`\`${interaction.user.username}\`\`\``,
-            },
-            {
-              name: "Reason:",
-              value: `\`\`\`${errorsArray.join("\n")}\`\`\``,
-            }
-          ),
-        ],
-        ephemeral: true,
-      });
+    if (errorsArray.length) {
+      return errorSend(
+        {
+          user: `${member}`,
+          command: `${interaction.commandName}`,
+          error: `${errorsArray.join("\n")}`,
+          time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
+        },
+        interaction
+      );
+    }
 
     const eightballembed = new EmbedBuilder()
       .setAuthor({
@@ -65,9 +56,6 @@ module.exports = {
       )
       .setColor("Green")
       .setTimestamp()
-      .setFooter({
-        text: "Github -> https://github.com/josephistired",
-      })
       .addFields(
         {
           name: "Question:",
@@ -80,14 +68,6 @@ module.exports = {
       );
     interaction.reply({
       embeds: [eightballembed],
-      components: [
-        new ActionRowBuilder().setComponents(
-          new ButtonBuilder()
-            .setLabel("8ball Delegator docs")
-            .setStyle(ButtonStyle.Link)
-            .setURL("https://8ball.delegator.com")
-        ),
-      ],
     });
   },
 };

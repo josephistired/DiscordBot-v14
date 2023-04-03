@@ -4,7 +4,8 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("welcome")
     .setDescription("Control the welcome system")
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
+    .setDMPermission(false)
     .addSubcommand((options) =>
       options
         .setName("setup")

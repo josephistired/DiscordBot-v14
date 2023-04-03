@@ -1,10 +1,6 @@
 const {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
-  EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
 } = require("discord.js");
 const xp = require("simply-xp");
 const { connection } = require("mongoose");
@@ -13,6 +9,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("rank")
     .setDescription("Displays user's rank")
+    .setDMPermission(false)
     .addUserOption((options) =>
       options.setName("user").setDescription("Select the user")
     ),

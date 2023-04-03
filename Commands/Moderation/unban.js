@@ -4,9 +4,12 @@ const {
   ChatInputCommandInteraction,
   EmbedBuilder,
 } = require("discord.js");
+
 const { moderationlogSend } = require("../../Functions/moderationlogSend");
+const { errorSend } = require("../../Functions/errorlogSend");
 
 module.exports = {
+  moderation: true,
   data: new SlashCommandBuilder()
     .setName("unban")
     .setDescription("Unbans user from the server")
@@ -27,7 +30,7 @@ module.exports = {
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
-  async execute(interaction, client) {
+  async execute(interaction) {
     const { options, member } = interaction;
 
     const userid = options.getString("userid");
@@ -35,54 +38,53 @@ module.exports = {
 
     const errorsArray = [];
 
-    const errorEmbed = new EmbedBuilder()
-      .setTitle("⛔ Error executing command")
-      .setColor("Red")
-      .setImage("https://media.tenor.com/fzCt8ROqlngAAAAM/error-error404.gif");
-
     const bannedUser = await interaction.guild.bans.fetch();
     const user = bannedUser.get(userid);
 
-    if (!user) errorsArray.push("That user is not banned.");
+    if (!user) {
+      errorsArray.push("That user is not banned from the server.");
+    }
 
-    if (errorsArray.length)
-      return interaction.reply({
-        embeds: [
-          errorEmbed.addFields(
-            {
-              name: "User:",
-              value: `\`\`\`${interaction.user.username}\`\`\``,
-            },
-            {
-              name: "Reasons:",
-              value: `\`\`\`${errorsArray.join("\n")}\`\`\``,
-            }
-          ),
-        ],
-        ephemeral: true,
-      });
+    try {
+      await interaction.guild.members.unban(userid, reason);
+    } catch (error) {
+      errorsArray.push(
+        "An error occurred while attempting to unban the user. Please try again later."
+      );
+    }
 
-    await interaction.guild.members.unban(userid);
+    if (errorsArray.length) {
+      return errorSend(
+        {
+          user: `${member.user.username}`,
+          command: `${interaction.commandName}`,
+          error: `${errorsArray.join("\n")}`,
+          time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
+        },
+        interaction
+      );
+    }
 
     const successEmbed = new EmbedBuilder().setColor("Green");
 
     await interaction.reply({
       embeds: [
         successEmbed.setDescription(
-          `🔀 \n Unbanned \`${userid}\` from the server!`
+          `🔓 \n Unbanned \`${userid}\` from the server!`
         ),
       ],
       ephemeral: true,
-    }),
-      moderationlogSend(
-        {
-          action: "Unban",
-          moderator: `${member.user.username}`,
-          user: `${userid}`,
-          reason: `${reason}`,
-          emoji: "🔀",
-        },
-        interaction
-      );
+    });
+
+    moderationlogSend(
+      {
+        action: "Unban",
+        moderator: `${member.user.username}`,
+        user: `${userid}`,
+        reason: `${reason}`,
+        emoji: "🔓",
+      },
+      interaction
+    );
   },
 };

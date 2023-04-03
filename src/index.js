@@ -1,61 +1,16 @@
 require("dotenv").config();
 
-process.on("unhandledRejection", (error) => {
-  console.error(error);
+process.on("unhandledRejection", (reason, p) => {
+  console.error("Unhandled Rejection at:", p, "reason:", reason);
 });
 
-const {
-  Client,
-  GatewayIntentBits,
-  Partials,
-  Collection,
-} = require("discord.js");
-const {
-  Guilds,
-  GuildMembers,
-  GuildMessages,
-  GuildVoiceStates,
-  GuildMessageReactions,
-} = GatewayIntentBits;
-const { User, Message, GuildMember, ThreadMember } = Partials;
-
-const client = new Client({
-  intents: [
-    Guilds,
-    GuildMembers,
-    GuildMessages,
-    GuildVoiceStates,
-    GuildMessageReactions,
-  ],
-  partials: [User, Message, GuildMember, ThreadMember],
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
 });
 
-const giveawayModel = require("../Schemas/giveaway");
-
-const { GiveawaysManager } = require("discord-giveaways");
-const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
-  async getAllGiveaways() {
-    return giveawayModel.find().lean().exec();
-  }
-
-  async saveGiveaway(messageId, giveawayData) {
-    await giveawayModel.create(giveawayData);
-
-    return true;
-  }
-
-  async editGiveaway(messageId, giveawayData) {
-    await giveawayModel.updateOne({ messageId }, giveawayData).exec();
-
-    return true;
-  }
-
-  async deleteGiveaway(messageId) {
-    await giveawayModel.deleteOne({ messageId }).exec();
-
-    return true;
-  }
-};
+const { Collection } = require("discord.js");
+const client = require("./discordClient");
+const GiveawayManagerWithOwnDatabase = require("./giveawayManager");
 
 const manager = new GiveawayManagerWithOwnDatabase(client, {
   default: {
@@ -70,8 +25,9 @@ client.giveawaysManager = manager;
 client.events = new Collection();
 client.subCommands = new Collection();
 client.commands = new Collection();
+client.cooldowns = new Collection();
 
-const { loadAllEvents } = require("../Handlers/eventLoader");
-loadAllEvents(client);
+const { loadEvents } = require("../Handlers/eventLoader");
+loadEvents(client);
 
 client.login(process.env.TOKEN);

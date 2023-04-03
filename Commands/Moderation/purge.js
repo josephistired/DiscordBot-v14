@@ -5,9 +5,12 @@ const {
   ChatInputCommandInteraction,
 } = require("discord.js");
 const Transcript = require("discord-html-transcripts");
+
 const { moderationlogSend } = require("../../Functions/moderationlogSend");
+const { errorSend } = require("../../Functions/errorlogSend");
 
 module.exports = {
+  moderation: true,
   data: new SlashCommandBuilder()
     .setName("purge")
     .setDescription("Deletes messages in the server")
@@ -40,19 +43,35 @@ module.exports = {
     const reason = options.getString("reason");
     const user = options.getUser("user");
 
-    const channelMessages = await interaction.channel.messages.fetch();
-
     const successEmbed = new EmbedBuilder().setColor("Green");
 
+    const errorsArray = [];
     if (user) {
       let i = 0;
       let messagesDelete = [];
-      channelMessages.filter((message) => {
+      const channelMessages = await interaction.channel.messages.fetch();
+      channelMessages.forEach((message) => {
         if (message.author.id === user.id && amount > i) {
-          messagesDelete.push(message);
           i++;
+          messagesDelete.push(message);
         }
       });
+
+      if (messagesDelete.length === 0) {
+        errorsArray.push(`No messages found from ${user}.`);
+      }
+
+      if (errorsArray.length) {
+        return errorSend(
+          {
+            user: `${member.user.username}`,
+            command: `${interaction.commandName}`,
+            error: `${errorsArray.join("\n")}`,
+            time: `${Math.floor(interaction.createdTimestamp / 1000)}`,
+          },
+          interaction
+        );
+      }
 
       const transcript = await Transcript.generateFromMessages(
         messagesDelete,
@@ -63,17 +82,17 @@ module.exports = {
         interaction.reply({
           embeds: [
             successEmbed.setDescription(
-              `🧹 \n Purged \`${messages.size}\` messages from ${user}!`
+              `🧹 \n Purged \`${messages.size}\` messages from ${user.tag}!`
             ),
           ],
           ephemeral: true,
         });
 
-        client.logs(
+        moderationlogSend(
           {
             action: "Purge",
             moderator: `${member.user.username}`,
-            user: `${user.tag}`,
+            user: user ? `${user.tag}` : "Everyone",
             reason: `${reason}`,
             emoji: "🧹",
             place: `${interaction.channel.name}`,
@@ -103,6 +122,7 @@ module.exports = {
           {
             action: "Purge",
             moderator: `${member.user.username}`,
+            user: user ? `${user.tag}` : "Everyone",
             reason: `${reason}`,
             emoji: "🧹",
             place: `${interaction.channel.name}`,

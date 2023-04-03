@@ -3,3 +3,5 @@ node_modules/
 .vscode/
 *.html*
 *.jsx*
+/Commands/Developer/Utils
+/Commands/test

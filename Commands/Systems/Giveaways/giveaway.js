@@ -5,6 +5,7 @@ module.exports = {
     .setName("giveaway")
     .setDescription("A complete giveaway system")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+    .setDMPermission(false)
     .addSubcommand((options) =>
       options
         .setName("start")

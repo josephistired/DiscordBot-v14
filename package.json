@@ -1,7 +1,7 @@
 {
   "name": "discord-bot-v14",
-  "version": "1.0.0",
-  "description": "An open-source discord bot based on discord.js v14, and that is easy to run yourself!",
+  "version": "1.0.3",
+  "description": "An open-source Discord bot that offers ultimate control and flexibility for your server. With this bot, you have the ability to host and run it yourself, ensuring that you have the latest updates and features. The bot comes equipped with a variety of commands, including moderation commands for enforcing rules and keeping your server organized, etc. ",
   "main": "./src/index.js",
   "scripts": {
     "start": "node .",

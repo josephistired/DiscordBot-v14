@@ -16,7 +16,8 @@ const os = require("os");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("status")
-    .setDescription("Displays the bot's and database connection's status!"),
+    .setDescription("Displays the bot's and database connection's status!")
+    .setDMPermission(false),
   /**
    * @param {ChatInputCommandInteraction} interaction
    * @param {Client} client
@@ -49,7 +50,8 @@ module.exports = {
                 `👩🏻‍🔧 **Client:** ${client.user.tag}`,
                 `💳 **ID:** ${client.user.id}`,
                 `📆 **Created: ** <t:${parseInt(
-                  client.user.createdTimestamp / 1000
+                  client.user.createdTimestamp / 1000,
+                  10
                 )}:R>`,
                 `👩🏻‍🔧 **Developer:** joseph#5678`,
                 `👑 **Owner:** ${
@@ -71,7 +73,8 @@ module.exports = {
                   .replace("Windows_NT", "Windows")
                   .replace("Darwin", "macOS")}`,
                 `⏰ **Up Since:** <t:${parseInt(
-                  client.readyTimestamp / 1000
+                  client.readyTimestamp / 1000,
+                  10
                 )}:R>`,
                 `🏓 **Ping:** ${client.ws.ping}ms`,
                 `🧠 **CPU Model:** ${os.cpus()[0].model}`,
@@ -87,7 +90,6 @@ module.exports = {
               inline: true,
             },
             {
-              // Using the caches for some of these isn't always reliable, but it would be a waste of resources to loop through all servers every single time someone used this command.
               name: "Statistics",
               value: [
                 `🌍 **Servers:** ${client.guilds.cache.size}`,
