@@ -22,7 +22,7 @@ module.exports = {
 
     const command = client.commands.get(interaction.commandName);
 
-    const sent = parseInt(interaction.createdTimestamp / 1000);
+    const sent = parseInt(interaction.createdTimestamp / 1000, 10);
 
     const errorsArray = [];
 

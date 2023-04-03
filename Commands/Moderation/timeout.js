@@ -107,7 +107,7 @@ module.exports = {
           user: `${member.user.username}`,
           command: `${interaction.commandName}`,
           error: `${error}`,
-          time: `${parseInt(interaction.createdTimestamp / 1000)}`,
+          time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
         interaction
       );
