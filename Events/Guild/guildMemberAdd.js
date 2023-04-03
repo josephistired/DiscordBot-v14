@@ -98,7 +98,7 @@ module.exports = {
           .setFooter({ text: "User Joined" })
           .setTimestamp();
 
-        if (risk == "Extreme" || risk == "High") {
+        if (risk === "Extreme" || risk === "High") {
           const Buttons = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
               .setCustomId(`MemberLogging-Kick-${member.id}`)

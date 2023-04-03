@@ -26,7 +26,7 @@ module.exports = {
 
       if (!giveaway.pauseOptions.isPaused) {
         errors.push(
-          `The giveaway with message ID ${id} discovered has not been paused.`
+          `The giveaway with message ID ${giveawayId} discovered has not been paused.`
         );
         throw new Error(errors.join("\n"));
       }

@@ -31,7 +31,7 @@ module.exports = {
     const attachment = new AttachmentBuilder("assets/poll.gif");
 
     const pollEmbed = new EmbedBuilder()
-      .setDescription("Question: \n" + pollQuestion)
+      .setDescription(`Question:\n${pollQuestion}`)
       .setImage("attachment://poll.gif")
       .setAuthor({
         name: `${interaction.member.user.tag}`,

@@ -31,7 +31,7 @@ module.exports = {
         throw new Error(errors.join("\n"));
       }
 
-      await client.giveawaysManager.reroll(id);
+      await client.giveawaysManager.reroll(giveawayId);
       await interaction.reply("✅ Success! Giveaway rerolled!");
     } catch (error) {
       errorSend(

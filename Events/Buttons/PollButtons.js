@@ -35,22 +35,23 @@ module.exports = {
 
     switch (splittedArray[1]) {
       case "Yes":
-        {
-          const newYesCount = parseInt(yesField.value) + 1;
-          yesField.value = newYesCount;
+        const newYesCount = parseInt(yesField.value) + 1;
+        yesField.value = newYesCount;
 
-          interaction.reply({ content: VoteCoutedReply, ephemeral: true });
-          interaction.message.edit({ embeds: [pollEmbed] });
-        }
+        interaction.reply({ content: VoteCoutedReply, ephemeral: true });
+        interaction.message.edit({ embeds: [pollEmbed] });
+
         break;
       case "No":
-        {
-          const newNoCount = parseInt(noField.value) + 1;
-          noField.value = newNoCount;
+        const newNoCount = parseInt(noField.value) + 1;
+        noField.value = newNoCount;
 
-          interaction.reply({ content: VoteCoutedReply, ephemeral: true });
-          interaction.message.edit({ embeds: [pollEmbed] });
-        }
+        interaction.reply({ content: VoteCoutedReply, ephemeral: true });
+        interaction.message.edit({ embeds: [pollEmbed] });
+
+        break;
+      default:
+        // Do nothing
         break;
     }
   },

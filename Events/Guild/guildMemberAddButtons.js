@@ -48,32 +48,30 @@ module.exports = {
 
     switch (splitArray[1]) {
       case "Kick":
-        {
-          member.kick().then(() => {
-            interaction.reply({
-              embeds: [
-                successEmbed.setDescription(
-                  `👟 \n Kicked \`${member.user.username}\` from the server!`
-                ),
-              ],
-              ephemeral: true,
-            });
-            moderationlogSend(
-              {
-                action: "Kick",
-                moderator: `${interaction.user.tag}`,
-                user: `${member}`,
-                reason: `Member Logging System`,
-                emoji: "👟",
-              },
-              interaction
-            ).catch(() => {
-              errorsArray.push(`${member.user.username} could not be kicked.`);
-            });
+        member.kick().then(() => {
+          interaction.reply({
+            embeds: [
+              successEmbed.setDescription(
+                `👟 \n Kicked \`${member.user.username}\` from the server!`
+              ),
+            ],
+            ephemeral: true,
           });
-        }
+          moderationlogSend(
+            {
+              action: "Kick",
+              moderator: `${interaction.user.tag}`,
+              user: `${member}`,
+              reason: `Member Logging System`,
+              emoji: "👟",
+            },
+            interaction
+          ).catch(() => {
+            errorsArray.push(`${member.user.username} could not be kicked.`);
+          });
+        });
         break;
-      case "Ban": {
+      case "Ban":
         member.ban().then(() => {
           interaction.reply({
             embeds: [
@@ -96,7 +94,10 @@ module.exports = {
             errorsArray.push(`${member.user.username} could not be banned.`);
           });
         });
-      }
+        break;
+      default:
+        // do nothing
+        break;
     }
   },
 };
