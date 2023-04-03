@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-// Log the schema names and the number of schemas in the console
 function logSchemas() {
   console.time("Schemas Loaded");
 

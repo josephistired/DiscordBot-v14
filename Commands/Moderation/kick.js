@@ -79,7 +79,7 @@ module.exports = {
       days: messages,
     });
 
-    const successEmbed = new MessageEmbed()
+    const successEmbed = new EmbedBuilder()
       .setColor("Green")
       .setDescription(`👟 \n Kicked \`${user.user.tag}\` from the server!`)
       .setTimestamp();

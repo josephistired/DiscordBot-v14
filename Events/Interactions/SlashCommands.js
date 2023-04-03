@@ -50,7 +50,7 @@ module.exports = {
 
     const now = Date.now();
     const timestamps = cooldowns.get(command.name);
-    const cooldownAmount = process.env.COMMAND_COOLDOWN * 1000;
+    const cooldownAmount = process.env.COMMAND_COOLDOWN * 1000 || 3 * 1000;
 
     if (interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
       timestamps.set(interaction.user.id, now);
@@ -91,26 +91,38 @@ module.exports = {
       );
     }
 
-    const subCommand = interaction.options.getSubcommand(false);
-    if (subCommand) {
-      const subCommandFile = client.subCommands.get(
-        `${interaction.commandName}.${subCommand}`
+    try {
+      const subCommand = interaction.options.getSubcommand(false);
+      if (subCommand) {
+        const subCommandFile = client.subCommands.get(
+          `${interaction.commandName}.${subCommand}`
+        );
+        if (!subCommandFile)
+          return interaction.reply({
+            content: "💤 Command Is Outdated.",
+            ephemeral: true,
+          });
+        subCommandFile.execute(interaction, client);
+      } else command.execute(interaction, client);
+      commandlogSend(
+        {
+          command: `${interaction.commandName}`,
+          user: `${interaction.member.user.tag}`,
+          place: `${interaction.channel.name}`,
+          time: `${sent}`,
+        },
+        interaction
       );
-      if (!subCommandFile)
-        return interaction.reply({
-          content: "💤 Command Is Outdated.",
-          ephemeral: true,
-        });
-      subCommandFile.execute(interaction, client);
-    } else command.execute(interaction, client);
-    commandlogSend(
-      {
-        command: `${interaction.commandName}`,
-        user: `${interaction.member.user.tag}`,
-        place: `${interaction.channel.name}`,
-        time: `${sent}`,
-      },
-      interaction
-    );
+    } catch (error) {
+      return errorSend(
+        {
+          user: `${interaction.user.username}`,
+          command: `${interaction.commandName}`,
+          error: `${error}`,
+          time: `${parseInt(interaction.createdTimestamp / 1000)}`,
+        },
+        interaction
+      );
+    }
   },
 };
