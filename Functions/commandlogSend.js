@@ -12,21 +12,32 @@ async function commandlogSend({ time, place, command }, interaction) {
     const channel = interaction.guild.channels.cache.get(data.logChannel);
 
     const commandEmbed = new EmbedBuilder()
+      .setTitle("💬 Command Log 💬")
       .setAuthor({
         name: `${interaction.user.tag} | ${interaction.user.id}`,
         iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
       })
       .setColor("Green")
       .setThumbnail("attachment://user.png")
-      .setDescription(
-        [
-          `👤 User: ${interaction.user}`,
-          `💬 Command: ${command}`,
-          `❔ Channel: ${place}`,
-          `⏲️ Command Executed: <t:${time}:D> | <t:${time}:R>`,
-        ].join("\n")
+      .addFields(
+        {
+          name: "👤 User:",
+          value: `${interaction.user}`,
+        },
+        {
+          name: "💬 Command:",
+          value: `${command}`,
+        },
+        {
+          name: "❔ Channel:",
+          value: `  ${place}`,
+        },
+        {
+          name: "⏲️ Command Executed:",
+          value: `<t:${time}:D> | <t:${time}:R>`,
+        }
       )
-      .setFooter({ text: "Command Executed" })
+      .setFooter({ text: "📩 Command Executed" })
       .setTimestamp();
 
     channel.send({ embeds: [commandEmbed], files: [attachment] });

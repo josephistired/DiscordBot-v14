@@ -2,6 +2,7 @@ const {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
   EmbedBuilder,
+  AttachmentBuilder,
 } = require("discord.js");
 const superagent = require("superagent");
 
@@ -46,28 +47,41 @@ module.exports = {
       );
     }
 
-    const eightballembed = new EmbedBuilder()
-      .setAuthor({
-        name: `${interaction.member.user.tag}`,
-        iconURL: `${interaction.member.displayAvatarURL()}`,
-      })
-      .setImage(
-        "https://media.istockphoto.com/vectors/billiard-black-eight-vector-id614744860?k=20&m=614744860&s=612x612&w=0&h=hl4EtO9_2oEzndtohCGqwUt6sxtxlvUHyhJlZ2YvVRk="
-      )
-      .setColor("Green")
-      .setTimestamp()
-      .addFields(
-        {
-          name: "Question:",
-          value: `\`\`\`${question}\`\`\``,
-        },
-        {
-          name: "Answer:",
-          value: `\`\`\`${body.reading}\`\`\``,
-        }
-      );
-    interaction.reply({
-      embeds: [eightballembed],
-    });
+    try {
+      const attachment = new AttachmentBuilder("assets/8ball.jpg");
+
+      const eightballembed = new EmbedBuilder()
+        .setTitle("🎱 The Old Mighty 8ball")
+        .setDescription(
+          `The 8ball has spoken, will you ${interaction.user} trust it?`
+        )
+        .setAuthor({
+          name: `${interaction.member.user.tag}`,
+          iconURL: `${interaction.member.displayAvatarURL()}`,
+        })
+        .setThumbnail("attachment://8ball.jpg")
+        .setTimestamp()
+        .addFields(
+          {
+            name: "You asked:",
+            value: `${question}`,
+          },
+          {
+            name: "The Mighty 8ball says:",
+            value: `${body.reading}`,
+          }
+        )
+        .setFooter({ text: `Requested By: ${interaction.user.tag}` });
+      interaction.reply({
+        embeds: [eightballembed],
+        files: [attachment],
+      });
+    } catch (error) {
+      console.error(error);
+      interaction.reply({
+        content: "An error occurred! Try again later",
+        ephemeral: true,
+      });
+    }
   },
 };

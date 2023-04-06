@@ -61,12 +61,6 @@ module.exports = {
 
     const errorsArray = [];
 
-    if (member.user.bot) {
-      errorsArray.push(
-        "At this moment, bots are not supported for this command. Sorry!"
-      );
-    }
-
     if (errorsArray.length) {
       return errorSend(
         {
@@ -169,7 +163,6 @@ module.exports = {
       interaction.reply({
         embeds: [whoisembed],
         files: [imageAttachment],
-        ephemeral: true,
       });
     } catch (err) {
       console.log(err);

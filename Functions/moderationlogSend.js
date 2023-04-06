@@ -15,26 +15,25 @@ async function moderationlogSend(
     transcript,
     link,
   },
-  message,
-  interaction
+  interaction,
+  message
 ) {
   const data = await logDatabase.findOne({
-    guild: interaction?.guild?.id ?? message?.guild?.id,
+    guild: interaction.guild.id || message.guild.id,
   });
 
   if (!data) return;
 
   const attachment = new AttachmentBuilder("assets/moderation.gif");
 
-  const channel = (interaction?.guild || message.guild).channels.cache.get(
-    data.logChannel
-  );
-  const time = parseInt(
-    (interaction?.createdTimestamp ?? Date.now()) / 1000,
-    10
-  );
+  const channel =
+    interaction.guild.channels.cache.get(data.logChannel) ||
+    message.channel.channels.cache.get(data.logChannel);
+
+  const time = parseInt(interaction.createdTimestamp / 1000, 10);
 
   const commandEmbed = new EmbedBuilder()
+    .setTitle("🚨 Moderation Log 🚨")
     .setAuthor({
       name: `${interaction?.user?.tag ?? message?.author?.tag} | ${
         interaction?.user?.id ?? message?.author?.id
@@ -45,20 +44,51 @@ async function moderationlogSend(
     })
     .setColor("Green")
     .setThumbnail("attachment://moderation.gif")
-    .setDescription(
-      [
-        `🤔 Action: ${action}`,
-        `👤 User Punished: ${user || "Not applicable"}`,
-        `🔘 Channel: ${place || "Not applicable"}`,
-        `❔ Reason: ${reason || "Not applicable"}`,
-        `🔗 Link Deleted: ${link || "Not applicable"}`,
-        `📅 Days Of Messages Deleted: ${messages || "Not applicable"}`,
-        `🔢 Total Messages Deleted: ${size || "Not applicable"}`,
-        `🎟️ Infraction Total: ${total || "Not applicable"}`,
-        `⏲️ Duration: ${duration || "Not applicable"}`,
-        `⌚ Command Executed: <t:${time}:D> | <t:${time}:R>`,
-        `👮🏻 Moderator: ${moderator || "Not applicable"}`,
-      ].join("\n")
+    .addFields(
+      {
+        name: "🤔 Action",
+        value: action,
+      },
+      {
+        name: "👤 User Punished",
+        value: user || "Not applicable",
+      },
+      {
+        name: "🔘 Channel",
+        value: place || "Not applicable",
+      },
+      {
+        name: "❔ Reason",
+        value: reason || "Not applicable",
+      },
+      {
+        name: "🔗 Link Deleted",
+        value: link || "Not applicable",
+      },
+      {
+        name: "📅 Days Of Messages Deleted",
+        value: messages || "Not applicable",
+      },
+      {
+        name: "🔢 Total Messages Deleted",
+        value: size || "Not applicable",
+      },
+      {
+        name: "🎟️ Infraction Total",
+        value: total || "Not applicable",
+      },
+      {
+        name: "⏲️ Duration",
+        value: duration || "Not applicable",
+      },
+      {
+        name: "⌚ Command Executed",
+        value: `<t:${time}:D> | <t:${time}:R>`,
+      },
+      {
+        name: "👮🏻 Moderator",
+        value: moderator || "Not applicable",
+      }
     )
     .setFooter({ text: `${action} Executed` })
     .setTimestamp();

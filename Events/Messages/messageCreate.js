@@ -1,5 +1,4 @@
 const { connection } = require("mongoose");
-const xp = require("simply-xp");
 const Database = require("../../Schemas/links");
 const Infractions = require("../../Schemas/infractions");
 const { moderationlogSend } = require("../../Functions/moderationlogSend");
@@ -18,8 +17,6 @@ module.exports = {
       if (author.bot || connection.readyState === 0) {
         return;
       }
-
-      xp.addXP(message, author.id, guild.id, { min: 50, max: 2 });
 
       const settings = await Database.findOneAndUpdate(
         { Guild: guild.id },
