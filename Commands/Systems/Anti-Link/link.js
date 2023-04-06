@@ -28,5 +28,33 @@ module.exports = {
               }
             )
         )
+    )
+    .addSubcommand((options) =>
+      options
+        .setName("reset")
+        .setDescription("Reset Discord Invite count for a user.")
+        .addUserOption((options) =>
+          options
+            .setName("user")
+            .setDescription("Select the user")
+            .setRequired(true)
+        )
+        .addStringOption((options) =>
+          options
+            .setName("reason")
+            .setDescription("The reason for the removal of the count?")
+            .setRequired(true)
+        )
+    )
+    .addSubcommand((options) =>
+      options
+        .setName("count")
+        .setDescription("View Discord Invite count")
+        .addUserOption((options) =>
+          options
+            .setName("user")
+            .setDescription("Select The user")
+            .setRequired(true)
+        )
     ),
 };

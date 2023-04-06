@@ -2,7 +2,7 @@ const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
 const Database = require("../../../Schemas/infractions");
 
 module.exports = {
-  subCommand: "infractions.view",
+  subCommand: "link.count",
   /**
    *
    * @param {ChatInputCommandInteraction} interaction
@@ -15,23 +15,29 @@ module.exports = {
     try {
       let userData = await Database.findOne({ Guild: guild.id, User: user.id });
       if (!userData)
-        userData = await Database({
-          Guild: guild.id,
-          User: user.id,
-          Infractions: [],
+        return interaction.reply({
+          content: `No discord invite data found for ${user}.`,
+          ephemeral: true,
         });
 
       const successEmbed = new EmbedBuilder()
-        .setTimestamp()
+        .setTitle("🔗 Discord Invite Data")
+        .setDescription(
+          `How many discord invites has ${user} sent in ${interaction.guild}?`
+        )
         .setColor("Green")
         .addFields(
           {
             name: "User:",
-            value: `\`\`\`${user.user.tag}\`\`\``,
+            value: `${user}`,
           },
           {
-            name: "Infraction Count:",
-            value: `\`\`\`${userData.Infractions.length}\`\`\``,
+            name: "How many have they tried to send:",
+            value: `${userData.linkCount} invites`,
+          },
+          {
+            name: "How many more invites until ban:",
+            value: `${4 - userData.linkCount} invites`,
           }
         );
 
@@ -39,7 +45,7 @@ module.exports = {
     } catch (error) {
       console.error(error);
       interaction.reply({
-        content: "An error occurred while fetching the user's infraction data.",
+        content: "An error occurred! Try again later",
         ephemeral: true,
       });
     }

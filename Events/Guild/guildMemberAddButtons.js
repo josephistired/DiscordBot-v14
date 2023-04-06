@@ -13,8 +13,8 @@ module.exports = {
     if (!interaction.isButton()) return;
 
     const splitArray = interaction.customId.split("-");
-    if (!splitArray[0] === "MemberLogging") return;
 
+    if (splitArray[0] !== "MemberLogging") return;
     const member = (await interaction.guild.members.fetch()).get(splitArray[2]);
 
     const errorsArray = [];
@@ -36,7 +36,7 @@ module.exports = {
       return errorSend(
         {
           user: `${member.user.username}`,
-          command: `${interaction.commandName}`,
+          command: `Member Logging System Buttons`,
           error: `${errorsArray.join("\n")}`,
           time: `${Math.floor(interaction.createdTimestamp / 1000)}`,
         },
