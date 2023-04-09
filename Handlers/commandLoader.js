@@ -1,4 +1,4 @@
-const { loadFiles } = require("../functions/fileLoader");
+const { loadFiles } = require("../Functions/fileLoader");
 require("dotenv").config();
 
 async function loadCommands(client) {
