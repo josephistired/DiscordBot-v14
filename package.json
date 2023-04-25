@@ -25,7 +25,7 @@
     "discord-html-transcripts": "^3.1.4",
     "discord.js": "^14.9.0",
     "dotenv": "^16.0.3",
-    "glob": "^10.1.0",
+    "glob": "^10.2.2",
     "lyrics-finder": "^21.7.0",
     "moment": "^2.29.4",
     "mongoose": "^7.0.4",
