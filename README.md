@@ -8,7 +8,7 @@ An open-source Discord bot that offers ultimate control and flexibility for your
 
 ![Github Issues](https://img.shields.io/github/issues/josephistired/DiscordBot-v14?color=red&style=for-the-badge)
 ![Github License](https://img.shields.io/github/license/josephistired/DiscordBot-v14?color=black&style=for-the-badge)
-![Maintenance](https://img.shields.io/maintenance/yes/2022?color=BLACK&style=for-the-badge)
+![Maintenance](https://img.shields.io/maintenance/yes/2023?color=BLACK&style=for-the-badge)
 ![Last Commit](https://img.shields.io/github/last-commit/josephistired/DiscordBot-v14?style=for-the-badge)
 
 </div>
