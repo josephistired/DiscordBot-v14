@@ -1,8 +1,8 @@
 const {
   SlashCommandBuilder,
-  PermissionFlagsBits,
+  Permissions,
   ChatInputCommandInteraction,
-  EmbedBuilder,
+  MessageEmbed,
 } = require("discord.js");
 
 const { moderationlogSend } = require("../../Functions/moderationlogSend");
@@ -12,21 +12,15 @@ module.exports = {
   moderation: true,
   data: new SlashCommandBuilder()
     .setName("ban")
-    .setDescription("Bans user from the server")
-    .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
-    .setDMPermission(false)
+    .setDescription("Bans a user from the server")
+    .setDefaultPermission(false)
     .addUserOption((options) =>
-      options
-        .setName("user")
-        .setDescription("Select the user")
-        .setRequired(true)
+      options.setName("user").setDescription("Select the user").setRequired(true)
     )
     .addStringOption((options) =>
-      options
-        .setName("reason")
-        .setDescription("The reason for the ban of this user?")
-        .setMaxLength(512)
+      options.setName("reason").setDescription("The reason for banning this user").setMaxLength(512)
     ),
+  
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
@@ -39,14 +33,14 @@ module.exports = {
     const errorsArray = [];
 
     if (!user) {
-      errorsArray.push("The user has most likely left the server.");
+      errorsArray.push("The user is not found or has left the server.");
     } else {
-      if (!user.manageable || !user.moderatable) {
-        errorsArray.push("This bot cannot moderate the selected user.");
+      if (!user.manageable || !user.bannable) {
+        errorsArray.push("This bot cannot ban the selected user.");
       }
 
-      if (member.roles.highest.position < user.roles.highest.position) {
-        errorsArray.push("The user selected has a higher role than you.");
+      if (member.roles.highest.comparePositionTo(user.roles.highest) <= 0) {
+        errorsArray.push("The selected user has a higher or equal role compared to you.");
       }
     }
 
@@ -56,7 +50,7 @@ module.exports = {
           user: `${member.user.username}`,
           command: `${interaction.commandName}`,
           error: `${errorsArray.join("\n")}`,
-          time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
+          time: `${Math.floor(interaction.createdTimestamp / 1000)}`,
         },
         interaction
       );
@@ -67,27 +61,24 @@ module.exports = {
       reason: reason,
     });
 
-    const successEmbed = new EmbedBuilder().setColor("Green");
+    const successEmbed = new MessageEmbed().setColor("GREEN");
 
-    return (
-      interaction.reply({
-        embeds: [
-          successEmbed.setDescription(
-            `🔨 \n Banned \`${user.user.tag}\` from the server!`
-          ),
-        ],
-        ephemeral: true,
-      }),
-      moderationlogSend(
-        {
-          action: "Ban",
-          moderator: `${member.user.username}`,
-          user: `${user.user.tag}`,
-          reason: `${reason}`,
-          emoji: "🔨",
-        },
-        interaction
-      )
+    interaction.reply({
+      embeds: [
+        successEmbed.setDescription(`🔨\n Banned \`${user.user.tag}\` from the server!`),
+      ],
+      ephemeral: true,
+    });
+
+    moderationlogSend(
+      {
+        action: "Ban",
+        moderator: `${member.user.username}`,
+        user: `${user.user.tag}`,
+        reason: `${reason}`,
+        emoji: "🔨",
+      },
+      interaction
     );
   },
 };
