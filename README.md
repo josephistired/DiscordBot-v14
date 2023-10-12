@@ -28,7 +28,7 @@ An open-source Discord bot that offers ultimate control and flexibility for your
 
 </p>
 
-![Maintenance](https://img.shields.io/maintenance/no/2023?color=BLACK&style=for-the-badge)
+![Maintenance](https://img.shields.io/maintenance/no/2023?style=social)
 
 </div>
 
