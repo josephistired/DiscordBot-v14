@@ -1,13 +1,26 @@
 <div align="center">
+  <h1>⚠️ Important Notice: This Discord Bot is No Longer Actively Maintained ⚠️</h1>
+</div>
 
-:warning: **This project is no longer actively maintained.** :warning:
+<p align="center">Dear Github Users!</p>
 
-Due to my academic commitments and limited available time, I am unable to provide updates or support for this project. I encourage anyone interested in continuing or forking the project to do so.
+<p align="center">Due to my ongoing academic commitments and the demands of school, I regret to inform you that I am unable to continue active development and support for this project. While the bot remains available for use, please be aware of the following:</p>
 
-Thank you to everyone who used this project! :heart:
+<ul>
+  <li>No new features or updates will be provided.</li>
+  <li>Critical bug fixes and security updates may not be addressed promptly.</li>
+  <li>Support for issues and inquiries may be limited.</li>
+</ul>
 
-If you have any questions or need assistance, feel free to open an issue, but please understand that I may not be able to respond promptly.
+<p align="center">I want to express my gratitude to all of you who have used this project. Your enthusiasm and feedback have been greatly appreciated.</p>
 
+<p align="center">If you have any pressing concerns or questions, you can still reach out via the GitHub issues tab. However, please understand that my responses may be delayed.</p>
+
+<p align="center">Thank you for your understanding, and I hope to return to active development when my schedule permits.</p>
+
+<p align="center">Sincerely, Joseph.</p>
+
+<div align="center">
 
 # 🤖 DiscordBot-v14 🤖
 
@@ -15,10 +28,7 @@ An open-source Discord bot that offers ultimate control and flexibility for your
 
 </p>
 
-![Github Issues](https://img.shields.io/github/issues/josephistired/DiscordBot-v14?color=red&style=for-the-badge)
-![Github License](https://img.shields.io/github/license/josephistired/DiscordBot-v14?color=black&style=for-the-badge)
 ![Maintenance](https://img.shields.io/maintenance/no/2023?color=BLACK&style=for-the-badge)
-![Last Commit](https://img.shields.io/github/last-commit/josephistired/DiscordBot-v14?style=for-the-badge)
 
 </div>
 
