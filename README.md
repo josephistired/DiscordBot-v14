@@ -22,32 +22,26 @@
 
 <div align="center">
 
-# 🤖 DiscordBot-v14 🤖
+# 🤖 DiscordBot-v14
 
-An open-source Discord bot that offers ultimate control and flexibility for your server. With this bot, you have the ability to host and run it yourself, ensuring that you have the latest updates and features. The bot comes equipped with a variety of commands, including moderation commands for enforcing rules and keeping your server organized, etc.
+A self-hosted, open-source Discord bot built on Discord.js v14. Includes moderation, utilities, fun commands, welcome system, logging, anti-link protection, and more.
 
-</p>
-
-![Maintenance](https://img.shields.io/maintenance/no/2023?style=social)
+[![Maintenance](https://img.shields.io/maintenance/no/2023?style=social)](https://docs.josephcarmosino.com/discordbot-v14)
 
 </div>
 
-# 📊 Features
+---
 
-- Moderation commands ⛔
-- Fun commands 😊
-- Utilities commands 💻
-- And much more coming [soon](https://github.com/users/josephistired/projects/8) 🎊
+## 📚 Documentation
 
-# 📚 Wiki
+➡️ [Full Docs Site](https://docs.josephcarmosino.com/discordbot-v14)
 
-To learn how to set up the bot, go to the [wiki](https://discord-bot-v14-docs.vercel.app/).
+The docs include:
 
-# ❓ Miscellaneous
+- Getting Started
+- Full Command-List
+- Feature Breakdown
+- Security & Deployment Best Practices
+- Code Examples
 
-Visit the [wiki](https://discord-bot-v14-docs.vercel.app/) to see the commands and learn more about the bot.
-
-# 🛑 Warning
-
-Please don't use test branches to run the bot. As they are test branches, some things might be broken & not completed.
-**Always grab the latest release to run the bot**
+---
