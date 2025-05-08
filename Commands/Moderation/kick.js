@@ -19,25 +19,25 @@ module.exports = {
       options
         .setName("user")
         .setDescription("Select the user")
-        .setRequired(true)
+        .setRequired(true),
     )
     .addStringOption((options) =>
       options
         .setName("messages")
         .setDescription(
-          "Select the number of days for which their to messages will be deleted."
+          "Select the number of days for which their to messages will be deleted.",
         )
         .setRequired(true)
         .addChoices(
           { name: "Don't Delete Any.", value: "0" },
-          { name: "Delete Up To Seven Days.", value: "7" }
-        )
+          { name: "Delete Up To Seven Days.", value: "7" },
+        ),
     )
     .addStringOption((options) =>
       options
         .setName("reason")
         .setDescription("Provide A Reason For The Kick.")
-        .setMaxLength(512)
+        .setMaxLength(512),
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
@@ -70,7 +70,7 @@ module.exports = {
           error: `${errorsArray.join("\n")}`,
           time: `${Math.floor(interaction.createdTimestamp / 1000)}`,
         },
-        interaction
+        interaction,
       );
     }
 
@@ -98,7 +98,7 @@ module.exports = {
         emoji: "👟",
         messages: `${messages}`,
       },
-      interaction
+      interaction,
     );
   },
 };

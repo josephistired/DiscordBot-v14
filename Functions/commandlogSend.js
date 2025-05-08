@@ -35,7 +35,7 @@ async function commandlogSend({ time, place, command }, interaction) {
         {
           name: "⏲️ Command Executed:",
           value: `<t:${time}:D> | <t:${time}:R>`,
-        }
+        },
       )
       .setFooter({ text: "📩 Command Executed" })
       .setTimestamp();

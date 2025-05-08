@@ -5,5 +5,5 @@ module.exports = model(
   new Schema({
     Guild: String,
     logChannel: String,
-  })
+  }),
 );

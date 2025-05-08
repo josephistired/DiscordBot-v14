@@ -20,19 +20,19 @@ module.exports = {
       options
         .setName("user")
         .setDescription("Select the user")
-        .setRequired(true)
+        .setRequired(true),
     )
     .addStringOption((options) =>
       options
         .setName("duration")
         .setDescription("Give the timeout a duration (1m, 1h, 1d).")
-        .setRequired(true)
+        .setRequired(true),
     )
     .addStringOption((options) =>
       options
         .setName("reason")
         .setDescription("The reason for the timeout of this user?")
-        .setMaxLength(512)
+        .setMaxLength(512),
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
@@ -62,7 +62,7 @@ module.exports = {
 
     user.timeout(ms(duration), reason).catch((err) => {
       errorsArray.push(
-        `Due to an unknown error, we were unable to timeout the user. ${err}`
+        `Due to an unknown error, we were unable to timeout the user. ${err}`,
       );
     });
 
@@ -74,7 +74,7 @@ module.exports = {
           error: `${errorsArray.join("\n")}`,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
 
@@ -85,8 +85,8 @@ module.exports = {
         embeds: [
           successEmbed.setDescription(
             `⌛ \n Timeout \`${user.user.tag} for ${ms(
-              ms(duration, { long: true })
-            )}!\` `
+              ms(duration, { long: true }),
+            )}!\` `,
           ),
         ],
         ephemeral: true,
@@ -99,7 +99,7 @@ module.exports = {
           reason: `${reason}`,
           duration: `${ms(ms(duration, { long: true }))}`,
         },
-        interaction
+        interaction,
       );
     } catch (error) {
       return errorSend(
@@ -109,7 +109,7 @@ module.exports = {
           error: `${error}`,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
   },

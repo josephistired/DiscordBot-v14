@@ -19,13 +19,13 @@ module.exports = {
       options
         .setName("user")
         .setDescription("Select the user")
-        .setRequired(true)
+        .setRequired(true),
     )
     .addStringOption((options) =>
       options
         .setName("reason")
         .setDescription("The reason for the ban of this user?")
-        .setMaxLength(512)
+        .setMaxLength(512),
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
@@ -58,7 +58,7 @@ module.exports = {
           error: `${errorsArray.join("\n")}`,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
 
@@ -73,7 +73,7 @@ module.exports = {
       interaction.reply({
         embeds: [
           successEmbed.setDescription(
-            `🔨 \n Banned \`${user.user.tag}\` from the server!`
+            `🔨 \n Banned \`${user.user.tag}\` from the server!`,
           ),
         ],
         ephemeral: true,
@@ -86,7 +86,7 @@ module.exports = {
           reason: `${reason}`,
           emoji: "🔨",
         },
-        interaction
+        interaction,
       )
     );
   },

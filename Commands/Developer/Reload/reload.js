@@ -7,9 +7,9 @@ module.exports = {
     .setDescription("Reload Your Commands Or Events.")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addSubcommand((options) =>
-      options.setName("events").setDescription("Reload Events.")
+      options.setName("events").setDescription("Reload Events."),
     )
     .addSubcommand((options) =>
-      options.setName("commands").setDescription("Reload Commands.")
+      options.setName("commands").setDescription("Reload Commands."),
     ),
 };

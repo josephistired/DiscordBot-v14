@@ -89,7 +89,7 @@ module.exports = {
           `☢️ Risk Level: ${risk}`,
           `✍🏻 Account Created: <t:${accountCreation}:D> | <t:${accountCreation}:R>`,
           `👥 Account Joined: <t:${joiningTime}:D> | <t:${joiningTime}:R>`,
-        ].join("\n")
+        ].join("\n"),
       )
       .setFooter({ text: "User Joined" })
       .setTimestamp();
@@ -103,7 +103,7 @@ module.exports = {
         new ButtonBuilder()
           .setCustomId(`MemberLogging-Ban-${member.id}`)
           .setLabel("Ban")
-          .setStyle(ButtonStyle.Danger)
+          .setStyle(ButtonStyle.Danger),
       );
 
       await logchannel.send({

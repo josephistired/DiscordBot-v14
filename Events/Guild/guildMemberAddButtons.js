@@ -21,7 +21,7 @@ module.exports = {
 
     if (!interaction.member.permissions.has("KickMembers"))
       errorsArray.push(
-        "You do not have the required permission for this action."
+        "You do not have the required permission for this action.",
       );
 
     if (!member)
@@ -29,7 +29,7 @@ module.exports = {
 
     if (!member.moderatable)
       errorsArray.push(
-        `${member.user.username} is not moderatable by this bot.`
+        `${member.user.username} is not moderatable by this bot.`,
       );
 
     if (errorsArray.length) {
@@ -40,7 +40,7 @@ module.exports = {
           error: `${errorsArray.join("\n")}`,
           time: `${Math.floor(interaction.createdTimestamp / 1000)}`,
         },
-        interaction
+        interaction,
       );
     }
 
@@ -52,7 +52,7 @@ module.exports = {
           interaction.reply({
             embeds: [
               successEmbed.setDescription(
-                `👟 \n Kicked \`${member.user.username}\` from the server!`
+                `👟 \n Kicked \`${member.user.username}\` from the server!`,
               ),
             ],
             ephemeral: true,
@@ -65,7 +65,7 @@ module.exports = {
               reason: `Member Logging System`,
               emoji: "👟",
             },
-            interaction
+            interaction,
           ).catch(() => {
             errorsArray.push(`${member.user.username} could not be kicked.`);
           });
@@ -76,7 +76,7 @@ module.exports = {
           interaction.reply({
             embeds: [
               successEmbed.setDescription(
-                `🔨 \n Banned \`${member.user.username}\` from the server!`
+                `🔨 \n Banned \`${member.user.username}\` from the server!`,
               ),
             ],
             ephemeral: true,
@@ -89,7 +89,7 @@ module.exports = {
               reason: `Member Logging System`,
               emoji: "🔨",
             },
-            interaction
+            interaction,
           ).catch(() => {
             errorsArray.push(`${member.user.username} could not be banned.`);
           });

@@ -16,7 +16,7 @@ module.exports = {
       options
         .setName("ip")
         .setDescription("What is the IP address? ")
-        .setRequired(true)
+        .setRequired(true),
     ),
   /**
    *
@@ -41,7 +41,7 @@ module.exports = {
           error: `${errorsArray.join("\n")}`,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
 
@@ -96,7 +96,7 @@ module.exports = {
         {
           name: "Flag:",
           value: `\`\`\`${getFlagEmoji(body.country_code)}\`\`\``,
-        }
+        },
       );
     interaction.reply({
       embeds: [ipembed],

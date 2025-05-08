@@ -10,26 +10,26 @@ module.exports = {
       options
         .setName("setup")
         .setDescription(
-          "This allows you to setup your welcome system in your server."
+          "This allows you to setup your welcome system in your server.",
         )
         .addChannelOption((options) =>
           options
             .setName("welcome-channel")
             .setDescription("Select the channel.")
-            .setRequired(true)
+            .setRequired(true),
         )
         .addRoleOption((options) =>
           options
             .setName("welcome-role")
             .setDescription(
-              "Provide the role you want a new member to recieve when joining."
+              "Provide the role you want a new member to recieve when joining.",
             )
-            .setRequired(true)
+            .setRequired(true),
         )
         .addStringOption((options) =>
           options
             .setName("welcome-message")
-            .setDescription("Provide a custom welcome message.")
+            .setDescription("Provide a custom welcome message."),
         )
         .addStringOption((options) =>
           options
@@ -55,8 +55,8 @@ module.exports = {
               {
                 name: "white",
                 value: "White",
-              }
-            )
-        )
+              },
+            ),
+        ),
     ),
 };

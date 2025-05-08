@@ -16,7 +16,7 @@ module.exports = {
       options
         .setName("channel")
         .setDescription("Select the Channel.")
-        .setRequired(true)
+        .setRequired(true),
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
@@ -33,7 +33,7 @@ module.exports = {
       {
         new: true,
         upsert: true,
-      }
+      },
     );
 
     client.guildConfig.set(interaction.guild.id, {

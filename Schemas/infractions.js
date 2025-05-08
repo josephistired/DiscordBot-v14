@@ -9,5 +9,5 @@ module.exports = model(
       type: Number,
       default: 0,
     },
-  })
+  }),
 );

@@ -16,7 +16,7 @@ async function moderationlogSend(
     link,
   },
   interaction,
-  message
+  message,
 ) {
   const data = await logDatabase.findOne({
     guild: interaction.guild.id || message.guild.id,
@@ -88,7 +88,7 @@ async function moderationlogSend(
       {
         name: "👮🏻 Moderator",
         value: moderator || "Not applicable",
-      }
+      },
     )
     .setFooter({ text: `${action} Executed` })
     .setTimestamp();

@@ -19,7 +19,7 @@ module.exports = {
         iconURL: `${interaction.member.displayAvatarURL()}`,
       })
       .setDescription(
-        "A multi-purpose bot based off josephistired's Github project."
+        "A multi-purpose bot based off josephistired's Github project.",
       )
       .setTimestamp()
       .addFields({

@@ -22,16 +22,16 @@ module.exports = {
         .setDescription("Enter the number of messages you want to delete.")
         .setMinValue(1)
         .setMaxValue(100)
-        .setRequired(true)
+        .setRequired(true),
     )
     .addStringOption((options) =>
       options
         .setName("reason")
         .setDescription("The reason for purging the messages?")
-        .setRequired(true)
+        .setRequired(true),
     )
     .addUserOption((options) =>
-      options.setName("user").setDescription("Select the user.")
+      options.setName("user").setDescription("Select the user."),
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
@@ -69,20 +69,20 @@ module.exports = {
             error: `${errorsArray.join("\n")}`,
             time: `${Math.floor(interaction.createdTimestamp / 1000)}`,
           },
-          interaction
+          interaction,
         );
       }
 
       const transcript = await Transcript.generateFromMessages(
         messagesDelete,
-        interaction.channel
+        interaction.channel,
       );
 
       interaction.channel.bulkDelete(messagesDelete, true).then((messages) => {
         interaction.reply({
           embeds: [
             successEmbed.setDescription(
-              `🧹 \n Purged \`${messages.size}\` messages from ${user.tag}!`
+              `🧹 \n Purged \`${messages.size}\` messages from ${user.tag}!`,
             ),
           ],
           ephemeral: true,
@@ -99,20 +99,20 @@ module.exports = {
             size: `${messages.size}`,
             transcript: transcript,
           },
-          interaction
+          interaction,
         );
       });
     } else {
       const transcript = await Transcript.createTranscript(
         interaction.channel,
-        { limit: amount }
+        { limit: amount },
       );
 
       interaction.channel.bulkDelete(amount, true).then((messages) => {
         interaction.reply({
           embeds: [
             successEmbed.setDescription(
-              `🧹 \n Purged \`${messages.size}\` messages!`
+              `🧹 \n Purged \`${messages.size}\` messages!`,
             ),
           ],
           ephemeral: true,
@@ -129,7 +129,7 @@ module.exports = {
             size: `${messages.size}`,
             transcript: transcript,
           },
-          interaction
+          interaction,
         );
       });
     }

@@ -12,49 +12,49 @@ module.exports = {
       options
         .setName("connect-four")
         .setDescription(
-          "Play the classic Connect Four game with your friend through Discord!"
+          "Play the classic Connect Four game with your friend through Discord!",
         )
         .addUserOption((options) =>
           options
             .setName("user")
             .setDescription("Select the user")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((options) =>
       options
         .setName("tic-tac-toe")
         .setDescription(
-          "Play the classic Tic Tac Toe game with your friend through Discord!"
+          "Play the classic Tic Tac Toe game with your friend through Discord!",
         )
         .addUserOption((options) =>
           options
             .setName("user")
             .setDescription("Select the user")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((options) =>
       options
         .setName("rock-paper-scissors")
         .setDescription(
-          "Play the classic Rock Paper Scissors game with your friend through Discord!"
+          "Play the classic Rock Paper Scissors game with your friend through Discord!",
         )
         .addUserOption((options) =>
           options
             .setName("user")
             .setDescription("Select the user")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((options) =>
       options
         .setName("minesweeper")
-        .setDescription("Play the classic Minesweeper game through Discord!")
+        .setDescription("Play the classic Minesweeper game through Discord!"),
     )
     .addSubcommand((options) =>
       options
         .setName("2048")
-        .setDescription("Play the classic 2048 game through Discord!")
+        .setDescription("Play the classic 2048 game through Discord!"),
     ),
 };

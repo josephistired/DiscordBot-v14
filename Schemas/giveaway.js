@@ -59,6 +59,6 @@ module.exports = model(
         roles: { type: [String], default: undefined },
       },
     },
-    { id: false }
-  )
+    { id: false },
+  ),
 );

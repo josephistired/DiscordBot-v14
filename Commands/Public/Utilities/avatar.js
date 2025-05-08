@@ -10,7 +10,7 @@ module.exports = {
     .setDescription("Displays your or another user's avatar")
     .setDMPermission(false)
     .addUserOption((options) =>
-      options.setName("user").setDescription("Select the user.")
+      options.setName("user").setDescription("Select the user."),
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
@@ -28,7 +28,7 @@ module.exports = {
     const avatar = new EmbedBuilder()
       .setTitle(`👤 ${user.displayName}'s Avatar`)
       .setDescription(
-        `Here are ${user.displayName}'s avatars in different sizes:`
+        `Here are ${user.displayName}'s avatars in different sizes:`,
       )
       .setColor("Green")
       .setImage(x4096)
@@ -53,7 +53,7 @@ module.exports = {
         {
           name: "x4096",
           value: `[x4096](${x4096})`,
-        }
+        },
       )
       .setFooter({ text: `Requested By: ${interaction.user.tag}` });
 

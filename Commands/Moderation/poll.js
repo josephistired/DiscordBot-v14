@@ -19,7 +19,7 @@ module.exports = {
       options
         .setName("question")
         .setDescription("Provide the question of the poll.")
-        .setRequired(true)
+        .setRequired(true),
     ),
   /**
    *
@@ -56,7 +56,7 @@ module.exports = {
       new ButtonBuilder()
         .setLabel("No")
         .setCustomId(`Poll-No-${replyObject.id}`)
-        .setStyle(ButtonStyle.Danger)
+        .setStyle(ButtonStyle.Danger),
     );
 
     interaction.editReply({ components: [pollButtons], files: [attachment] });

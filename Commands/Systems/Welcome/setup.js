@@ -26,7 +26,7 @@ module.exports = {
       {
         new: true,
         upsert: true,
-      }
+      },
     );
 
     const success = new EmbedBuilder()

@@ -19,14 +19,14 @@ module.exports = {
 
       if (!giveaway) {
         errors.push(
-          `No giveaways found with the provided message ID: ${giveawayId}`
+          `No giveaways found with the provided message ID: ${giveawayId}`,
         );
         throw new Error(errors.join("\n"));
       }
 
       if (giveaway.ended) {
         errors.push(
-          `Giveaway with message ID ${giveawayId} has already ended.`
+          `Giveaway with message ID ${giveawayId} has already ended.`,
         );
         throw new Error(errors.join("\n"));
       }
@@ -41,7 +41,7 @@ module.exports = {
           error: error.message,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
   },

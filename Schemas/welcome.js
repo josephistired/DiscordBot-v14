@@ -8,5 +8,5 @@ module.exports = model(
     welcomeMessage: String,
     welcomeColor: String,
     welcomeRole: String,
-  })
+  }),
 );

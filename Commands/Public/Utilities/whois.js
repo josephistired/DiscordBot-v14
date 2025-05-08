@@ -51,7 +51,7 @@ module.exports = {
     .setDescription("Displays information on your or another user.")
     .setDMPermission(false)
     .addUserOption((options) =>
-      options.setName("user").setDescription("Select the user.")
+      options.setName("user").setDescription("Select the user."),
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
@@ -69,7 +69,7 @@ module.exports = {
           error: `${errorsArray.join("\n")}`,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
 
@@ -85,7 +85,7 @@ module.exports = {
         Array.from(
           fetchedMembers
             .sort((a, b) => a.joinedTimestamp - b.joinedTimestamp)
-            .keys()
+            .keys(),
         ).indexOf(member.id) + 1;
 
       const topRoles = member.roles.cache
@@ -112,7 +112,7 @@ module.exports = {
             member.user.username
           } joined  as the **${addSuffix(joinedPosition)}** member of ${
             interaction.guild.name
-          }.`
+          }.`,
         )
         .setImage("attachment://profile.png")
         .addFields([

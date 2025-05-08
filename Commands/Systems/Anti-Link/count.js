@@ -23,7 +23,7 @@ module.exports = {
       const successEmbed = new EmbedBuilder()
         .setTitle("🔗 Discord Invite Data")
         .setDescription(
-          `How many discord invites has ${user} sent in ${interaction.guild}?`
+          `How many discord invites has ${user} sent in ${interaction.guild}?`,
         )
         .setColor("Green")
         .addFields(
@@ -38,7 +38,7 @@ module.exports = {
           {
             name: "How many more invites until ban:",
             value: `${4 - userData.linkCount} invites`,
-          }
+          },
         );
 
       interaction.reply({ embeds: [successEmbed], ephemeral: true });

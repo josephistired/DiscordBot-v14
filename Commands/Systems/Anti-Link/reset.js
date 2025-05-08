@@ -42,7 +42,7 @@ module.exports = {
           user: `${user.user.tag}`,
           reason: `${reason}`,
         },
-        interaction
+        interaction,
       );
     } catch (error) {
       console.error(error);

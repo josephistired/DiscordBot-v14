@@ -27,7 +27,7 @@ async function errorSend({ user, command, time, error }, interaction) {
       {
         name: "⏲️ Command Executed:",
         value: `<t:${time}:D> | <t:${time}:R>`,
-      }
+      },
     )
     .setFooter({ text: " 🚫 Error Ocurred" })
     .setTimestamp();

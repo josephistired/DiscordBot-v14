@@ -9,7 +9,7 @@ async function cooldownSend({ user, command, time, left }, interaction) {
       iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
     })
     .setDescription(
-      `⚠️ Alert: Please wait ${left} Seconds before running this command again.`
+      `⚠️ Alert: Please wait ${left} Seconds before running this command again.`,
     )
     .setColor("Red")
     .setThumbnail("attachment://cooldown.jpg")
@@ -25,7 +25,7 @@ async function cooldownSend({ user, command, time, left }, interaction) {
       {
         name: "⏲️ Command Executed:",
         value: `<t:${time}:D> | <t:${time}:R>`,
-      }
+      },
     )
     .setFooter({ text: "⏱️ Cooldown Alert" })
     .setTimestamp();

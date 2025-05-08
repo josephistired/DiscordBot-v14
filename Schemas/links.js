@@ -6,5 +6,5 @@ module.exports = model(
     Guild: String,
     discordLinks: Boolean,
     virusLinks: Boolean,
-  })
+  }),
 );

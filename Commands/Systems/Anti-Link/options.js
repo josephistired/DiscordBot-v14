@@ -23,7 +23,7 @@ module.exports = {
         {
           new: true,
           upsert: true,
-        }
+        },
       );
 
       const success = new EmbedBuilder()
@@ -46,7 +46,7 @@ module.exports = {
           error: error.message,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
   },

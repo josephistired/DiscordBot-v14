@@ -19,13 +19,13 @@ module.exports = {
       options
         .setName("userid")
         .setDescription("Please enter the user's ID.")
-        .setRequired(true)
+        .setRequired(true),
     )
     .addStringOption((options) =>
       options
         .setName("reason")
         .setDescription("The reason for the unban of this user?")
-        .setMaxLength(512)
+        .setMaxLength(512),
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
@@ -49,7 +49,7 @@ module.exports = {
       await interaction.guild.members.unban(userid, reason);
     } catch (error) {
       errorsArray.push(
-        "An error occurred while attempting to unban the user. Please try again later."
+        "An error occurred while attempting to unban the user. Please try again later.",
       );
     }
 
@@ -61,7 +61,7 @@ module.exports = {
           error: `${errorsArray.join("\n")}`,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
 
@@ -70,7 +70,7 @@ module.exports = {
     await interaction.reply({
       embeds: [
         successEmbed.setDescription(
-          `🔓 \n Unbanned \`${userid}\` from the server!`
+          `🔓 \n Unbanned \`${userid}\` from the server!`,
         ),
       ],
       ephemeral: true,
@@ -84,7 +84,7 @@ module.exports = {
         reason: `${reason}`,
         emoji: "🔓",
       },
-      interaction
+      interaction,
     );
   },
 };

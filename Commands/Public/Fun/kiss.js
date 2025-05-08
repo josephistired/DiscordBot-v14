@@ -17,14 +17,14 @@ module.exports = {
       options
         .setName("user")
         .setDescription("Select the user")
-        .setRequired(true)
+        .setRequired(true),
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
     let { body } = await superagent.get(
-      "https://purrbot.site/api/img/sfw/kiss/gif"
+      "https://purrbot.site/api/img/sfw/kiss/gif",
     );
 
     const user = interaction.options.getMember("user");
@@ -37,7 +37,7 @@ module.exports = {
     } else {
       if (user.id === interaction.member.id) {
         errorsArray.push(
-          "You must be extremely lonely to try and kiss yourself."
+          "You must be extremely lonely to try and kiss yourself.",
         );
       }
 
@@ -53,7 +53,7 @@ module.exports = {
           error: `${errorsArray.join("\n")}`,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
 
@@ -85,7 +85,7 @@ module.exports = {
         })
         .setImage(
           `${body.link}
-      `
+      `,
         )
         .setColor("Green")
         .setDescription(`${member} has kissed ${user}!`)
@@ -104,7 +104,7 @@ module.exports = {
           error: `An error occurred while processing this command.`,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
   },

@@ -28,19 +28,19 @@ module.exports = {
 
     if (connection.readyState === 0)
       errorsArray.push(
-        "Unable to connect to the database. Please check that you have provided a valid database URL in your configuration file. You can find instructions for setting up the database in our documentation at https://discord-bot-v14-docs.vercel.app/docs/intro"
+        "Unable to connect to the database. Please check that you have provided a valid database URL in your configuration file. You can find instructions for setting up the database in our documentation at https://discord-bot-v14-docs.vercel.app/docs/intro",
       );
 
     if (!command) errorsArray.push("💤 Command Is Outdated.");
 
     if (command.developer && interaction.user.id !== process.env.DEVELOPERID)
       errorsArray.push(
-        "Sorry, this command is only available to the person who set up this bot. Maybe you can convince them to run it for you!"
+        "Sorry, this command is only available to the person who set up this bot. Maybe you can convince them to run it for you!",
       );
 
     if (command.testing === true)
       errorsArray.push(
-        "This command is currently in testing and is not available for use at this time."
+        "This command is currently in testing and is not available for use at this time.",
       );
 
     const { cooldowns } = client;
@@ -69,7 +69,7 @@ module.exports = {
             command: `${interaction.commandName}`,
             time: `${sent}`,
           },
-          interaction
+          interaction,
         );
 
         return;
@@ -87,7 +87,7 @@ module.exports = {
           error: `${errorsArray.join("\n")}`,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
 
@@ -95,7 +95,7 @@ module.exports = {
       const subCommand = interaction.options.getSubcommand(false);
       if (subCommand) {
         const subCommandFile = client.subCommands.get(
-          `${interaction.commandName}.${subCommand}`
+          `${interaction.commandName}.${subCommand}`,
         );
         if (!subCommandFile)
           return interaction.reply({
@@ -111,7 +111,7 @@ module.exports = {
           place: `${interaction.channel.name}`,
           time: `${sent}`,
         },
-        interaction
+        interaction,
       );
     } catch (error) {
       return errorSend(
@@ -121,7 +121,7 @@ module.exports = {
           error: `${error}`,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
   },

@@ -17,7 +17,7 @@ module.exports = {
       options
         .setName("question")
         .setDescription("What's the Question?")
-        .setRequired(true)
+        .setRequired(true),
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
@@ -27,7 +27,7 @@ module.exports = {
     const member = interaction.user.username;
 
     let { body } = await superagent.get(
-      `https://eightballapi.com/api?question=${question}`
+      `https://eightballapi.com/api?question=${question}`,
     );
 
     const errorsArray = [];
@@ -43,7 +43,7 @@ module.exports = {
           error: `${errorsArray.join("\n")}`,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
 
@@ -53,7 +53,7 @@ module.exports = {
       const eightballembed = new EmbedBuilder()
         .setTitle("🎱 The Old Mighty 8ball")
         .setDescription(
-          `The 8ball has spoken, will you ${interaction.user} trust it?`
+          `The 8ball has spoken, will you ${interaction.user} trust it?`,
         )
         .setAuthor({
           name: `${interaction.member.user.tag}`,
@@ -69,7 +69,7 @@ module.exports = {
           {
             name: "The Mighty 8ball says:",
             value: `${body.reading}`,
-          }
+          },
         )
         .setFooter({ text: `Requested By: ${interaction.user.tag}` });
       interaction.reply({

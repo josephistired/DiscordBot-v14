@@ -21,7 +21,7 @@ module.exports = {
       const settings = await Database.findOneAndUpdate(
         { Guild: guild.id },
         { Guild: guild.id, discordLinks: true },
-        { upsert: true, new: true }
+        { upsert: true, new: true },
       );
 
       if (!settings.discordLinks || member.permissions.has("Administrator")) {
@@ -42,7 +42,7 @@ module.exports = {
           $inc: { linkCount: 1 },
           lastInfraction: Date.now(),
         },
-        { upsert: true, new: true }
+        { upsert: true, new: true },
       );
 
       if (infraction.linkCount === MAX_ATTEMPTS) {
@@ -55,7 +55,7 @@ module.exports = {
             reason: `Discord Invite - Max Infractions`,
             link: content.toLowerCase(),
           },
-          message
+          message,
         );
         await Infractions.delete({ Guild: guildId, User: authorId });
         return;
@@ -67,7 +67,7 @@ module.exports = {
       const timeoutMessage = await channel.send(
         `Sorry ${author}, sending Discord invites is not allowed in ${
           guild.name
-        }. You have been timed out for ${timeoutDuration / 60} minutes.`
+        }. You have been timed out for ${timeoutDuration / 60} minutes.`,
       );
 
       const deleteMessage = async (message) => {
@@ -88,7 +88,7 @@ module.exports = {
           duration: `${timeoutDuration / 60}`,
           link: content.toLowerCase(),
         },
-        message
+        message,
       );
     } catch (error) {
       console.error(`Error in messageCreate event: ${error}`);

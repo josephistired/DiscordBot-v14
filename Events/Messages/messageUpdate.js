@@ -23,7 +23,7 @@ module.exports = {
       const settings = await Database.findOneAndUpdate(
         { Guild: newMessage.guild.id },
         { Guild: newMessage.guild.id, discordLinks: true },
-        { upsert: true, new: true }
+        { upsert: true, new: true },
       );
 
       if (
@@ -56,7 +56,7 @@ module.exports = {
           $inc: { linkCount: 1 },
           lastInfraction: Date.now(),
         },
-        { upsert: true, new: true }
+        { upsert: true, new: true },
       );
 
       if (infraction.linkCount === MAX_ATTEMPTS) {
@@ -69,7 +69,7 @@ module.exports = {
             reason: `Discord Invite - Max Infractions`,
             link: content.toLowerCase(),
           },
-          message
+          message,
         );
 
         await Infractions.delete({ Guild: guildId, User: id });
@@ -101,7 +101,7 @@ module.exports = {
           duration: `${timeoutDuration / 60}`,
           link: newMessage.content.toLowerCase(),
         },
-        newMessage
+        newMessage,
       );
     } catch (error) {
       console.error(`Error in messageUpdate event: ${error}`);

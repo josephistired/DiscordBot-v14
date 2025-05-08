@@ -17,14 +17,14 @@ module.exports = {
       options
         .setName("user")
         .setDescription("Select the user")
-        .setRequired(true)
+        .setRequired(true),
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
     let { body } = await superagent.get(
-      "https://some-random-api.ml/animu/wink"
+      "https://some-random-api.ml/animu/wink",
     );
 
     const user = interaction.options.getMember("user");
@@ -37,7 +37,7 @@ module.exports = {
     } else {
       if (user.id === interaction.member.id) {
         errorsArray.push(
-          "You must be extremely weird to try and wink at yourself."
+          "You must be extremely weird to try and wink at yourself.",
         );
       }
 
@@ -53,7 +53,7 @@ module.exports = {
           error: `${errorsArray.join("\n")}`,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
 
@@ -85,7 +85,7 @@ module.exports = {
         })
         .setImage(
           `${body.link}
-      `
+      `,
         )
         .setColor("Green")
         .setDescription(`${member} has winked ${user}!`)
@@ -102,7 +102,7 @@ module.exports = {
           error: `An error occurred while processing this command.`,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
   },
