@@ -1,16 +1,34 @@
-const { Events, MessageFlags } = require("discord.js");
+const { Events, MessageFlags, EmbedBuilder } = require("discord.js");
 const { verifyMember } = require("../../Functions/verification");
+const { errorSend } = require("../../Functions/errorlogSend");
 module.exports = {
   name: Events.InteractionCreate,
-  async execute(i) {
-    if (!i.isButton() || i.customId !== "verification:verify") return;
-    await i.deferReply({ flags: MessageFlags.Ephemeral });
+  async execute(interaction) {
+    if (
+      !interaction.isButton() ||
+      interaction.customId !== "verification:verify"
+    )
+      return;
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     try {
-      await i.editReply(await verifyMember(i));
+      const description = await verifyMember(interaction);
+      const successEmbed = new EmbedBuilder()
+        .setTitle("✅ Server Verification")
+        .setDescription(description)
+        .setColor("Green")
+        .setTimestamp();
+      await interaction.editReply({ embeds: [successEmbed] });
     } catch (error) {
       console.error("Verification failed:", error);
-      await i.editReply(
-        "Verification is unavailable or this panel is inactive. Ask a server moderator to check the setup.",
+      await errorSend(
+        {
+          user: interaction.user.username,
+          command: "Server Verification",
+          error:
+            "Verification is unavailable or this panel is inactive. Ask a server moderator to check the setup.",
+          time: Math.floor(interaction.createdTimestamp / 1000),
+        },
+        interaction,
       );
     }
   },

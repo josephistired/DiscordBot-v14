@@ -48,10 +48,9 @@ module.exports = {
     }
 
     const subCommand = interaction.options.getSubcommand(false);
-    const handler =
-      subCommand && !command.handlesSubcommands
-        ? client.subCommands.get(`${interaction.commandName}.${subCommand}`)
-        : command;
+    const handler = subCommand
+      ? client.subCommands.get(`${interaction.commandName}.${subCommand}`)
+      : command;
     if (typeof handler?.execute !== "function")
       return reportError("💤 Command Is Outdated.");
 

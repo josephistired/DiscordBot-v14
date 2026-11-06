@@ -145,6 +145,12 @@ test("all command definitions serialize and register successfully", async () => 
   await loadCommands(client);
   assert.ok(definitions.length > 0);
   assert.equal(definitions.length, client.commands.size);
+  for (const definition of definitions) {
+    for (const option of definition.options ?? []) {
+      if (option.type === 1)
+        assert.ok(client.subCommands.has(`${definition.name}.${option.name}`));
+    }
+  }
   for (const key of client.subCommands.keys())
     assert.ok(client.commands.has(key.split(".")[0]));
 });

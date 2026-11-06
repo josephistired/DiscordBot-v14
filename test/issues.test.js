@@ -258,7 +258,7 @@ test("logging honors category switches and never routes a guild log to another g
 
 test("verification protect refuses private categories and unprotect restores saved bitfields", async (t) => {
   const { Collection } = require("discord.js");
-  const command = require("../Commands/Systems/Verification/verification");
+  const command = require("../Commands/Systems/Verification/protect");
   const role = {
     id: "verified",
     permissions: { has: () => false },
@@ -293,7 +293,14 @@ test("verification protect refuses private categories and unprotect restores sav
   });
   const i = {
     guildId: "guild",
-    user: { tag: "admin" },
+    user: {
+      id: "admin",
+      username: "admin",
+      tag: "admin",
+      displayAvatarURL: () => "https://example.com/avatar.png",
+    },
+    deferred: true,
+    createdTimestamp: Date.now(),
     memberPermissions: { has: () => true },
     options: {
       getSubcommand: () => action,
@@ -313,12 +320,12 @@ test("verification protect refuses private categories and unprotect restores sav
   };
   await command.execute(i);
   assert.equal(changed, 0);
-  assert.match(reply.content, /private category/);
+  assert.match(reply.embeds[0].toJSON().fields[2].value, /private category/);
   action = "unprotect";
   config.gates.set("category", {
     overwrites: [{ id: "guild", type: 0, allow: "1024", deny: "0" }],
   });
-  await command.execute(i);
+  await require("../Commands/Systems/Verification/unprotect").execute(i);
   assert.equal(changed, 1);
   assert.deepEqual(restored, [
     { id: "guild", type: 0, allow: 1024n, deny: 0n },
@@ -347,9 +354,16 @@ test("economy grants are permission checked before any balance mutation", async 
   let grants = 0;
   let reply;
   t.mock.method(economy, "grant", async () => grants++);
-  await require("../Commands/Systems/Economy/economy").execute({
+  await require("../Commands/Systems/Economy/grant").execute({
     guildId: "guild",
-    user: { id: "actor" },
+    user: {
+      id: "actor",
+      username: "actor",
+      tag: "actor",
+      displayAvatarURL: () => "https://example.com/avatar.png",
+    },
+    deferred: true,
+    createdTimestamp: Date.now(),
     memberPermissions: { has: () => false },
     options: {
       getSubcommand: () => "grant",
@@ -361,17 +375,15 @@ test("economy grants are permission checked before any balance mutation", async 
     },
   });
   assert.equal(grants, 0);
-  assert.match(reply.content, /permission/);
+  assert.match(reply.embeds[0].toJSON().fields[2].value, /permission/);
 });
 
-test("dispatcher executes self-contained subcommand handlers", async (t) => {
+test("dispatcher executes separately registered subcommand handlers", async (t) => {
   t.mock.method(LogConfig, "findOne", async () => null);
   let calls = 0;
   const command = {
-    handlesSubcommands: true,
     requiresDatabase: false,
     cooldown: 0,
-    execute: async () => calls++,
   };
   await require("../Events/Interactions/SlashCommands").execute(
     {
@@ -379,11 +391,22 @@ test("dispatcher executes self-contained subcommand handlers", async (t) => {
       inGuild: () => true,
       commandName: "economy",
       createdTimestamp: Date.now(),
-      user: { id: "actor" },
+      user: {
+        id: "actor",
+        username: "actor",
+        tag: "actor",
+        displayAvatarURL: () => "https://example.com/avatar.png",
+      },
+      deferred: true,
       memberPermissions: { has: () => true },
       options: { getSubcommand: () => "balance" },
     },
-    { commands: new Map([["economy", command]]), subCommands: new Map() },
+    {
+      commands: new Map([["economy", command]]),
+      subCommands: new Map([
+        ["economy.balance", { execute: async () => calls++ }],
+      ]),
+    },
   );
   assert.equal(calls, 1);
 });

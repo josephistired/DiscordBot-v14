@@ -3,8 +3,11 @@ const {
   InteractionContextType,
   PermissionFlagsBits,
   MessageFlags,
+  EmbedBuilder,
+  ChatInputCommandInteraction,
 } = require("discord.js");
-const Config = require("../../Schemas/logs");
+const Database = require("../../Schemas/logs");
+const { errorSend } = require("../../Functions/errorlogSend");
 const { CATEGORIES } = require("../../Functions/guildLog");
 module.exports = {
   data: new SlashCommandBuilder()
@@ -12,8 +15,8 @@ module.exports = {
     .setDescription("Enable or disable a category of server logs")
     .setContexts(InteractionContextType.Guild)
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
-    .addStringOption((o) =>
-      o
+    .addStringOption((options) =>
+      options
         .setName("event")
         .setDescription("Log category")
         .setRequired(true)
@@ -21,31 +24,58 @@ module.exports = {
           ...["all", ...CATEGORIES].map((value) => ({ name: value, value })),
         ),
     )
-    .addBooleanOption((o) =>
-      o
+    .addBooleanOption((options) =>
+      options
         .setName("enabled")
         .setDescription("Enable this log category")
         .setRequired(true),
     ),
-  async execute(i) {
-    await i.deferReply({ flags: MessageFlags.Ephemeral });
-    const event = i.options.getString("event");
-    const enabled = i.options.getBoolean("enabled");
-    const categories = event === "all" ? CATEGORIES : [event];
-    if (categories.some((c) => !CATEGORIES.includes(c)))
-      throw new Error("Unknown logging category");
-    const update = Object.fromEntries(
-      categories.map((c) => [`events.${c}`, enabled]),
-    );
-    const config = await Config.findOneAndUpdate(
-      { Guild: i.guildId },
-      { $set: update },
-      { new: true },
-    );
-    await i.editReply(
-      config
-        ? `${event} logging ${enabled ? "enabled" : "disabled"}.`
-        : "Set a logging channel with /log-set first.",
-    );
+  /**
+   * @param {ChatInputCommandInteraction} interaction
+   */
+  async execute(interaction) {
+    const { options } = interaction;
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+    try {
+      const event = options.getString("event", true);
+      const enabled = options.getBoolean("enabled", true);
+      const categories = event === "all" ? CATEGORIES : [event];
+      if (categories.some((category) => !CATEGORIES.includes(category)))
+        throw new Error("Unknown logging category.");
+      const update = Object.fromEntries(
+        categories.map((category) => [`events.${category}`, enabled]),
+      );
+      const config = await Database.findOneAndUpdate(
+        { Guild: interaction.guildId },
+        { $set: update },
+        { new: true },
+      );
+      if (!config)
+        throw new Error("Set a logging channel with /log-set first.");
+      const successEmbed = new EmbedBuilder()
+        .setTitle("📋 Logging Options Updated")
+        .setDescription("Successfully updated the logging settings!")
+        .setColor("Green")
+        .addFields(
+          { name: "Category:", value: event, inline: true },
+          {
+            name: "Status:",
+            value: enabled ? "Enabled" : "Disabled",
+            inline: true,
+          },
+        )
+        .setTimestamp();
+      await interaction.editReply({ embeds: [successEmbed] });
+    } catch (error) {
+      await errorSend(
+        {
+          user: interaction.user.username,
+          command: interaction.commandName,
+          error: error.message,
+          time: Math.floor(interaction.createdTimestamp / 1000),
+        },
+        interaction,
+      );
+    }
   },
 };
