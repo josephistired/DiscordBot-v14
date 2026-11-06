@@ -33,10 +33,19 @@ module.exports = {
     }
     if (command.testing)
       return reportError("This command is currently in testing.");
-    if (connection.readyState !== 1)
+    if (command.requiresDatabase !== false && connection.readyState !== 1)
       return reportError(
         "The database is unavailable. Please try again later.",
       );
+
+    if (
+      interaction.commandName === "giveaway" &&
+      !client.giveawaysManager?.ready
+    ) {
+      return reportError(
+        "Giveaways are still initializing. Please try again shortly.",
+      );
+    }
 
     const subCommand = interaction.options.getSubcommand(false);
     const handler = subCommand

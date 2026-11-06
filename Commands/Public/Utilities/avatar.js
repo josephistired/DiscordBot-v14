@@ -5,6 +5,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 module.exports = {
+  requiresDatabase: false,
   data: new SlashCommandBuilder()
     .setName("avatar")
     .setDescription("Displays your or another user's avatar")
@@ -16,9 +17,11 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
-    const user = interaction.options.getMember("user") || interaction.member;
-
-    await user.user.fetch();
+    const selected = interaction.options.getUser("user") ?? interaction.user;
+    const member =
+      interaction.options.getMember("user") ??
+      (selected.id === interaction.user.id ? interaction.member : null);
+    const user = member ?? selected;
     const x64 = user.displayAvatarURL({ size: 64 });
     const x256 = user.displayAvatarURL({ size: 256 });
     const x512 = user.displayAvatarURL({ size: 512 });

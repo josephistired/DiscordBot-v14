@@ -282,3 +282,163 @@ test("poll updates serialize concurrent votes and preserve string field values",
   assert.equal(embed.toJSON().fields[0].value, "2");
   assert.equal(pending.size, 0);
 });
+
+test("giveaway initialization waits for clientReady without registering legacy ready listeners", async (t) => {
+  const { EventEmitter } = require("node:events");
+  const { GatewayIntentBits } = require("discord.js");
+  const intervals = [];
+  t.mock.method(require("node:timers"), "setInterval", (callback) => {
+    intervals.push(callback);
+    return {};
+  });
+  const Manager = require("../src/giveawayManager");
+  const client = new EventEmitter();
+  client.options = { intents: [GatewayIntentBits.GuildMessageReactions] };
+  const manager = new Manager(client, {});
+  let reads = 0;
+  manager.getAllGiveaways = async () => {
+    reads++;
+    return [];
+  };
+  assert.equal(reads, 0);
+  assert.equal(client.listenerCount("ready"), 0);
+  await assert.rejects(manager.initialize(), /clientReady/);
+  client.readyAt = new Date();
+  await Promise.all([manager.initialize(), manager.initialize()]);
+  assert.equal(manager.ready, true);
+  assert.equal(reads, 1);
+  assert.equal(intervals.length, 1);
+  assert.equal(client.listenerCount("ready"), 0);
+  assert.equal(client.listenerCount("raw"), 1);
+});
+
+test("log-set validates channel access, persists settings, and does not require a guildConfig cache", async () => {
+  const model = require("../Schemas/logs");
+  const original = model.findOneAndUpdate;
+  let saved;
+  let reply;
+  model.findOneAndUpdate = async (filter, update) => {
+    saved = { filter, update };
+  };
+  const channel = {
+    id: "channel",
+    name: "logs",
+    guildId: "guild",
+    isTextBased: () => true,
+    send: async () => {},
+    permissionsFor: () => ({ has: () => true }),
+  };
+  const interaction = {
+    guildId: "guild",
+    guild: { id: "guild", members: { me: {} } },
+    options: { getChannel: () => channel },
+    deferReply: async () => {},
+    editReply: async (value) => {
+      reply = value;
+    },
+  };
+  try {
+    await require("../Commands/Moderation/logs-set").execute(interaction, {});
+    assert.deepEqual(saved, {
+      filter: { Guild: "guild" },
+      update: { logChannel: "channel" },
+    });
+    assert.ok(reply.embeds);
+    saved = undefined;
+    channel.permissionsFor = () => ({ has: () => false });
+    await assert.rejects(
+      require("../Commands/Moderation/logs-set").execute(interaction, {}),
+      /needs/,
+    );
+    assert.equal(saved, undefined);
+  } finally {
+    model.findOneAndUpdate = original;
+  }
+});
+
+test("status remains usable while MongoDB is disconnected and reports actual units", async () => {
+  const { Collection } = require("discord.js");
+  const command = require("../Commands/Public/Utilities/status");
+  let reply;
+  let acknowledged;
+  const client = {
+    user: {
+      username: "bot",
+      tag: "bot",
+      id: "id",
+      flags: { has: () => false },
+      displayAvatarURL: () => "https://example.com/avatar.png",
+    },
+    application: { owner: null },
+    channels: { cache: new Collection() },
+    guilds: { cache: new Collection() },
+    users: { cache: new Collection() },
+    commands: new Collection([["status", command]]),
+    readyTimestamp: Date.now(),
+    ws: { ping: 15 },
+  };
+  const interaction = {
+    isChatInputCommand: () => true,
+    inGuild: () => true,
+    commandName: "status",
+    createdTimestamp: Date.now(),
+    user: { username: "actor", tag: "actor" },
+    memberPermissions: { has: () => true },
+    options: { getSubcommand: () => null },
+    deferReply: async (value) => {
+      acknowledged = value;
+    },
+    editReply: async (value) => {
+      reply = value;
+    },
+  };
+  mongoose.connection.readyState = 0;
+  await require("../Events/Interactions/SlashCommands").execute(
+    interaction,
+    client,
+  );
+  assert.equal(acknowledged.flags, MessageFlags.Ephemeral);
+  const fields = reply.embeds[0].toJSON().fields;
+  assert.match(fields[1].value, /Heap used: .* MiB/);
+  assert.match(fields[1].value, /Database: Disconnected/);
+  assert.doesNotMatch(fields[1].value, /CPU Usage/);
+});
+
+test("multiplayer commands reject bot opponents and self-challenges before game startup", async () => {
+  for (const filename of ["connectfour", "tictactoe", "rock-paper-scissors"]) {
+    for (const opponent of [
+      { id: "actor", bot: false },
+      { id: "bot", bot: true },
+    ]) {
+      let response;
+      await require(`../Commands/Public/Fun/Games/${filename}`).execute({
+        user: { id: "actor" },
+        options: { getUser: () => opponent },
+        reply: async (value) => {
+          response = value;
+        },
+      });
+      assert.equal(response.flags, MessageFlags.Ephemeral);
+      assert.match(response.content, /another human/);
+    }
+  }
+});
+
+test("avatar uses the selected global user when no guild member is available", async () => {
+  let response;
+  const selected = {
+    id: "outside",
+    displayName: "Outside User",
+    displayAvatarURL: ({ size }) => `https://example.com/${size}.png`,
+  };
+  await require("../Commands/Public/Utilities/avatar").execute({
+    user: { id: "actor", tag: "actor" },
+    options: { getUser: () => selected, getMember: () => null },
+    reply: async (value) => {
+      response = value;
+    },
+  });
+  const embed = response.embeds[0].toJSON();
+  assert.match(embed.title, /Outside User/);
+  assert.equal(embed.image.url, "https://example.com/4096.png");
+});

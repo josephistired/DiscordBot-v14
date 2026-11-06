@@ -4,6 +4,7 @@ const {
   SlashCommandBuilder,
 } = require("discord.js");
 module.exports = {
+  requiresDatabase: false,
   data: new SlashCommandBuilder()
     .setName("games")
     .setDescription("Play classic games with your friend.")

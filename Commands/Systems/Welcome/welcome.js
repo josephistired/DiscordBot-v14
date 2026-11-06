@@ -1,6 +1,7 @@
 const {
   InteractionContextType,
   SlashCommandBuilder,
+  ChannelType,
   PermissionFlagsBits,
 } = require("discord.js");
 module.exports = {
@@ -18,6 +19,10 @@ module.exports = {
         .addChannelOption((options) =>
           options
             .setName("welcome-channel")
+            .addChannelTypes(
+              ChannelType.GuildText,
+              ChannelType.GuildAnnouncement,
+            )
             .setDescription("Select the channel.")
             .setRequired(true),
         )

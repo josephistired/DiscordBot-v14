@@ -8,7 +8,13 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
-    const user = interaction.options.getUser("user");
+    const user = interaction.options.getUser("user", true);
+    if (user.bot || user.id === interaction.user.id) {
+      return interaction.reply({
+        content: "Choose another human player.",
+        flags: require("discord.js").MessageFlags.Ephemeral,
+      });
+    }
 
     const Game = new RockPaperScissors({
       message: interaction,

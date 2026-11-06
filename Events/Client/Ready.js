@@ -7,6 +7,7 @@ module.exports = {
   once: true,
   async execute(client) {
     client.user.setActivity(`${client.guilds.cache.size} Guilds`);
+    await client.giveawaysManager.initialize();
     await loadCommands(client);
     logSchemas();
   },

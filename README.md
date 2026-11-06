@@ -99,3 +99,17 @@ findings remain in `discord-giveaways` and `discord-html-transcripts` dependency
 chains (five high and one moderate at the time of this update). Transcripts are
 pinned to 3.2.0 because the maintainer marks 3.3.0 as broken. These dependencies
 need further review or replacement before treating this bot as production-ready.
+
+### Additional command updates
+
+Giveaways use delayed initialization from `Events.ClientReady`; this avoids the
+legacy `ready` listener inside discord-giveaways 6.0.1. Do not suppress Node
+deprecation warnings. If another warning remains, run `node --trace-deprecation .`
+to identify its caller.
+
+`/status`, `/avatar`, and `/games` no longer require a working database. Status
+reports process memory in MiB and uses current channel types. Avatar accepts a
+selected user even if they are not in the server. Multiplayer games reject bot
+opponents and self-challenges. `/log-set` and `/welcome setup` validate the bot's
+channel permissions before saving, and welcome roles must be below the bot's
+highest role.

@@ -1,121 +1,69 @@
 const {
   MessageFlags,
   InteractionContextType,
-  ChatInputCommandInteraction,
   SlashCommandBuilder,
   EmbedBuilder,
   ChannelType,
   UserFlags,
   version,
 } = require("discord.js");
-//  GNU General Public License v3.0 - https://www.gnu.org/licenses/gpl-3.0.en.html
-//  Developed by Kevin Foged, 1st of October 2022 - https://github.com/KevinFoged
-
 const { connection } = require("mongoose");
-const os = require("os");
-
+const os = require("node:os");
 module.exports = {
+  requiresDatabase: false,
   data: new SlashCommandBuilder()
     .setName("status")
     .setDescription("Displays the bot's and database connection's status!")
     .setContexts(InteractionContextType.Guild),
-  /**
-   * @param {ChatInputCommandInteraction} interaction
-   * @param {Client} client
-   */
   async execute(interaction, client) {
-    const status = [
-      "Disconnected ❌",
-      "Connected ✅",
-      "Connecting 🔃",
-      "Disconnecting 🔚",
-    ];
-
-    await client.user.fetch();
-    await client.application.fetch();
-
-    const getChannelTypeSize = (type) =>
-      client.channels.cache.filter((channel) => type.includes(channel.type))
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+    const states = ["Disconnected", "Connected", "Connecting", "Disconnecting"];
+    const memory = process.memoryUsage();
+    const count = (...types) =>
+      client.channels.cache.filter((channel) => types.includes(channel.type))
         .size;
-
-    await interaction.reply({
-      embeds: [
-        new EmbedBuilder()
-          .setColor(interaction.guild.members.me.roles.highest.hexColor)
-          .setTitle(`${client.user.username}'s Status`)
-          .setThumbnail(client.user.displayAvatarURL({ size: 1024 }))
-          .addFields(
-            {
-              name: "General",
-              value: [
-                `👩🏻‍🔧 **Client:** ${client.user.tag}`,
-                `💳 **ID:** ${client.user.id}`,
-                `📆 **Created: ** <t:${parseInt(
-                  client.user.createdTimestamp / 1000,
-                  10,
-                )}:R>`,
-                `👩🏻‍🔧 **Developer:** joseph#5678`,
-                `👑 **Owner:** ${
-                  client.application.owner
-                    ? `<@${client.application.owner.id}> (${client.application.owner.tag})`
-                    : "None"
-                }`,
-                `✅ **Verified:** ${
-                  client.user.flags & UserFlags.VerifiedBot ? "Yes" : "No"
-                }`,
-                `💬 **Commands:** ${client.commands.size}`,
-              ].join("\n"),
-            },
-            {
-              name: "System",
-              value: [
-                `🖥 **Operating System:** ${os
-                  .type()
-                  .replace("Windows_NT", "Windows")
-                  .replace("Darwin", "macOS")}`,
-                `⏰ **Up Since:** <t:${parseInt(
-                  client.readyTimestamp / 1000,
-                  10,
-                )}:R>`,
-                `🏓 **Ping:** ${client.ws.ping}ms`,
-                `🧠 **CPU Model:** ${os.cpus()[0].model}`,
-                `💾 **CPU Usage:** ${(
-                  process.memoryUsage().heapUsed /
-                  1024 /
-                  1024
-                ).toFixed(2)}%`,
-                `📚 **Database Status:** ${status[connection.readyState]}`,
-                `👩🏻‍🔧 **Node.js Version:** ${process.version}`,
-                `🛠 **Discord.js Version:** ${version}`,
-              ].join("\n"),
-              inline: true,
-            },
-            {
-              name: "Statistics",
-              value: [
-                `🌍 **Servers:** ${client.guilds.cache.size}`,
-                `👨‍👩‍👧‍👦 **Users:** ${client.users.cache.size}`,
-                `😏 **Emojis:** ${client.emojis.cache.size}`,
-                `💬 **Text Channels:** ${getChannelTypeSize([
-                  ChannelType.GuildText,
-                  ChannelType.GuildForum,
-                  ChannelType.GuildNews,
-                ])}`,
-                `🎙 **Voice Channels:** ${getChannelTypeSize([
-                  ChannelType.GuildVoice,
-                  ChannelType.GuildStageVoice,
-                ])}`,
-                `🧵 **Threads:** ${getChannelTypeSize([
-                  ChannelType.GuildPublicThread,
-                  ChannelType.GuildPrivateThread,
-                  ChannelType.GuildNewsThread,
-                ])}`,
-              ].join("\n"),
-              inline: true,
-            },
-          ),
-      ],
-      flags: MessageFlags.Ephemeral,
-    });
+    const owner = client.application.owner;
+    const embed = new EmbedBuilder()
+      .setColor("Green")
+      .setTitle(`${client.user.username}'s Status`)
+      .setThumbnail(client.user.displayAvatarURL({ size: 1024 }))
+      .addFields(
+        {
+          name: "General",
+          value: [
+            `Client: ${client.user.tag}`,
+            `ID: ${client.user.id}`,
+            `Owner: ${owner?.name ?? owner?.tag ?? "Unavailable"}`,
+            `Verified: ${client.user.flags?.has(UserFlags.VerifiedBot) ? "Yes" : "No"}`,
+            `Commands: ${client.commands.size}`,
+          ].join("\n"),
+        },
+        {
+          name: "System",
+          value: [
+            `OS: ${os.type()}`,
+            `Up since: <t:${Math.floor(client.readyTimestamp / 1000)}:R>`,
+            `Gateway latency: ${client.ws.ping < 0 ? "Unavailable" : `${client.ws.ping} ms`}`,
+            `CPU model: ${os.cpus()[0]?.model ?? "Unavailable"}`,
+            `Heap used: ${(memory.heapUsed / 1024 / 1024).toFixed(1)} MiB`,
+            `Process memory (RSS): ${(memory.rss / 1024 / 1024).toFixed(1)} MiB`,
+            `Database: ${states[connection.readyState] ?? "Unknown"}`,
+            `Node.js: ${process.version}`,
+            `Discord.js: ${version}`,
+          ].join("\n"),
+        },
+        {
+          name: "Cached statistics",
+          value: [
+            `Servers: ${client.guilds.cache.size}`,
+            `Users: ${client.users.cache.size}`,
+            `Text/announcement channels: ${count(ChannelType.GuildText, ChannelType.GuildAnnouncement)}`,
+            `Forum/media channels: ${count(ChannelType.GuildForum, ChannelType.GuildMedia)}`,
+            `Voice channels: ${count(ChannelType.GuildVoice, ChannelType.GuildStageVoice)}`,
+            `Threads: ${count(ChannelType.PublicThread, ChannelType.PrivateThread, ChannelType.AnnouncementThread)}`,
+          ].join("\n"),
+        },
+      );
+    await interaction.editReply({ embeds: [embed] });
   },
 };

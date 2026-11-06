@@ -1,7 +1,9 @@
+const { validateConfigChannel } = require("../../Functions/configChannel");
 const {
   MessageFlags,
   InteractionContextType,
   SlashCommandBuilder,
+  ChannelType,
   PermissionFlagsBits,
   EmbedBuilder,
 } = require("discord.js");
@@ -17,6 +19,7 @@ module.exports = {
     .addChannelOption((options) =>
       options
         .setName("channel")
+        .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
         .setDescription("Select the Channel.")
         .setRequired(true),
     ),
@@ -26,6 +29,9 @@ module.exports = {
 
   async execute(interaction, client) {
     const channelObject = interaction.options.getChannel("channel");
+
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+    await validateConfigChannel(interaction, channelObject);
 
     await Database.findOneAndUpdate(
       { Guild: interaction.guild.id },
@@ -38,10 +44,6 @@ module.exports = {
       },
     );
 
-    client.guildConfig.set(interaction.guild.id, {
-      logChannel: channelObject.id,
-    });
-
     const success = new EmbedBuilder()
       .setColor("Green")
       .setDescription("Successfully set logs channel!")
@@ -50,9 +52,8 @@ module.exports = {
         value: channelObject.name,
       });
 
-    await interaction.reply({
+    await interaction.editReply({
       embeds: [success],
-      flags: MessageFlags.Ephemeral,
     });
   },
 };
