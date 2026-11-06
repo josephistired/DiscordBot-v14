@@ -5,6 +5,9 @@ const {
   GuildMessages,
   GuildVoiceStates,
   GuildMessageReactions,
+  GuildModeration,
+  GuildInvites,
+  GuildExpressions,
   MessageContent,
 } = GatewayIntentBits;
 const { User, Message, GuildMember, ThreadMember, Channel, Reaction } =
@@ -17,6 +20,9 @@ const client = new Client({
     GuildMessages,
     GuildVoiceStates,
     GuildMessageReactions,
+    GuildModeration,
+    GuildInvites,
+    GuildExpressions,
     MessageContent,
   ],
   partials: [User, Message, GuildMember, ThreadMember, Channel, Reaction],

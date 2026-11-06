@@ -5,7 +5,7 @@ const logDatabase = require("../Schemas/logs");
 async function commandlogSend({ time, place, command }, interaction) {
   try {
     const data = await logDatabase.findOne({ Guild: interaction?.guild?.id });
-    if (!data) return;
+    if (!data || !require("./guildLog").enabled(data, "commands")) return;
 
     const channel = interaction.guild.channels.cache.get(data.logChannel);
 

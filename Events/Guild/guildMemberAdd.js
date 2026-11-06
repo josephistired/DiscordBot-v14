@@ -26,7 +26,10 @@ module.exports = {
         `Welcome ${member.user} to ${member.guild}, enjoy your stay!`;
       let wcolor = data.welcomeColor || "Green";
 
-      if (data.welcomeRole) {
+      const verification = await require("../../Schemas/verification").findOne({
+        Guild: member.guild.id,
+      });
+      if (data.welcomeRole && data.welcomeRole !== verification?.role) {
         role = data.welcomeRole;
         await member.roles.add(role).catch(() => {
           role = "Unable to assign configured role.";
@@ -51,7 +54,11 @@ module.exports = {
 
     // Member Risk System Logging
     const logdata = await logDatabase.findOne({ Guild: member.guild.id });
-    if (!logdata) return;
+    if (
+      !logdata ||
+      !require("../../Functions/guildLog").enabled(logdata, "members")
+    )
+      return;
 
     const logchannel = member.guild.channels.cache.get(logdata.logChannel);
     if (!logchannel?.isTextBased()) return;

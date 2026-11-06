@@ -1,24 +1,18 @@
-<div align="center">
-  <h1>⚠️ Important Notice: This Discord Bot is No Longer Actively Maintained ⚠️</h1>
-</div>
+# A quick update from Joseph
 
-<p align="center">Dear Github Users!</p>
+I'm back for an update, but my interest in building Discord bots isn't what it
+used to be. This project is something I'll work on occasionally, rather than a
+main focus, so please don't expect regular releases or quick support.
 
-<p align="center">Due to my ongoing academic commitments and the demands of school, I regret to inform you that I am unable to continue active development and support for this project. While the bot remains available for use, please be aware of the following:</p>
+This update was vibe coded with AI assistance under my oversight. I'm reviewing
+and testing the changes, but that doesn't mean everything will be perfect.
 
-<ul>
-  <li>No new features or updates will be provided.</li>
-  <li>Critical bug fixes and security updates may not be addressed promptly.</li>
-  <li>Support for issues and inquiries may be limited.</li>
-</ul>
+If you find a bug or have a feature request, please [open an issue](https://github.com/josephistired/DiscordBot-v14/issues).
+Include what happened, what you expected, steps to reproduce it, and any relevant
+logs with tokens and other secrets removed. Reports and contributions are welcome,
+but I can't promise a response or a fix on a particular timeline.
 
-<p align="center">I want to express my gratitude to all of you who have used this project. Your enthusiasm and feedback have been greatly appreciated.</p>
-
-<p align="center">If you have any pressing concerns or questions, you can still reach out via the GitHub issues tab. However, please understand that my responses may be delayed.</p>
-
-<p align="center">Thank you for your understanding, and I hope to return to active development when my schedule permits.</p>
-
-<p align="center">Sincerely, Joseph.</p>
+Thanks for sticking around.
 
 <div align="center">
 
@@ -26,7 +20,7 @@
 
 A self-hosted, open-source Discord bot built on Discord.js v14. Includes moderation, utilities, fun commands, welcome system, logging, anti-link protection, and more.
 
-[![Maintenance](https://img.shields.io/maintenance/no/2023?style=social)](https://docs.josephcarmosino.com/discordbot-v14)
+![Maintenance: occasional](https://img.shields.io/badge/maintenance-occasional-yellow)
 
 </div>
 
@@ -83,9 +77,8 @@ commands replace only this bot's loaded handlers and await command registration.
 - The create/edit anti-link handlers share enforcement and preserve disabled
   settings. Ensure the bot has Moderate Members, Ban Members, Manage Messages,
   and access to the configured logging channel for this feature.
-- Polls keep transient votes across event reloads and serialize updates in one
-  bot process. Vote history is bounded to 1,000 polls and resets on restart; it
-  is not durable or synchronized across multiple bot processes.
+- Polls persist votes and totals in MongoDB. Duplicate votes remain blocked across
+  restarts. Discord message edits are serialized within one bot process.
 - `npm run check` checks JavaScript syntax. CI runs installation, syntax checks,
   and offline regression tests on Node 22 and 24.
 
@@ -113,3 +106,81 @@ selected user even if they are not in the server. Multiplayer games reject bot
 opponents and self-challenges. `/log-set` and `/welcome setup` validate the bot's
 channel permissions before saving, and welcome roles must be below the bot's
 highest role.
+
+## Features from the issue backlog
+
+### Economy ([#66](https://github.com/josephistired/DiscordBot-v14/issues/66))
+
+All accounts are scoped to the server and user. Coins are virtual collectibles.
+
+| Command                      | Behavior                                       |
+| ---------------------------- | ---------------------------------------------- |
+| `/economy balance [user]`    | Wallet and bank balances                       |
+| `/economy daily`             | 250 coins, available every 24 hours            |
+| `/economy work`              | 50 coins, available every hour                 |
+| `/economy deposit amount`    | Move wallet coins into the bank                |
+| `/economy withdraw amount`   | Move bank coins into the wallet                |
+| `/economy pay user amount`   | Transfer wallet coins to another server member |
+| `/economy leaderboard`       | Top 10 server members by wallet plus bank      |
+| `/economy shop`              | Show collectible prices                        |
+| `/economy buy item`          | Buy a cookie or trophy                         |
+| `/economy inventory`         | Show purchased collectibles                    |
+| `/economy grant user amount` | Grant coins; requires Manage Server            |
+
+Wallets and banks each have a limit of 1,000,000,000 coins. Rewards, bank moves,
+and purchases use conditional single-document updates. Payments use MongoDB
+transactions and require **MongoDB Atlas or a replica set**. Standalone MongoDB
+cannot execute payments; failed transactions do not debit either account. New
+collections have unique account/poll indexes; startup/database credentials must
+permit index creation.
+
+### Verification ([#65](https://github.com/josephistired/DiscordBot-v14/issues/65))
+
+1. Create a low-privilege Verified role below the bot's highest role. Do not use
+   the automatic welcome role or a role with administrative/moderation powers.
+2. Keep a public, read-only verification lobby outside protected categories. Deny
+   @everyone Send Messages, Send Messages in Threads, and creating threads.
+3. Run `/verification setup channel role` to publish the persistent Verify button.
+4. Give existing trusted members the Verified role before gating their channels.
+5. Run `/verification protect category confirm:true` for each public category to
+   gate. You need Manage Server and Manage Channels; the bot needs Manage Roles
+   and channel-management access. Only categories whose children all inherit
+   their permissions are accepted. Conflicting View Channel allows are refused.
+6. Use `/verification status` to inspect the lobby/role. To undo protection, run
+   `/verification unprotect category confirm:true`. This restores the saved
+   original category overwrites, replacing later manual changes to those overwrites.
+
+Verification grants a role after a button click. It is not a CAPTCHA, age check,
+or identity check, and cannot stop Discord DMs. Administrators bypass Discord
+channel restrictions. Private categories are never automatically opened to the
+Verified role. Channels outside protected categories, future custom overwrites,
+and roles granted by other bots must be reviewed by server admins. Permission
+snapshots are stored before protection so failed Discord edits can be retried or
+restored. Unprotect existing categories before changing the verified role.
+
+### Persistent polls ([#64](https://github.com/josephistired/DiscordBot-v14/issues/64))
+
+`/poll question` publishes a Yes/No button poll. Each user gets one persistent
+vote per server/message. Vote storage is authoritative, even if a Discord message
+edit fails; retrying refreshes the displayed totals without counting twice.
+Older polls retain their displayed totals when first adopted, but voters from
+before this update cannot be reconstructed and may vote once after the upgrade.
+Run one bot process for serialized poll display updates. MongoDB stores voter IDs
+and choices until the poll record is removed by the host; there is no automatic
+retention policy.
+
+### Configurable logging ([#38](https://github.com/josephistired/DiscordBot-v14/issues/38))
+
+Use `/log-set channel` and `/log-options event enabled`. Categories are commands,
+moderation, members, messages, channels, roles, bans, voice, server, invites, and
+emojis; `all` toggles every category. Existing configurations default to enabled.
+Configuration is separate per server. Membership and voice changes, message
+edits/deletions, channel and role changes, bans, invites, emojis, and basic server
+changes are logged. Log-channel messages are excluded to prevent recursive logs.
+
+Message logs include cached text; uncached deleted content cannot be recovered.
+Gateway events do not always identify the moderator responsible, so these logs do
+not claim audit-log attribution. Invite events require the bot's Manage Channels
+permission in the relevant channel; ban events require the relevant moderation
+permissions. The Server Members and Message Content privileged intents must be
+allowed in the Developer Portal. Logging is not a complete Discord audit trail.

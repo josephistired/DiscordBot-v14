@@ -246,10 +246,24 @@ test("purge excludes old messages and generates a transcript from selected messa
   }
 });
 
-test("poll updates serialize concurrent votes and preserve string field values", async () => {
+test("poll updates serialize concurrent votes and preserve string field values", async (t) => {
   const { EmbedBuilder } = require("discord.js");
-  const { votes, pending } = require("../Functions/pollState");
-  votes.clear();
+  const { pending } = require("../Functions/pollState");
+  const voters = new Set();
+  let yes = 0;
+  t.mock.method(
+    require("../Functions/polls"),
+    "recordVote",
+    async (_guild, _message, user) => {
+      const counted = !voters.has(user);
+      if (counted) {
+        voters.add(user);
+        yes++;
+      }
+      return { counted, poll: { yes, no: 0 } };
+    },
+  );
+  delete require.cache[require.resolve("../Events/Buttons/PollButtons")];
   pending.clear();
   let embed = new EmbedBuilder().addFields(
     { name: "Yes", value: "0" },
@@ -269,6 +283,7 @@ test("poll updates serialize concurrent votes and preserve string field values",
   const interaction = (id) => ({
     isButton: () => true,
     customId: "Poll-Yes-poll",
+    guildId: "guild",
     user: { id },
     message,
     client: { user: { id: "bot" } },

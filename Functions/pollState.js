@@ -1,2 +1,2 @@
-// Keep transient vote state separate from reloadable event modules.
-module.exports = { votes: new Map(), pending: new Map() };
+// Serialize Discord message edits within this process; votes themselves live in MongoDB.
+module.exports = { pending: new Map() };

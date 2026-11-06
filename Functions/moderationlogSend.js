@@ -23,7 +23,7 @@ async function moderationlogSend(
   if (!guild) return;
   const data = await logDatabase.findOne({ Guild: guild.id });
 
-  if (!data) return;
+  if (!data || !require("./guildLog").enabled(data, "moderation")) return;
 
   const channel = guild.channels.cache.get(data.logChannel);
   if (!channel?.isTextBased()) return;

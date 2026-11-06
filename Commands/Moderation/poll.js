@@ -18,6 +18,7 @@ module.exports = {
     .addStringOption((options) =>
       options
         .setName("question")
+        .setMaxLength(3500)
         .setDescription("Provide the question of the poll.")
         .setRequired(true),
     ),

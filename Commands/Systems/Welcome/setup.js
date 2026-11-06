@@ -36,6 +36,14 @@ module.exports = {
       throw new Error("Choose an unmanaged role below the bot's highest role.");
     }
 
+    const verification = await require("../../../Schemas/verification").findOne(
+      { Guild: interaction.guildId },
+    );
+    if (verification?.role === roleObject.id)
+      throw new Error(
+        "The automatic welcome role cannot be the verification role.",
+      );
+
     await Database.findOneAndUpdate(
       { Guild: interaction.guild.id },
       {

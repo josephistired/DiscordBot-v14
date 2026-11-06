@@ -8,6 +8,7 @@ const fileLoader = require("../Functions/fileLoader");
 const logModel = require("../Schemas/logs");
 logModel.findOne = async () => null;
 const dispatch = require("../Events/Interactions/SlashCommands").execute;
+require("../Schemas/poll");
 mongoose.connection.readyState = 1;
 
 function fixture(name = "one", command = { execute: async () => {} }) {
