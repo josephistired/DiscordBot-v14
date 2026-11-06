@@ -14,6 +14,19 @@ const CATEGORIES = [
   "invites",
   "emojis",
 ];
+const LOG_EMOJIS = {
+  commands: "💬",
+  moderation: "🚨",
+  members: "👥",
+  messages: "📝",
+  channels: "📺",
+  roles: "🏷️",
+  bans: "🔨",
+  voice: "🎙️",
+  server: "⚙️",
+  invites: "🔗",
+  emojis: "😀",
+};
 function enabled(config, category) {
   const value =
     typeof config.events?.get === "function"
@@ -33,14 +46,29 @@ async function guildLog(guild, category, title, description, sourceChannelId) {
     const channel = await getLogChannel(guild, category);
     // Never recursively log this bot's log-channel messages.
     if (!channel || channel.id === sourceChannelId) return;
+    const emoji = LOG_EMOJIS[category] ?? "📋";
+    const time = Math.floor(Date.now() / 1000);
     await channel.send({
       embeds: [
         new EmbedBuilder()
-          .setColor("Blurple")
-          .setTitle(title.slice(0, 256))
+          .setColor("Green")
+          .setTitle(`${emoji} ${title} ${emoji}`.slice(0, 256))
           .setDescription(
             String(description || "Details unavailable").slice(0, 4096),
           )
+          .addFields(
+            {
+              name: "🏠 Server:",
+              value: String(guild.name ?? guild.id).slice(0, 1024),
+              inline: true,
+            },
+            {
+              name: "⏲️ Event Recorded:",
+              value: `<t:${time}:F> | <t:${time}:R>`,
+              inline: true,
+            },
+          )
+          .setFooter({ text: `${emoji} Server Event Logged` })
           .setTimestamp(),
       ],
       allowedMentions: { parse: [] },

@@ -11,13 +11,13 @@ const definitions = [
     Events.GuildMemberAdd,
     "members",
     "Member joined",
-    (m) => [m.guild, `${user(m.user)} (${m.id})`],
+    (m) => [m.guild, `👤 User: ${user(m.user)} (${m.id})`],
   ],
   [
     Events.GuildMemberRemove,
     "members",
     "Member left",
-    (m) => [m.guild, `${user(m.user)} (${m.id})`],
+    (m) => [m.guild, `👤 User: ${user(m.user)} (${m.id})`],
   ],
   [
     Events.GuildMemberUpdate,
@@ -30,7 +30,7 @@ const definitions = [
         ? null
         : [
             b.guild,
-            `${user(b.user)} (${b.id})\nBefore: ${show(before)}\nAfter: ${show(after)}`,
+            `${user(b.user)} (${b.id})\n⬅️ Before: ${show(before)}\n➡️ After: ${show(after)}`,
           ];
     },
   ],
@@ -43,7 +43,7 @@ const definitions = [
         ? null
         : [
             m.guild,
-            `Author: ${user(m.author)}\nChannel: <#${m.channelId}>\nMessage: ${m.id}\n${show(m.content || "Content was not cached")}`,
+            `👤 Author: ${user(m.author)}\n💬 Channel: <#${m.channelId}>\n🆔 Message: ${m.id}\n${show(m.content || "Content was not cached")}`,
             m.channelId,
           ],
   ],
@@ -66,7 +66,7 @@ const definitions = [
         ? null
         : [
             b.guild,
-            `Author: ${user(b.author)}\nChannel: <#${b.channelId}>\nBefore: ${show(a.content)}\nAfter: ${show(b.content)}`,
+            `👤 Author: ${user(b.author)}\n💬 Channel: <#${b.channelId}>\n⬅️ Before: ${show(a.content)}\n➡️ After: ${show(b.content)}`,
             b.channelId,
           ],
   ],
@@ -99,7 +99,7 @@ const definitions = [
         return null;
       return [
         b.guild,
-        `Before: ${show(channelState(a))}\nAfter: ${show(channelState(b))}\nPermission overwrites ${overwrites(a) === overwrites(b) ? "unchanged" : "changed"}`,
+        `⬅️ Before: ${show(channelState(a))}\n➡️ After: ${show(channelState(b))}\n🔐 Permission overwrites ${overwrites(a) === overwrites(b) ? "unchanged" : "changed"}`,
       ];
     },
   ],
@@ -124,7 +124,7 @@ const definitions = [
         ? null
         : [
             b.guild,
-            `Before: ${show(roleState(a))}\nAfter: ${show(roleState(b))}`,
+            `⬅️ Before: ${show(roleState(a))}\n➡️ After: ${show(roleState(b))}`,
           ],
   ],
   [
@@ -133,14 +133,14 @@ const definitions = [
     "Member banned",
     (b) => [
       b.guild,
-      `${user(b.user)} (${b.user.id})\nReason: ${show(b.reason)}`,
+      `👤 User: ${user(b.user)} (${b.user.id})\n❔ Reason: ${show(b.reason)}`,
     ],
   ],
   [
     Events.GuildBanRemove,
     "bans",
     "Member unbanned",
-    (b) => [b.guild, `${user(b.user)} (${b.user.id})`],
+    (b) => [b.guild, `👤 User: ${user(b.user)} (${b.user.id})`],
   ],
   [
     Events.VoiceStateUpdate,
@@ -153,7 +153,7 @@ const definitions = [
         ? null
         : [
             b.guild,
-            `${user(b.member?.user)} (${b.id})\nChannel: ${a.channelId ?? "none"} → ${b.channelId ?? "none"}\nServer muted: ${Boolean(b.serverMute)} | deafened: ${Boolean(b.serverDeaf)}`,
+            `${user(b.member?.user)} (${b.id})\n💬 Channel: ${a.channelId ?? "none"} → ${b.channelId ?? "none"}\n🔇 Server muted: ${Boolean(b.serverMute)} | 🔈 Server deafened: ${Boolean(b.serverDeaf)}`,
           ],
   ],
   [
@@ -165,7 +165,7 @@ const definitions = [
         ? null
         : [
             b,
-            `Name: ${a.name} → ${b.name}\nVerification level: ${a.verificationLevel} → ${b.verificationLevel}`,
+            `🏷️ Name: ${a.name} → ${b.name}\n🔐 Verification level: ${a.verificationLevel} → ${b.verificationLevel}`,
           ],
   ],
   [
@@ -174,14 +174,14 @@ const definitions = [
     "Invite created",
     (i) => [
       i.guild,
-      `Code: ${i.code}\nChannel: <#${i.channelId}>\nInviter: ${user(i.inviter)}`,
+      `🔗 Code: ${i.code}\n💬 Channel: <#${i.channelId}>\n👤 Inviter: ${user(i.inviter)}`,
     ],
   ],
   [
     Events.InviteDelete,
     "invites",
     "Invite deleted",
-    (i) => [i.guild, `Code: ${i.code}`],
+    (i) => [i.guild, `🔗 Code: ${i.code}`],
   ],
   [
     Events.GuildEmojiCreate,

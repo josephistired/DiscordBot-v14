@@ -6,7 +6,7 @@ const {
 } = require("discord.js");
 const superagent = require("superagent");
 
-function createSocialCommand({ name, past, model }) {
+function createSocialCommand({ name, past, model, sharedCount = false }) {
   return {
     data: new SlashCommandBuilder()
       .setName(name)
@@ -37,6 +37,22 @@ function createSocialCommand({ name, past, model }) {
         { $inc: { count: 1 } },
         { upsert: true, new: true, setDefaultsOnInsert: true },
       );
+      let count = result.count;
+      if (sharedCount) {
+        // Sum both existing directions so old hug history remains intact.
+        const totals = await model.aggregate([
+          {
+            $match: {
+              $or: [
+                { userId: interaction.user.id, targetId: target.id },
+                { userId: target.id, targetId: interaction.user.id },
+              ],
+            },
+          },
+          { $group: { _id: null, count: { $sum: "$count" } } },
+        ]);
+        count = totals[0]?.count ?? result.count;
+      }
       const embed = new EmbedBuilder()
         .setAuthor({
           name: interaction.user.tag,
@@ -47,7 +63,9 @@ function createSocialCommand({ name, past, model }) {
         .setImage(body.link.trim())
         .setTimestamp()
         .setFooter({
-          text: `${past[0].toUpperCase() + past.slice(1)} ${result.count} ${result.count === 1 ? "time" : "times"}`,
+          text: sharedCount
+            ? `Hugged each other ${count} ${count === 1 ? "time" : "times"}`
+            : `${past[0].toUpperCase() + past.slice(1)} ${count} ${count === 1 ? "time" : "times"}`,
         });
       await interaction.editReply({ embeds: [embed] });
     },

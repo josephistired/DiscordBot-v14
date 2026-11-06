@@ -93,7 +93,9 @@ module.exports = {
         .sort((a, b) => b.position - a.position)
         .map((role) => role);
 
-      const userBadges = member.user.flags?.toArray() ?? [];
+      const fetchedUser = await member.user.fetch(true);
+      const bannerURL = fetchedUser.bannerURL({ size: 4096 });
+      const userBadges = fetchedUser.flags?.toArray() ?? [];
 
       const joinTime = parseInt(member.joinedTimestamp / 1000, 10);
       const createdTime = parseInt(member.user.createdTimestamp / 1000, 10);
@@ -158,7 +160,7 @@ module.exports = {
           },
           {
             name: "Banner:",
-            value: `[Link](${(await member.user.fetch()).bannerURL()})`,
+            value: bannerURL ? `[Link](${bannerURL})` : "None",
             inline: true,
           },
         ])

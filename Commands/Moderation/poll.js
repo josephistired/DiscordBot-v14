@@ -7,7 +7,6 @@ const {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  AttachmentBuilder,
 } = require("discord.js");
 module.exports = {
   data: new SlashCommandBuilder()
@@ -29,20 +28,18 @@ module.exports = {
   async execute(interaction) {
     const pollQuestion = interaction.options.getString("question");
 
-    const attachment = new AttachmentBuilder("assets/poll.gif");
-
     const pollEmbed = new EmbedBuilder()
-      .setDescription(`Question:\n${pollQuestion}`)
-      .setImage("attachment://poll.gif")
+      .setTitle("📊 Poll")
+      .setDescription(pollQuestion)
       .setAuthor({
         name: `${interaction.member.user.tag}`,
         iconURL: `${interaction.member.displayAvatarURL()}`,
       })
       .addFields([
-        { name: "Yes's", value: "0", inline: true },
-        { name: "No's", value: "0", inline: true },
+        { name: "✅ Yes", value: "0", inline: true },
+        { name: "❌ No", value: "0", inline: true },
       ])
-      .setColor("Green");
+      .setColor("Blurple");
 
     await interaction.reply({
       embeds: [pollEmbed],
@@ -63,7 +60,6 @@ module.exports = {
 
     await interaction.editReply({
       components: [pollButtons],
-      files: [attachment],
     });
   },
 };

@@ -39,10 +39,14 @@ module.exports = {
           answer,
           { yes: Number(fields[0].value), no: Number(fields[1].value) },
         );
+        // Also refresh the presentation of polls created before this update.
+        embed.setColor("Blurple").setTitle("📊 Poll").setImage(null);
+        fields[0].name = "✅ Yes";
+        fields[1].name = "❌ No";
         fields[0].value = String(poll.yes);
         fields[1].value = String(poll.no);
         // Persistent totals are authoritative; a retry repairs an edit that failed after recording the vote.
-        await message.edit({ embeds: [embed] });
+        await message.edit({ embeds: [embed], attachments: [] });
         await i.editReply(
           counted
             ? "Your vote has been recorded."
