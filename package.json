@@ -5,7 +5,8 @@
   "main": "./src/index.js",
   "scripts": {
     "start": "node .",
-    "test": "nodemon"
+    "test": "node --test",
+    "dev": "nodemon"
   },
   "keywords": [
     "discord-bot",

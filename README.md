@@ -45,3 +45,28 @@ The docs include:
 - Code Examples
 
 ---
+
+## Development
+
+Copy `.env.example` to `.env` and set `TOKEN`, `DATABASEURL`, and `DEVELOPERID`.
+Enable the Server Members and Message Content privileged intents in the Discord
+Developer Portal. Invite the bot with the `bot` and `applications.commands` scopes
+and permissions appropriate to the commands you use.
+
+```sh
+npm ci
+npm start
+```
+
+The database connects before login. Startup failures exit with a nonzero status.
+Slash commands register globally when the client becomes ready. Developer reload
+commands replace only this bot's loaded handlers and await command registration.
+
+- `npm run dev`: restart on file changes with nodemon.
+- `npm test`: offline regression tests, without a bot token or database.
+- `DEFAULT_COOLDOWN`: default command cooldown in seconds (defaults to 3).
+  `COMMAND_COOLDOWN` takes precedence when set; individual command `cooldown`
+  values override either setting. Administrators bypass cooldowns.
+
+The core refactor preserves command names and database schemas. Dependency upgrades
+and live Discord/MongoDB integration verification remain separate work.

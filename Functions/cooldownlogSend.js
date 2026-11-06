@@ -1,7 +1,6 @@
-const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 async function cooldownSend({ user, command, time, left }, interaction) {
-  const attachment = new AttachmentBuilder("assets/cooldown.jpg");
 
   const errorEmbed = new EmbedBuilder()
     .setAuthor({
@@ -12,7 +11,7 @@ async function cooldownSend({ user, command, time, left }, interaction) {
       `⚠️ Alert: Please wait ${left} Seconds before running this command again.`
     )
     .setColor("Red")
-    .setThumbnail("attachment://cooldown.jpg")
+
     .addFields(
       {
         name: "👤 User:",
@@ -32,7 +31,6 @@ async function cooldownSend({ user, command, time, left }, interaction) {
 
   await interaction.reply({
     embeds: [errorEmbed],
-    files: [attachment],
     ephemeral: true,
   });
 }

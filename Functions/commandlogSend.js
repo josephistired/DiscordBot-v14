@@ -1,4 +1,4 @@
-const { EmbedBuilder, AttachmentBuilder, GuildMember } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 const logDatabase = require("../Schemas/logs");
 
@@ -7,9 +7,10 @@ async function commandlogSend({ time, place, command }, interaction) {
     const data = await logDatabase.findOne({ Guild: interaction?.guild?.id });
     if (!data) return;
 
-    const attachment = new AttachmentBuilder("assets/user.png");
 
     const channel = interaction.guild.channels.cache.get(data.logChannel);
+
+    if (!channel?.isTextBased()) return;
 
     const commandEmbed = new EmbedBuilder()
       .setTitle("💬 Command Log 💬")
@@ -18,7 +19,7 @@ async function commandlogSend({ time, place, command }, interaction) {
         iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
       })
       .setColor("Green")
-      .setThumbnail("attachment://user.png")
+
       .addFields(
         {
           name: "👤 User:",
@@ -40,7 +41,7 @@ async function commandlogSend({ time, place, command }, interaction) {
       .setFooter({ text: "📩 Command Executed" })
       .setTimestamp();
 
-    channel.send({ embeds: [commandEmbed], files: [attachment] });
+    await channel.send({ embeds: [commandEmbed] });
   } catch (error) {
     console.error(error);
   }

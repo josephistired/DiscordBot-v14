@@ -11,11 +11,11 @@ function deleteCachedFile(file) {
 async function loadFiles(dirName) {
   try {
     const files = await glob(
-      path.join(process.cwd(), dirName, "**/*.js").replace(/\\/g, "/")
+      path.join(path.resolve(__dirname, ".."), dirName, "**/*.js").replace(/\\/g, "/")
     );
     const jsFiles = files.filter((file) => path.extname(file) === ".js");
     await Promise.all(jsFiles.map(deleteCachedFile));
-    return jsFiles;
+    return jsFiles.sort();
   } catch (error) {
     console.log(`Error loading files from ${dirName}: ${error}`);
     throw error;

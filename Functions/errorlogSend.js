@@ -1,7 +1,6 @@
-const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 async function errorSend({ user, command, time, error }, interaction) {
-  const attachment = new AttachmentBuilder("assets/error.png");
 
   const errorEmbed = new EmbedBuilder()
     .setTitle("🚫 Error Occured 🚫")
@@ -10,7 +9,7 @@ async function errorSend({ user, command, time, error }, interaction) {
       iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
     })
     .setColor("Red")
-    .setThumbnail("attachment://error.png")
+
     .addFields(
       {
         name: "👤 User:",
@@ -22,7 +21,7 @@ async function errorSend({ user, command, time, error }, interaction) {
       },
       {
         name: "🛑 Error:",
-        value: ` ${error}`,
+        value: String(error).slice(0, 1024) || "Unknown error",
       },
       {
         name: "⏲️ Command Executed:",
@@ -32,9 +31,9 @@ async function errorSend({ user, command, time, error }, interaction) {
     .setFooter({ text: " 🚫 Error Ocurred" })
     .setTimestamp();
 
-  await interaction.reply({
+  const respond = interaction.deferred || interaction.replied ? "followUp" : "reply";
+  await interaction[respond]({
     embeds: [errorEmbed],
-    files: [attachment],
     ephemeral: true,
   });
 }
