@@ -1,6 +1,6 @@
 {
   "name": "discord-bot-v14",
-  "version": "1.0.3-b",
+  "version": "1.1.0",
   "description": "An open-source Discord bot that offers ultimate control and flexibility for your server. With this bot, you have the ability to host and run it yourself, ensuring that you have the latest updates and features. The bot comes equipped with a variety of commands, including moderation commands for enforcing rules and keeping your server organized, etc. ",
   "main": "./src/index.js",
   "scripts": {
@@ -33,5 +33,14 @@
   },
   "engines": {
     "node": ">=22.12.0"
+  },
+  "overrides": {
+    "discord-giveaways": {
+      "deepmerge-ts": "8.0.2",
+      "serialize-javascript": "7.1.4"
+    },
+    "discord-html-transcripts": {
+      "undici": "6.29.1"
+    }
   }
 }

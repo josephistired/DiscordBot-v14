@@ -7,6 +7,8 @@ const {
   ButtonBuilder,
   ButtonStyle,
 } = require("discord.js");
+const { version } = require("../../package.json");
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("info")
@@ -23,10 +25,13 @@ module.exports = {
         "A multi-purpose bot based off josephistired's Github project.",
       )
       .setTimestamp()
-      .addFields({
-        name: "Developer's Discord",
-        value: `\`\`\`josephistired#5678\`\`\``,
-      });
+      .addFields(
+        { name: "Bot Version", value: version, inline: true },
+        {
+          name: "Developer's Discord",
+          value: `\`\`\`josephistired#5678\`\`\``,
+        },
+      );
 
     const githubButton = new ButtonBuilder()
       .setLabel("Project's Github")
