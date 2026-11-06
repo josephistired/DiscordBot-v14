@@ -1,11 +1,14 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
-
+const {
+  InteractionContextType,
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+} = require("discord.js");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("giveaway")
     .setDescription("A complete giveaway system")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addSubcommand((options) =>
       options
         .setName("start")
@@ -14,20 +17,21 @@ module.exports = {
           options
             .setName("duration")
             .setDescription("Provide the duration for the giveaway")
-            .setRequired(true)
+            .setRequired(true),
         )
         .addIntegerOption((options) =>
           options
             .setName("winners")
+            .setMinValue(1)
             .setDescription("Provide the number of winners for the giveaway")
-            .setRequired(true)
+            .setRequired(true),
         )
         .addStringOption((options) =>
           options
             .setName("prize")
             .setDescription("Provide the prize for the giveaway")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((options) =>
       options
@@ -37,8 +41,8 @@ module.exports = {
           options
             .setName("id")
             .setDescription("Provide the message ID of the giveaway")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((options) =>
       options
@@ -48,8 +52,8 @@ module.exports = {
           options
             .setName("id")
             .setDescription("Provide the message ID of the giveaway")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((options) =>
       options
@@ -59,26 +63,27 @@ module.exports = {
           options
             .setName("id")
             .setDescription("Provide the message ID of the giveaway")
-            .setRequired(true)
+            .setRequired(true),
         )
         .addIntegerOption((options) =>
           options
             .setName("winners")
+            .setMinValue(1)
             .setDescription("Provide the number of winners for the giveaway")
-            .setRequired(true)
+            .setRequired(true),
         )
         .addStringOption((options) =>
           options
             .setName("prize")
             .setDescription("Provide the prize for the giveaway")
-            .setRequired(true)
+            .setRequired(true),
         )
         .addStringOption((options) =>
           options
             .setName("duration")
             .setDescription("Provide the duration for the giveaway")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((options) =>
       options
@@ -88,8 +93,8 @@ module.exports = {
           options
             .setName("id")
             .setDescription("Provide the message ID of the giveaway")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((options) =>
       options
@@ -99,8 +104,8 @@ module.exports = {
           options
             .setName("id")
             .setDescription("Provide the message ID of the giveaway")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((options) =>
       options
@@ -110,7 +115,7 @@ module.exports = {
           options
             .setName("id")
             .setDescription("Provide the message ID of the giveaway")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     ),
 };

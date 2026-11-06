@@ -1,4 +1,5 @@
 const {
+  InteractionContextType,
   SlashCommandBuilder,
   PermissionFlagsBits,
   ChatInputCommandInteraction,
@@ -8,18 +9,17 @@ const {
   ButtonStyle,
   AttachmentBuilder,
 } = require("discord.js");
-
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("poll")
     .setDescription("Create a poll")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption((options) =>
       options
         .setName("question")
         .setDescription("Provide the question of the poll.")
-        .setRequired(true)
+        .setRequired(true),
     ),
   /**
    *
@@ -43,10 +43,11 @@ module.exports = {
       ])
       .setColor("Green");
 
-    const replyObject = await interaction.reply({
+    await interaction.reply({
       embeds: [pollEmbed],
-      fetchReply: true,
     });
+
+    const replyObject = await interaction.fetchReply();
 
     const pollButtons = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
@@ -56,9 +57,12 @@ module.exports = {
       new ButtonBuilder()
         .setLabel("No")
         .setCustomId(`Poll-No-${replyObject.id}`)
-        .setStyle(ButtonStyle.Danger)
+        .setStyle(ButtonStyle.Danger),
     );
 
-    interaction.editReply({ components: [pollButtons], files: [attachment] });
+    await interaction.editReply({
+      components: [pollButtons],
+      files: [attachment],
+    });
   },
 };

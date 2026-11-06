@@ -48,6 +48,8 @@ The docs include:
 
 ## Development
 
+Use **Node.js 22.12 or newer** (Node 24 LTS is recommended; `.nvmrc` selects 24).
+
 Copy `.env.example` to `.env` and set `TOKEN`, `DATABASEURL`, and `DEVELOPERID`.
 Enable the Server Members and Message Content privileged intents in the Discord
 Developer Portal. Invite the bot with the `bot` and `applications.commands` scopes
@@ -68,5 +70,32 @@ commands replace only this bot's loaded handlers and await command registration.
   `COMMAND_COOLDOWN` takes precedence when set; individual command `cooldown`
   values override either setting. Administrators bypass cooldowns.
 
-The core refactor preserves command names and database schemas. Dependency upgrades
-and live Discord/MongoDB integration verification remain separate work.
+## Modernization notes
+
+- Discord.js is pinned to 14.28.1. First-party code uses `Events.ClientReady`,
+  `MessageFlags.Ephemeral`, and guild interaction contexts.
+- Command names and MongoDB collection names remain unchanged. `/purge amount` is
+  now an integer, and the unsupported `/kick messages` option was removed because
+  Discord kicks cannot delete message history. Bans delete up to seven days of
+  messages using `deleteMessageSeconds`.
+- Slow API, giveaway, and moderation operations acknowledge interactions before
+  doing work. Shared social commands increment and display the updated count.
+- The create/edit anti-link handlers share enforcement and preserve disabled
+  settings. Ensure the bot has Moderate Members, Ban Members, Manage Messages,
+  and access to the configured logging channel for this feature.
+- Polls keep transient votes across event reloads and serialize updates in one
+  bot process. Vote history is bounded to 1,000 polls and resets on restart; it
+  is not durable or synchronized across multiple bot processes.
+- `npm run check` checks JavaScript syntax. CI runs installation, syntax checks,
+  and offline regression tests on Node 22 and 24.
+
+Before deploying, test commands, welcome messages, poll voting, giveaways, and
+anti-link enforcement in a private Discord server with a test MongoDB database.
+Offline tests do not verify Discord permissions, external API availability, or
+live gateway behavior.
+
+Dependency audit: the updated lockfile has no critical findings, but six production
+findings remain in `discord-giveaways` and `discord-html-transcripts` dependency
+chains (five high and one moderate at the time of this update). Transcripts are
+pinned to 3.2.0 because the maintainer marks 3.3.0 as broken. These dependencies
+need further review or replacement before treating this bot as production-ready.

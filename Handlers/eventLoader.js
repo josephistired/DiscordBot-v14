@@ -1,3 +1,4 @@
+const { Events } = require("discord.js");
 const { loadFiles } = require("../Functions/fileLoader");
 
 async function loadEvents(client) {
@@ -12,9 +13,12 @@ async function loadEvents(client) {
       name: event.name,
       target: event.rest ? client.rest : client,
       once: event.once,
-      handler: (...args) => Promise.resolve()
-        .then(() => event.execute(...args, client))
-        .catch((error) => console.error(`Event ${event.name} failed:`, error)),
+      handler: (...args) =>
+        Promise.resolve()
+          .then(() => event.execute(...args, client))
+          .catch((error) =>
+            console.error(`Event ${event.name} failed:`, error),
+          ),
     };
   });
 
@@ -23,8 +27,16 @@ async function loadEvents(client) {
   }
   for (const listener of listeners) {
     // A reload must not rerun ready-time initialization.
-    if (listener.once && listener.name === "ready" && client.isReady()) continue;
-    listener.target[listener.once ? "once" : "on"](listener.name, listener.handler);
+    if (
+      listener.once &&
+      listener.name === Events.ClientReady &&
+      client.isReady()
+    )
+      continue;
+    listener.target[listener.once ? "once" : "on"](
+      listener.name,
+      listener.handler,
+    );
   }
   client.loadedEvents = listeners;
   console.info(`Loaded ${listeners.length} events.`);

@@ -1,4 +1,6 @@
 const {
+  MessageFlags,
+  InteractionContextType,
   SlashCommandBuilder,
   PermissionFlagsBits,
   EmbedBuilder,
@@ -11,12 +13,12 @@ module.exports = {
     .setName("log-set")
     .setDescription("Sets channel for mod logs to be sent to")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addChannelOption((options) =>
       options
         .setName("channel")
         .setDescription("Select the Channel.")
-        .setRequired(true)
+        .setRequired(true),
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
@@ -33,7 +35,7 @@ module.exports = {
       {
         new: true,
         upsert: true,
-      }
+      },
     );
 
     client.guildConfig.set(interaction.guild.id, {
@@ -48,9 +50,9 @@ module.exports = {
         value: channelObject.name,
       });
 
-    interaction.reply({
+    await interaction.reply({
       embeds: [success],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 };

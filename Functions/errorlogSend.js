@@ -1,12 +1,10 @@
-const { EmbedBuilder } = require("discord.js");
-
+const { MessageFlags, EmbedBuilder } = require("discord.js");
 async function errorSend({ user, command, time, error }, interaction) {
-
   const errorEmbed = new EmbedBuilder()
     .setTitle("🚫 Error Occured 🚫")
     .setAuthor({
       name: `${interaction.user.tag} | ${interaction.user.id}`,
-      iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+      iconURL: interaction.user.displayAvatarURL(),
     })
     .setColor("Red")
 
@@ -26,15 +24,19 @@ async function errorSend({ user, command, time, error }, interaction) {
       {
         name: "⏲️ Command Executed:",
         value: `<t:${time}:D> | <t:${time}:R>`,
-      }
+      },
     )
     .setFooter({ text: " 🚫 Error Ocurred" })
     .setTimestamp();
 
-  const respond = interaction.deferred || interaction.replied ? "followUp" : "reply";
+  const respond = interaction.replied
+    ? "followUp"
+    : interaction.deferred
+      ? "editReply"
+      : "reply";
   await interaction[respond]({
     embeds: [errorEmbed],
-    ephemeral: true,
+    ...(respond === "editReply" ? {} : { flags: MessageFlags.Ephemeral }),
   });
 }
 

@@ -1,4 +1,8 @@
-const { EmbedBuilder, ChatInputCommandInteraction } = require("discord.js");
+const {
+  MessageFlags,
+  EmbedBuilder,
+  ChatInputCommandInteraction,
+} = require("discord.js");
 const Database = require("../../../Schemas/welcome");
 
 module.exports = {
@@ -26,7 +30,7 @@ module.exports = {
       {
         new: true,
         upsert: true,
-      }
+      },
     );
 
     const success = new EmbedBuilder()
@@ -37,9 +41,9 @@ module.exports = {
         value: channelObject.name,
       });
 
-    interaction.reply({
+    await interaction.reply({
       embeds: [success],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 };

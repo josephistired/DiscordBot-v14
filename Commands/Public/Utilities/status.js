@@ -1,7 +1,6 @@
-//  GNU General Public License v3.0 - https://www.gnu.org/licenses/gpl-3.0.en.html
-//  Developed by Kevin Foged, 1st of October 2022 - https://github.com/KevinFoged
-
 const {
+  MessageFlags,
+  InteractionContextType,
   ChatInputCommandInteraction,
   SlashCommandBuilder,
   EmbedBuilder,
@@ -9,6 +8,8 @@ const {
   UserFlags,
   version,
 } = require("discord.js");
+//  GNU General Public License v3.0 - https://www.gnu.org/licenses/gpl-3.0.en.html
+//  Developed by Kevin Foged, 1st of October 2022 - https://github.com/KevinFoged
 
 const { connection } = require("mongoose");
 const os = require("os");
@@ -17,7 +18,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("status")
     .setDescription("Displays the bot's and database connection's status!")
-    .setDMPermission(false),
+    .setContexts(InteractionContextType.Guild),
   /**
    * @param {ChatInputCommandInteraction} interaction
    * @param {Client} client
@@ -37,7 +38,7 @@ module.exports = {
       client.channels.cache.filter((channel) => type.includes(channel.type))
         .size;
 
-    interaction.reply({
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setColor(interaction.guild.members.me.roles.highest.hexColor)
@@ -51,7 +52,7 @@ module.exports = {
                 `💳 **ID:** ${client.user.id}`,
                 `📆 **Created: ** <t:${parseInt(
                   client.user.createdTimestamp / 1000,
-                  10
+                  10,
                 )}:R>`,
                 `👩🏻‍🔧 **Developer:** joseph#5678`,
                 `👑 **Owner:** ${
@@ -74,7 +75,7 @@ module.exports = {
                   .replace("Darwin", "macOS")}`,
                 `⏰ **Up Since:** <t:${parseInt(
                   client.readyTimestamp / 1000,
-                  10
+                  10,
                 )}:R>`,
                 `🏓 **Ping:** ${client.ws.ping}ms`,
                 `🧠 **CPU Model:** ${os.cpus()[0].model}`,
@@ -111,10 +112,10 @@ module.exports = {
                 ])}`,
               ].join("\n"),
               inline: true,
-            }
+            },
           ),
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 };

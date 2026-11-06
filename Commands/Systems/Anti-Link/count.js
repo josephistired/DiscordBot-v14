@@ -1,4 +1,8 @@
-const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
+const {
+  MessageFlags,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+} = require("discord.js");
 const Database = require("../../../Schemas/infractions");
 
 module.exports = {
@@ -17,13 +21,13 @@ module.exports = {
       if (!userData)
         return interaction.reply({
           content: `No discord invite data found for ${user}.`,
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
 
       const successEmbed = new EmbedBuilder()
         .setTitle("🔗 Discord Invite Data")
         .setDescription(
-          `How many discord invites has ${user} sent in ${interaction.guild}?`
+          `How many discord invites has ${user} sent in ${interaction.guild}?`,
         )
         .setColor("Green")
         .addFields(
@@ -38,15 +42,18 @@ module.exports = {
           {
             name: "How many more invites until ban:",
             value: `${4 - userData.linkCount} invites`,
-          }
+          },
         );
 
-      interaction.reply({ embeds: [successEmbed], ephemeral: true });
+      await interaction.reply({
+        embeds: [successEmbed],
+        flags: MessageFlags.Ephemeral,
+      });
     } catch (error) {
       console.error(error);
-      interaction.reply({
+      await interaction.reply({
         content: "An error occurred! Try again later",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

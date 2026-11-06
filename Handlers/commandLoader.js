@@ -10,7 +10,8 @@ async function loadCommands(client) {
     const command = require(file);
     const key = command.subCommand ?? command.data?.name;
     const collection = command.subCommand ? subCommands : commands;
-    if (!key || collection.has(key)) throw new Error(`Invalid or duplicate command: ${file}`);
+    if (!key || collection.has(key))
+      throw new Error(`Invalid or duplicate command: ${file}`);
     if (command.subCommand && typeof command.execute !== "function") {
       throw new Error(`Missing subcommand execute function: ${file}`);
     }
@@ -22,7 +23,9 @@ async function loadCommands(client) {
   await client.application.commands.set(definitions);
   client.commands = commands;
   client.subCommands = subCommands;
-  console.info(`Loaded ${commands.size} commands and ${subCommands.size} subcommands.`);
+  console.info(
+    `Loaded ${commands.size} commands and ${subCommands.size} subcommands.`,
+  );
 }
 
 module.exports = { loadCommands };

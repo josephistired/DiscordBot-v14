@@ -1,25 +1,26 @@
 const {
+  MessageFlags,
+  InteractionContextType,
   SlashCommandBuilder,
   EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
 } = require("discord.js");
-
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("info")
     .setDescription("Shows information on the bot.")
-    .setDMPermission(false),
+    .setContexts(InteractionContextType.Guild),
 
-  execute(interaction) {
+  async execute(interaction) {
     const infoEmbed = new EmbedBuilder()
       .setAuthor({
         name: `${interaction.member.user.tag}`,
         iconURL: `${interaction.member.displayAvatarURL()}`,
       })
       .setDescription(
-        "A multi-purpose bot based off josephistired's Github project."
+        "A multi-purpose bot based off josephistired's Github project.",
       )
       .setTimestamp()
       .addFields({
@@ -34,10 +35,10 @@ module.exports = {
 
     const actionRow = new ActionRowBuilder().addComponents(githubButton);
 
-    interaction.reply({
+    await interaction.reply({
       embeds: [infoEmbed],
       components: [actionRow],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 };

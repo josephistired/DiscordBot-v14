@@ -6,7 +6,8 @@ const GiveawayManagerWithOwnDatabase = require("./giveawayManager");
 
 async function start() {
   for (const key of ["TOKEN", "DATABASEURL", "DEVELOPERID"]) {
-    if (!process.env[key]?.trim()) throw new Error(`Missing required environment variable: ${key}`);
+    if (!process.env[key]?.trim())
+      throw new Error(`Missing required environment variable: ${key}`);
   }
   const mongoose = require("mongoose");
   mongoose.set("strictQuery", true);
@@ -31,7 +32,6 @@ async function start() {
   await loadEvents(client);
 
   await client.login(process.env.TOKEN);
-
 }
 
 start().catch(async (error) => {

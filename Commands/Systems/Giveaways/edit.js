@@ -1,4 +1,8 @@
-const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
+const {
+  MessageFlags,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+} = require("discord.js");
 const Database = require("../../../Schemas/giveaway");
 const { errorSend } = require("../../../Functions/errorlogSend");
 const ms = require("ms");
@@ -9,6 +13,7 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction, client) {
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     try {
       const { options } = interaction;
       const giveawayId = interaction.options.getString("id");
@@ -25,26 +30,30 @@ module.exports = {
 
       if (!giveaway) {
         errors.push(
-          `No giveaways found with the provided message ID: ${giveawayId}`
+          `No giveaways found with the provided message ID: ${giveawayId}`,
         );
         throw new Error(errors.join("\n"));
       }
 
+      const duration = ms(addTime);
+      if (!Number.isFinite(duration) || duration <= 0 || newWinnerCount < 1) {
+        throw new Error("Provide a positive duration and at least one winner.");
+      }
       await client.giveawaysManager.edit(giveawayId, {
-        addTime: ms(addTime),
+        addTime: duration,
         newWinnerCount,
         newPrize,
       });
-      await interaction.reply("✅ Success! Giveaway edited!");
+      await interaction.editReply("✅ Success! Giveaway edited!");
     } catch (error) {
-      errorSend(
+      await errorSend(
         {
           user: `${interaction.user.username}`,
           command: `${interaction.commandName}`,
           error: error.message,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
   },

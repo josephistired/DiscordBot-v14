@@ -16,7 +16,7 @@ async function moderationlogSend(
     link,
   },
   interaction,
-  message
+  message,
 ) {
   const source = interaction ?? message;
   const guild = source?.guild;
@@ -24,7 +24,6 @@ async function moderationlogSend(
   const data = await logDatabase.findOne({ Guild: guild.id });
 
   if (!data) return;
-
 
   const channel = guild.channels.cache.get(data.logChannel);
   if (!channel?.isTextBased()) return;
@@ -34,12 +33,8 @@ async function moderationlogSend(
   const commandEmbed = new EmbedBuilder()
     .setTitle("🚨 Moderation Log 🚨")
     .setAuthor({
-      name: `${interaction?.user?.tag ?? message?.author?.tag} | ${
-        interaction?.user?.id ?? message?.author?.id
-      }`,
-      iconURL: (interaction?.user ?? message?.author)?.displayAvatarURL({
-        dynamic: true,
-      }),
+      name: `${(source.user ?? source.author).tag} | ${(source.user ?? source.author).id}`,
+      iconURL: (source.user ?? source.author).displayAvatarURL(),
     })
     .setColor("Green")
 
@@ -87,7 +82,7 @@ async function moderationlogSend(
       {
         name: "👮🏻 Moderator",
         value: moderator || "Not applicable",
-      }
+      },
     )
     .setFooter({ text: `${action} Executed` })
     .setTimestamp();

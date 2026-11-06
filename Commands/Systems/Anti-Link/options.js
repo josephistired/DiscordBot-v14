@@ -1,4 +1,8 @@
-const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
+const {
+  MessageFlags,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+} = require("discord.js");
 const Database = require("../../../Schemas/links");
 const { errorSend } = require("../../../Functions/errorlogSend");
 
@@ -23,7 +27,7 @@ module.exports = {
         {
           new: true,
           upsert: true,
-        }
+        },
       );
 
       const success = new EmbedBuilder()
@@ -34,19 +38,19 @@ module.exports = {
           value: onoff,
         })
         .setFooter({ text: "On by default!" });
-      interaction.reply({
+      await interaction.reply({
         embeds: [success],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     } catch (error) {
-      errorSend(
+      await errorSend(
         {
           user: `${interaction.user.username}`,
           command: `${interaction.commandName}`,
           error: error.message,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
   },

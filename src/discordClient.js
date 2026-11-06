@@ -1,9 +1,4 @@
-const {
-  Client,
-  GatewayIntentBits,
-  Partials,
-  Collection,
-} = require("discord.js");
+const { Client, GatewayIntentBits, Partials } = require("discord.js");
 const {
   Guilds,
   GuildMembers,
@@ -12,7 +7,8 @@ const {
   GuildMessageReactions,
   MessageContent,
 } = GatewayIntentBits;
-const { User, Message, GuildMember, ThreadMember } = Partials;
+const { User, Message, GuildMember, ThreadMember, Channel, Reaction } =
+  Partials;
 
 const client = new Client({
   intents: [
@@ -23,7 +19,7 @@ const client = new Client({
     GuildMessageReactions,
     MessageContent,
   ],
-  partials: [User, Message, GuildMember, ThreadMember],
+  partials: [User, Message, GuildMember, ThreadMember, Channel, Reaction],
 });
 
 module.exports = client;
