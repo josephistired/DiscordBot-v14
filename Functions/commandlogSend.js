@@ -1,24 +1,24 @@
-const { EmbedBuilder, AttachmentBuilder, GuildMember } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 const logDatabase = require("../Schemas/logs");
 
 async function commandlogSend({ time, place, command }, interaction) {
   try {
     const data = await logDatabase.findOne({ Guild: interaction?.guild?.id });
-    if (!data) return;
-
-    const attachment = new AttachmentBuilder("assets/user.png");
+    if (!data || !require("./guildLog").enabled(data, "commands")) return;
 
     const channel = interaction.guild.channels.cache.get(data.logChannel);
+
+    if (!channel?.isTextBased()) return;
 
     const commandEmbed = new EmbedBuilder()
       .setTitle("💬 Command Log 💬")
       .setAuthor({
         name: `${interaction.user.tag} | ${interaction.user.id}`,
-        iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+        iconURL: interaction.user.displayAvatarURL(),
       })
       .setColor("Green")
-      .setThumbnail("attachment://user.png")
+
       .addFields(
         {
           name: "👤 User:",
@@ -35,12 +35,12 @@ async function commandlogSend({ time, place, command }, interaction) {
         {
           name: "⏲️ Command Executed:",
           value: `<t:${time}:D> | <t:${time}:R>`,
-        }
+        },
       )
       .setFooter({ text: "📩 Command Executed" })
       .setTimestamp();
 
-    channel.send({ embeds: [commandEmbed], files: [attachment] });
+    await channel.send({ embeds: [commandEmbed] });
   } catch (error) {
     console.error(error);
   }

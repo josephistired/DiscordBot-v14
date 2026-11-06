@@ -1,128 +1,110 @@
-const {
-  ChatInputCommandInteraction,
-  Collection,
-  PermissionFlagsBits,
-} = require("discord.js");
+const { Collection, PermissionFlagsBits } = require("discord.js");
 const { connection } = require("mongoose");
-
 const { commandlogSend } = require("../../Functions/commandlogSend");
 const { errorSend } = require("../../Functions/errorlogSend");
 const { cooldownSend } = require("../../Functions/cooldownlogSend");
 
-require("dotenv").config();
-
 module.exports = {
   name: "interactionCreate",
-  /**
-   *
-   * @param {ChatInputCommandInteraction} interaction
-   */
-  execute(interaction, client) {
+  async execute(interaction, client) {
     if (!interaction.isChatInputCommand()) return;
-
     const command = client.commands.get(interaction.commandName);
-
-    const sent = parseInt(interaction.createdTimestamp / 1000, 10);
-
-    const errorsArray = [];
-
-    if (connection.readyState === 0)
-      errorsArray.push(
-        "Unable to connect to the database. Please check that you have provided a valid database URL in your configuration file. You can find instructions for setting up the database in our documentation at https://discord-bot-v14-docs.vercel.app/docs/intro"
-      );
-
-    if (!command) errorsArray.push("💤 Command Is Outdated.");
-
-    if (command.developer && interaction.user.id !== process.env.DEVELOPERID)
-      errorsArray.push(
-        "Sorry, this command is only available to the person who set up this bot. Maybe you can convince them to run it for you!"
-      );
-
-    if (command.testing === true)
-      errorsArray.push(
-        "This command is currently in testing and is not available for use at this time."
-      );
-
-    const { cooldowns } = client;
-    if (!cooldowns.has(command.name)) {
-      cooldowns.set(command.name, new Collection());
-    }
-
-    const now = Date.now();
-    const timestamps = cooldowns.get(command.name);
-    const cooldownAmount = process.env.COMMAND_COOLDOWN * 1000 || 3 * 1000;
-
-    if (interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-      timestamps.set(interaction.user.id, now);
-      setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
-    } else {
-      const expirationTime =
-        timestamps.get(interaction.user.id) + cooldownAmount;
-
-      if (now < expirationTime) {
-        const timeLeft = (expirationTime - now) / 1000;
-
-        cooldownSend(
-          {
-            left: `${timeLeft.toFixed(1)}`,
-            user: `${interaction.member.user.tag}`,
-            command: `${interaction.commandName}`,
-            time: `${sent}`,
-          },
-          interaction
-        );
-
-        return;
-      }
-    }
-
-    timestamps.set(interaction.user.id, now);
-    setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
-
-    if (errorsArray.length) {
-      return errorSend(
+    const sent = Math.floor(interaction.createdTimestamp / 1000);
+    const reportError = (error) =>
+      errorSend(
         {
-          user: `${interaction.user.username}`,
-          command: `${interaction.commandName}`,
-          error: `${errorsArray.join("\n")}`,
-          time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
+          user: interaction.user.username,
+          command: interaction.commandName,
+          error: String(error),
+          time: sent,
         },
-        interaction
+        interaction,
       );
+
+    if (!interaction.inGuild())
+      return reportError("Please use commands in a server.");
+    if (!command) return reportError("💤 Command Is Outdated.");
+    if (command.developer && interaction.user.id !== process.env.DEVELOPERID) {
+      return reportError("This command is only available to the bot owner.");
+    }
+    const required = command.data?.default_member_permissions;
+    if (required && !interaction.memberPermissions?.has(BigInt(required))) {
+      return reportError("You do not have permission to use this command.");
+    }
+    if (command.testing)
+      return reportError("This command is currently in testing.");
+    if (command.requiresDatabase !== false && connection.readyState !== 1)
+      return reportError(
+        "The database is unavailable. Please try again later.",
+      );
+
+    if (
+      interaction.commandName === "giveaway" &&
+      !client.giveawaysManager?.ready
+    ) {
+      return reportError(
+        "Giveaways are still initializing. Please try again shortly.",
+      );
+    }
+
+    const subCommand = interaction.options.getSubcommand(false);
+    const handler = subCommand
+      ? client.subCommands.get(`${interaction.commandName}.${subCommand}`)
+      : command;
+    if (typeof handler?.execute !== "function")
+      return reportError("💤 Command Is Outdated.");
+
+    const seconds = Number(
+      command.cooldown ??
+        process.env.COMMAND_COOLDOWN ??
+        process.env.DEFAULT_COOLDOWN ??
+        3,
+    );
+    const cooldownAmount =
+      (Number.isFinite(seconds) && seconds >= 0 ? seconds : 3) * 1000;
+    const now = Date.now();
+    if (
+      !interaction.memberPermissions?.has(PermissionFlagsBits.Administrator) &&
+      cooldownAmount > 0
+    ) {
+      const key = interaction.commandName;
+      if (!client.cooldowns.has(key))
+        client.cooldowns.set(key, new Collection());
+      const timestamps = client.cooldowns.get(key);
+      const expires = timestamps.get(interaction.user.id) ?? 0;
+      if (now < expires) {
+        return cooldownSend(
+          {
+            left: ((expires - now) / 1000).toFixed(1),
+            user: interaction.user.tag,
+            command: key,
+            time: sent,
+          },
+          interaction,
+        );
+      }
+      const expiration = now + cooldownAmount;
+      timestamps.set(interaction.user.id, expiration);
+      setTimeout(() => {
+        if (timestamps.get(interaction.user.id) === expiration)
+          timestamps.delete(interaction.user.id);
+        if (!timestamps.size) client.cooldowns.delete(key);
+      }, cooldownAmount).unref();
     }
 
     try {
-      const subCommand = interaction.options.getSubcommand(false);
-      if (subCommand) {
-        const subCommandFile = client.subCommands.get(
-          `${interaction.commandName}.${subCommand}`
-        );
-        if (!subCommandFile)
-          return interaction.reply({
-            content: "💤 Command Is Outdated.",
-            ephemeral: true,
-          });
-        subCommandFile.execute(interaction, client);
-      } else command.execute(interaction, client);
-      commandlogSend(
-        {
-          command: `${interaction.commandName}`,
-          user: `${interaction.member.user.tag}`,
-          place: `${interaction.channel.name}`,
-          time: `${sent}`,
-        },
-        interaction
-      );
+      await handler.execute(interaction, client);
     } catch (error) {
-      return errorSend(
-        {
-          user: `${interaction.user.username}`,
-          command: `${interaction.commandName}`,
-          error: `${error}`,
-          time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
-        },
-        interaction
-      );
+      console.error(`Command ${interaction.commandName} failed:`, error);
+      return reportError("The command failed. Please try again later.");
     }
+    await commandlogSend(
+      {
+        command: interaction.commandName,
+        place: interaction.channel?.name ?? "Unknown channel",
+        time: sent,
+      },
+      interaction,
+    );
   },
 };

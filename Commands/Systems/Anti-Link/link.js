@@ -1,10 +1,13 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
-
+const {
+  InteractionContextType,
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+} = require("discord.js");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("link")
     .setDescription("A link detection system")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addSubcommand((options) =>
       options
@@ -14,7 +17,7 @@ module.exports = {
           options
             .setName("discord-links")
             .setDescription(
-              "The system to delete all discord server invite links."
+              "The system to delete all discord server invite links.",
             )
             .setRequired(true)
             .addChoices(
@@ -25,9 +28,9 @@ module.exports = {
               {
                 name: "Disable",
                 value: "false",
-              }
-            )
-        )
+              },
+            ),
+        ),
     )
     .addSubcommand((options) =>
       options
@@ -37,14 +40,14 @@ module.exports = {
           options
             .setName("user")
             .setDescription("Select the user")
-            .setRequired(true)
+            .setRequired(true),
         )
         .addStringOption((options) =>
           options
             .setName("reason")
             .setDescription("The reason for the removal of the count?")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((options) =>
       options
@@ -54,7 +57,7 @@ module.exports = {
           options
             .setName("user")
             .setDescription("Select The user")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     ),
 };

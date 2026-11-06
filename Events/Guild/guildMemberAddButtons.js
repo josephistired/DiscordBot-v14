@@ -1,103 +1,63 @@
-const { ButtonInteraction, EmbedBuilder } = require("discord.js");
-
+const { Events, MessageFlags, PermissionFlagsBits } = require("discord.js");
+const { validateTarget } = require("../../Functions/moderationTarget");
 const { moderationlogSend } = require("../../Functions/moderationlogSend");
 const { errorSend } = require("../../Functions/errorlogSend");
 
 module.exports = {
-  name: "interactionCreate",
-  /**
-   *
-   * @param {ButtonInteraction} interaction
-   */
+  name: Events.InteractionCreate,
   async execute(interaction) {
-    if (!interaction.isButton()) return;
-
-    const splitArray = interaction.customId.split("-");
-
-    if (splitArray[0] !== "MemberLogging") return;
-    const member = (await interaction.guild.members.fetch()).get(splitArray[2]);
-
-    const errorsArray = [];
-
-    if (!interaction.member.permissions.has("KickMembers"))
-      errorsArray.push(
-        "You do not have the required permission for this action."
+    if (
+      !interaction.isButton() ||
+      !interaction.customId.startsWith("MemberLogging-")
+    )
+      return;
+    try {
+      if (!interaction.inCachedGuild())
+        throw new Error("Use this action in a server.");
+      const [, action, targetId] = interaction.customId.split("-");
+      if (!["Kick", "Ban"].includes(action)) return;
+      const permission =
+        action === "Ban"
+          ? PermissionFlagsBits.BanMembers
+          : PermissionFlagsBits.KickMembers;
+      if (!interaction.memberPermissions.has(permission))
+        throw new Error(
+          `You lack permission to ${action.toLowerCase()} members.`,
+        );
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+      const target = await interaction.guild.members
+        .fetch(targetId)
+        .catch(() => null);
+      validateTarget(
+        interaction,
+        target,
+        action === "Ban" ? "bannable" : "kickable",
       );
-
-    if (!member)
-      errorsArray.push("This user is no longer a member of this server.");
-
-    if (!member.moderatable)
-      errorsArray.push(
-        `${member.user.username} is not moderatable by this bot.`
+      const reason = `Member logging action by ${interaction.user.tag}`;
+      if (action === "Ban") await target.ban({ reason });
+      else await target.kick(reason);
+      await interaction.editReply(
+        `${action === "Ban" ? "Banned" : "Kicked"} ${target.user.tag}.`,
       );
-
-    if (errorsArray.length) {
-      return errorSend(
+      await moderationlogSend(
         {
-          user: `${member.user.username}`,
-          command: `Member Logging System Buttons`,
-          error: `${errorsArray.join("\n")}`,
-          time: `${Math.floor(interaction.createdTimestamp / 1000)}`,
+          action,
+          moderator: interaction.user.tag,
+          user: target.user.tag,
+          reason,
         },
-        interaction
+        interaction,
       );
-    }
-
-    const successEmbed = new EmbedBuilder().setColor("Green").setTimestamp();
-
-    switch (splitArray[1]) {
-      case "Kick":
-        member.kick().then(() => {
-          interaction.reply({
-            embeds: [
-              successEmbed.setDescription(
-                `👟 \n Kicked \`${member.user.username}\` from the server!`
-              ),
-            ],
-            ephemeral: true,
-          });
-          moderationlogSend(
-            {
-              action: "Kick",
-              moderator: `${interaction.user.tag}`,
-              user: `${member}`,
-              reason: `Member Logging System`,
-              emoji: "👟",
-            },
-            interaction
-          ).catch(() => {
-            errorsArray.push(`${member.user.username} could not be kicked.`);
-          });
-        });
-        break;
-      case "Ban":
-        member.ban().then(() => {
-          interaction.reply({
-            embeds: [
-              successEmbed.setDescription(
-                `🔨 \n Banned \`${member.user.username}\` from the server!`
-              ),
-            ],
-            ephemeral: true,
-          });
-          moderationlogSend(
-            {
-              action: "Ban",
-              moderator: `${interaction.user.tag}`,
-              user: `${member}`,
-              reason: `Member Logging System`,
-              emoji: "🔨",
-            },
-            interaction
-          ).catch(() => {
-            errorsArray.push(`${member.user.username} could not be banned.`);
-          });
-        });
-        break;
-      default:
-        // do nothing
-        break;
+    } catch (error) {
+      await errorSend(
+        {
+          user: interaction.user.tag,
+          command: "Member logging",
+          time: Math.floor(interaction.createdTimestamp / 1000),
+          error: error.message,
+        },
+        interaction,
+      );
     }
   },
 };

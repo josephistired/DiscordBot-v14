@@ -1,4 +1,9 @@
-const { EmbedBuilder, ChatInputCommandInteraction } = require("discord.js");
+const { validateConfigChannel } = require("../../../Functions/configChannel");
+const {
+  MessageFlags,
+  EmbedBuilder,
+  ChatInputCommandInteraction,
+} = require("discord.js");
 const Database = require("../../../Schemas/welcome");
 
 module.exports = {
@@ -15,6 +20,30 @@ module.exports = {
     const messageObject = options.getString("welcome-message");
     const colorObject = options.getString("welcome-color");
 
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+    const me = await validateConfigChannel(interaction, channelObject);
+    if (
+      !me.permissions.has(require("discord.js").PermissionFlagsBits.ManageRoles)
+    ) {
+      throw new Error("The bot needs Manage Roles to assign welcome roles.");
+    }
+    if (
+      !roleObject ||
+      roleObject.id === interaction.guildId ||
+      roleObject.managed ||
+      me.roles.highest.comparePositionTo(roleObject) <= 0
+    ) {
+      throw new Error("Choose an unmanaged role below the bot's highest role.");
+    }
+
+    const verification = await require("../../../Schemas/verification").findOne(
+      { Guild: interaction.guildId },
+    );
+    if (verification?.role === roleObject.id)
+      throw new Error(
+        "The automatic welcome role cannot be the verification role.",
+      );
+
     await Database.findOneAndUpdate(
       { Guild: interaction.guild.id },
       {
@@ -26,7 +55,7 @@ module.exports = {
       {
         new: true,
         upsert: true,
-      }
+      },
     );
 
     const success = new EmbedBuilder()
@@ -37,9 +66,8 @@ module.exports = {
         value: channelObject.name,
       });
 
-    interaction.reply({
+    await interaction.editReply({
       embeds: [success],
-      ephemeral: true,
     });
   },
 };

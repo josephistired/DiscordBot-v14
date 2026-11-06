@@ -1,12 +1,10 @@
 const {
+  MessageFlags,
+  InteractionContextType,
   SlashCommandBuilder,
   PermissionFlagsBits,
-  ChatInputCommandInteraction,
-  EmbedBuilder,
 } = require("discord.js");
-
 const { moderationlogSend } = require("../../Functions/moderationlogSend");
-const { errorSend } = require("../../Functions/errorlogSend");
 
 module.exports = {
   moderation: true,
@@ -14,77 +12,36 @@ module.exports = {
     .setName("unban")
     .setDescription("Unbans user from the server")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption((options) =>
       options
         .setName("userid")
         .setDescription("Please enter the user's ID.")
-        .setRequired(true)
+        .setRequired(true),
     )
     .addStringOption((options) =>
       options
         .setName("reason")
         .setDescription("The reason for the unban of this user?")
-        .setMaxLength(512)
+        .setMaxLength(512),
     ),
-  /**
-   * @param {ChatInputCommandInteraction} interaction
-   */
   async execute(interaction) {
-    const { options, member } = interaction;
-
-    const userid = options.getString("userid");
-    const reason = options.getString("reason") || "Not specified";
-
-    const errorsArray = [];
-
-    const bannedUser = await interaction.guild.bans.fetch();
-    const user = bannedUser.get(userid);
-
-    if (!user) {
-      errorsArray.push("That user is not banned from the server.");
-    }
-
-    try {
-      await interaction.guild.members.unban(userid, reason);
-    } catch (error) {
-      errorsArray.push(
-        "An error occurred while attempting to unban the user. Please try again later."
-      );
-    }
-
-    if (errorsArray.length) {
-      return errorSend(
-        {
-          user: `${member.user.username}`,
-          command: `${interaction.commandName}`,
-          error: `${errorsArray.join("\n")}`,
-          time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
-        },
-        interaction
-      );
-    }
-
-    const successEmbed = new EmbedBuilder().setColor("Green");
-
-    await interaction.reply({
-      embeds: [
-        successEmbed.setDescription(
-          `🔓 \n Unbanned \`${userid}\` from the server!`
-        ),
-      ],
-      ephemeral: true,
-    });
-
-    moderationlogSend(
+    const id = interaction.options.getString("userid", true);
+    if (!/^\d{17,20}$/.test(id))
+      throw new Error("Provide a valid Discord user ID.");
+    const reason = interaction.options.getString("reason") || "Not specified";
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+    const ban = await interaction.guild.bans.fetch(id);
+    await interaction.guild.members.unban(id, reason);
+    await interaction.editReply(`Unbanned ${ban.user.tag}.`);
+    await moderationlogSend(
       {
         action: "Unban",
-        moderator: `${member.user.username}`,
-        user: `${userid}`,
-        reason: `${reason}`,
-        emoji: "🔓",
+        moderator: interaction.user.tag,
+        user: ban.user.tag,
+        reason,
       },
-      interaction
+      interaction,
     );
   },
 };

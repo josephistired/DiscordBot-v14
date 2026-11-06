@@ -1,4 +1,4 @@
-const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const logDatabase = require("../Schemas/logs");
 
 async function moderationlogSend(
@@ -16,34 +16,28 @@ async function moderationlogSend(
     link,
   },
   interaction,
-  message
+  message,
 ) {
-  const data = await logDatabase.findOne({
-    guild: interaction.guild.id || message.guild.id,
-  });
+  const source = interaction ?? message;
+  const guild = source?.guild;
+  if (!guild) return;
+  const data = await logDatabase.findOne({ Guild: guild.id });
 
-  if (!data) return;
+  if (!data || !require("./guildLog").enabled(data, "moderation")) return;
 
-  const attachment = new AttachmentBuilder("assets/moderation.gif");
+  const channel = guild.channels.cache.get(data.logChannel);
+  if (!channel?.isTextBased()) return;
 
-  const channel =
-    interaction.guild.channels.cache.get(data.logChannel) ||
-    message.channel.channels.cache.get(data.logChannel);
-
-  const time = parseInt(interaction.createdTimestamp / 1000, 10);
+  const time = parseInt(source.createdTimestamp / 1000, 10);
 
   const commandEmbed = new EmbedBuilder()
     .setTitle("🚨 Moderation Log 🚨")
     .setAuthor({
-      name: `${interaction?.user?.tag ?? message?.author?.tag} | ${
-        interaction?.user?.id ?? message?.author?.id
-      }`,
-      iconURL: (interaction?.user ?? message?.author)?.displayAvatarURL({
-        dynamic: true,
-      }),
+      name: `${(source.user ?? source.author).tag} | ${(source.user ?? source.author).id}`,
+      iconURL: (source.user ?? source.author).displayAvatarURL(),
     })
     .setColor("Green")
-    .setThumbnail("attachment://moderation.gif")
+
     .addFields(
       {
         name: "🤔 Action",
@@ -88,17 +82,17 @@ async function moderationlogSend(
       {
         name: "👮🏻 Moderator",
         value: moderator || "Not applicable",
-      }
+      },
     )
     .setFooter({ text: `${action} Executed` })
     .setTimestamp();
 
   if (transcript)
-    channel.send({
+    await channel.send({
       embeds: [commandEmbed],
-      files: [transcript, attachment],
+      files: [transcript],
     });
-  else channel.send({ embeds: [commandEmbed], files: [attachment] });
+  else await channel.send({ embeds: [commandEmbed] });
 }
 
 module.exports = { moderationlogSend };

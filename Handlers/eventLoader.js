@@ -1,46 +1,45 @@
+const { Events } = require("discord.js");
 const { loadFiles } = require("../Functions/fileLoader");
 
 async function loadEvents(client) {
-  console.time("Events Loaded");
-
-  const events = [];
-
-  try {
-    client.events = new Map();
-
-    const files = await loadFiles("Events");
-
-    for (const file of files) {
-      try {
-        const event = require(file);
-        const { name, execute, once, rest } = event;
-
-        const target = rest ? client.rest : client;
-        const eventName = once ? "once" : "on";
-        const eventHandler = (...args) => execute(...args, client);
-
-        target[eventName](name, eventHandler);
-        client.events.set(name, eventHandler);
-
-        events.push({ Event: name, Status: "✅" });
-      } catch (error) {
-        console.error(error);
-
-        const eventName = file.split("/").pop().slice(0, -3);
-        const status = "🛑";
-        const errorMessage = error.stack;
-
-        events.push({ Event: eventName, Status: status, Error: errorMessage });
-      }
+  const files = await loadFiles("Events");
+  // Prepare everything before replacing working listeners.
+  const listeners = files.map((file) => {
+    const event = require(file);
+    if (!event.name || typeof event.execute !== "function") {
+      throw new Error(`Invalid event module: ${file}`);
     }
+    return {
+      name: event.name,
+      target: event.rest ? client.rest : client,
+      once: event.once,
+      handler: (...args) =>
+        Promise.resolve()
+          .then(() => event.execute(...args, client))
+          .catch((error) =>
+            console.error(`Event ${event.name} failed:`, error),
+          ),
+    };
+  });
 
-    console.table(events, ["Event", "Status", "Error"]);
-    console.info(`\n\x1b[36mLoaded ${events.length} events.\x1b[0m`);
-  } catch (error) {
-    console.error(error);
+  for (const { target, name, handler } of client.loadedEvents ?? []) {
+    target.off(name, handler);
   }
-
-  console.timeEnd("Events Loaded");
+  for (const listener of listeners) {
+    // A reload must not rerun ready-time initialization.
+    if (
+      listener.once &&
+      listener.name === Events.ClientReady &&
+      client.isReady()
+    )
+      continue;
+    listener.target[listener.once ? "once" : "on"](
+      listener.name,
+      listener.handler,
+    );
+  }
+  client.loadedEvents = listeners;
+  console.info(`Loaded ${listeners.length} events.`);
 }
 
 module.exports = { loadEvents };

@@ -1,58 +1,68 @@
-const { ButtonInteraction } = require("discord.js");
-
-const votedMembers = new Set();
-
+const { Events, EmbedBuilder, MessageFlags } = require("discord.js");
+const { pending } = require("../../Functions/pollState");
+const { recordVote } = require("../../Functions/polls");
 module.exports = {
-  name: "interactionCreate",
-  /**
-   * @param {ButtonInteraction} interaction
-   */
-  async execute(interaction) {
-    if (!interaction.isButton()) return;
-
-    const splittedArray = interaction.customId.split("-");
-    if (splittedArray[0] !== "Poll") return;
-
-    if (votedMembers.has(`${interaction.user.id}-${interaction.message.id}`))
-      return interaction.reply({
-        content: "You have already voted.",
-        ephemeral: true,
+  name: Events.InteractionCreate,
+  async execute(i) {
+    if (!i.isButton() || !i.customId.startsWith("Poll-")) return;
+    const [, answer, messageId] = i.customId.split("-");
+    if (
+      !["Yes", "No"].includes(answer) ||
+      messageId !== i.message.id ||
+      !i.guildId
+    )
+      return;
+    await i.deferReply({ flags: MessageFlags.Ephemeral });
+    const previous = pending.get(messageId) ?? Promise.resolve();
+    const task = previous
+      .catch(() => {})
+      .then(async () => {
+        const message = await i.message.fetch();
+        if (message.author.id !== i.client.user.id || !message.embeds[0])
+          return i.editReply("This poll is unavailable.");
+        const embed = EmbedBuilder.from(message.embeds[0]);
+        const fields = embed.data.fields;
+        if (
+          !fields?.[1] ||
+          !fields
+            .slice(0, 2)
+            .every(
+              (f) =>
+                /^\d+$/.test(f.value) && Number.isSafeInteger(Number(f.value)),
+            )
+        )
+          return i.editReply("This poll is invalid.");
+        const { counted, poll } = await recordVote(
+          i.guildId,
+          messageId,
+          i.user.id,
+          answer,
+          { yes: Number(fields[0].value), no: Number(fields[1].value) },
+        );
+        // Also refresh the presentation of polls created before this update.
+        embed.setColor("Blurple").setTitle("📊 Poll").setImage(null);
+        fields[0].name = "✅ Yes";
+        fields[1].name = "❌ No";
+        fields[0].value = String(poll.yes);
+        fields[1].value = String(poll.no);
+        // Persistent totals are authoritative; a retry repairs an edit that failed after recording the vote.
+        await message.edit({ embeds: [embed], attachments: [] });
+        await i.editReply(
+          counted
+            ? "Your vote has been recorded."
+            : "You have already voted. Your vote remains recorded.",
+        );
       });
-
-    votedMembers.add(`${interaction.user.id}-${interaction.message.id}`);
-
-    const pollEmbed = interaction.message.embeds[0];
-    if (!pollEmbed)
-      return interaction.reply({
-        content: "Contact the hoster of this bot. Unable to find the embed.",
-        ephemeral: true,
-      });
-
-    const yesField = pollEmbed.fields[0];
-    const noField = pollEmbed.fields[1];
-
-    const VoteCoutedReply = "Your vote had been recorded.";
-
-    switch (splittedArray[1]) {
-      case "Yes":
-        const newYesCount = parseInt(yesField.value) + 1;
-        yesField.value = newYesCount;
-
-        await interaction.reply({ content: VoteCoutedReply, ephemeral: true });
-        await interaction.message.edit({ embeds: [pollEmbed] });
-
-        break;
-      case "No":
-        const newNoCount = parseInt(noField.value) + 1;
-        noField.value = newNoCount;
-
-        interaction.reply({ content: VoteCoutedReply, ephemeral: true });
-        interaction.message.edit({ embeds: [pollEmbed] });
-
-        break;
-      default:
-        // Do nothing
-        break;
+    pending.set(messageId, task);
+    try {
+      await task;
+    } catch (error) {
+      console.error("Poll vote failed:", error);
+      await i.editReply(
+        "The poll could not be refreshed. Please try again; a recorded vote will not be counted twice.",
+      );
+    } finally {
+      if (pending.get(messageId) === task) pending.delete(messageId);
     }
   },
 };

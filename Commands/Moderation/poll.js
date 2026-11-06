@@ -1,4 +1,5 @@
 const {
+  InteractionContextType,
   SlashCommandBuilder,
   PermissionFlagsBits,
   ChatInputCommandInteraction,
@@ -6,20 +7,19 @@ const {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  AttachmentBuilder,
 } = require("discord.js");
-
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("poll")
     .setDescription("Create a poll")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption((options) =>
       options
         .setName("question")
+        .setMaxLength(3500)
         .setDescription("Provide the question of the poll.")
-        .setRequired(true)
+        .setRequired(true),
     ),
   /**
    *
@@ -28,25 +28,24 @@ module.exports = {
   async execute(interaction) {
     const pollQuestion = interaction.options.getString("question");
 
-    const attachment = new AttachmentBuilder("assets/poll.gif");
-
     const pollEmbed = new EmbedBuilder()
-      .setDescription(`Question:\n${pollQuestion}`)
-      .setImage("attachment://poll.gif")
+      .setTitle("📊 Poll")
+      .setDescription(pollQuestion)
       .setAuthor({
         name: `${interaction.member.user.tag}`,
         iconURL: `${interaction.member.displayAvatarURL()}`,
       })
       .addFields([
-        { name: "Yes's", value: "0", inline: true },
-        { name: "No's", value: "0", inline: true },
+        { name: "✅ Yes", value: "0", inline: true },
+        { name: "❌ No", value: "0", inline: true },
       ])
-      .setColor("Green");
+      .setColor("Blurple");
 
-    const replyObject = await interaction.reply({
+    await interaction.reply({
       embeds: [pollEmbed],
-      fetchReply: true,
     });
+
+    const replyObject = await interaction.fetchReply();
 
     const pollButtons = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
@@ -56,9 +55,11 @@ module.exports = {
       new ButtonBuilder()
         .setLabel("No")
         .setCustomId(`Poll-No-${replyObject.id}`)
-        .setStyle(ButtonStyle.Danger)
+        .setStyle(ButtonStyle.Danger),
     );
 
-    interaction.editReply({ components: [pollButtons], files: [attachment] });
+    await interaction.editReply({
+      components: [pollButtons],
+    });
   },
 };

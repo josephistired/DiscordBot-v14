@@ -1,4 +1,8 @@
-const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
+const {
+  MessageFlags,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+} = require("discord.js");
 const Database = require("../../../Schemas/infractions");
 const { moderationlogSend } = require("../../../Functions/moderationlogSend");
 
@@ -19,7 +23,7 @@ module.exports = {
       if (!userData)
         return interaction.reply({
           content: `No discord invite data found for ${user}.`,
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       userData = await Database.findOneAndUpdate({
         Guild: guild.id,
@@ -33,22 +37,25 @@ module.exports = {
         .setTimestamp()
         .setColor("Green");
 
-      interaction.reply({ embeds: [successEmbed], ephemeral: true });
+      await interaction.reply({
+        embeds: [successEmbed],
+        flags: MessageFlags.Ephemeral,
+      });
 
-      moderationlogSend(
+      await moderationlogSend(
         {
           action: "Discord Invite Remove",
           moderator: `${member.user.username}`,
           user: `${user.user.tag}`,
           reason: `${reason}`,
         },
-        interaction
+        interaction,
       );
     } catch (error) {
       console.error(error);
-      interaction.reply({
+      await interaction.reply({
         content: "An error occurred! Try again later",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

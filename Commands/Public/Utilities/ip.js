@@ -1,4 +1,6 @@
 const {
+  MessageFlags,
+  InteractionContextType,
   ChatInputCommandInteraction,
   SlashCommandBuilder,
   EmbedBuilder,
@@ -11,12 +13,12 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("ip")
     .setDescription("Displays information about a given IP address")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption((options) =>
       options
         .setName("ip")
         .setDescription("What is the IP address? ")
-        .setRequired(true)
+        .setRequired(true),
     ),
   /**
    *
@@ -25,7 +27,12 @@ module.exports = {
   async execute(interaction) {
     const ip = interaction.options.getString("ip");
 
-    let { body } = await superagent.get(`https://ipwhois.app/json/${ip}`);
+    if (!require("node:net").isIP(ip))
+      throw new Error("Provide a valid IPv4 or IPv6 address.");
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+    const { body } = await superagent
+      .get(`https://ipwhois.app/json/${encodeURIComponent(ip)}`)
+      .timeout({ response: 5000, deadline: 10000 });
 
     const errorsArray = [];
 
@@ -41,7 +48,7 @@ module.exports = {
           error: `${errorsArray.join("\n")}`,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
 
@@ -96,11 +103,10 @@ module.exports = {
         {
           name: "Flag:",
           value: `\`\`\`${getFlagEmoji(body.country_code)}\`\`\``,
-        }
+        },
       );
-    interaction.reply({
+    await interaction.editReply({
       embeds: [ipembed],
-      ephemeral: true,
     });
   },
 };

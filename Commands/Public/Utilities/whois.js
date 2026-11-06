@@ -1,3 +1,10 @@
+const {
+  InteractionContextType,
+  ChatInputCommandInteraction,
+  SlashCommandBuilder,
+  EmbedBuilder,
+  AttachmentBuilder,
+} = require("discord.js");
 function addSuffix(number) {
   if (number % 100 >= 11 && number % 100 <= 13) return `${number}th`;
 
@@ -34,13 +41,6 @@ function addBadges(badgeNames) {
   return badgeNames.map((badgeName) => badgeMap[badgeName] || "❓");
 }
 
-const {
-  ChatInputCommandInteraction,
-  SlashCommandBuilder,
-  EmbedBuilder,
-  AttachmentBuilder,
-} = require("discord.js");
-
 const { profileImage } = require("discord-arts");
 
 const { errorSend } = require("../../../Functions/errorlogSend");
@@ -49,9 +49,9 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("whois")
     .setDescription("Displays information on your or another user.")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addUserOption((options) =>
-      options.setName("user").setDescription("Select the user.")
+      options.setName("user").setDescription("Select the user."),
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
@@ -69,10 +69,11 @@ module.exports = {
           error: `${errorsArray.join("\n")}`,
           time: `${parseInt(interaction.createdTimestamp / 1000, 10)}`,
         },
-        interaction
+        interaction,
       );
     }
 
+    await interaction.deferReply();
     try {
       const fetchedMembers = await interaction.guild.members.fetch();
 
@@ -85,14 +86,16 @@ module.exports = {
         Array.from(
           fetchedMembers
             .sort((a, b) => a.joinedTimestamp - b.joinedTimestamp)
-            .keys()
+            .keys(),
         ).indexOf(member.id) + 1;
 
       const topRoles = member.roles.cache
         .sort((a, b) => b.position - a.position)
         .map((role) => role);
 
-      const userBadges = member.user.flags.toArray();
+      const fetchedUser = await member.user.fetch(true);
+      const bannerURL = fetchedUser.bannerURL({ size: 4096 });
+      const userBadges = fetchedUser.flags?.toArray() ?? [];
 
       const joinTime = parseInt(member.joinedTimestamp / 1000, 10);
       const createdTime = parseInt(member.user.createdTimestamp / 1000, 10);
@@ -112,7 +115,7 @@ module.exports = {
             member.user.username
           } joined  as the **${addSuffix(joinedPosition)}** member of ${
             interaction.guild.name
-          }.`
+          }.`,
         )
         .setImage("attachment://profile.png")
         .addFields([
@@ -128,7 +131,11 @@ module.exports = {
           },
           {
             name: "Roles:",
-            value: `${topRoles.join("").replace(`<@${interaction.guildId}>`)}`,
+            value:
+              topRoles
+                .filter((role) => role.id !== interaction.guildId)
+                .join(" ")
+                .slice(0, 1024) || "None",
             inline: false,
           },
           {
@@ -153,19 +160,19 @@ module.exports = {
           },
           {
             name: "Banner:",
-            value: `[Link](${(await member.user.fetch()).bannerURL()})`,
+            value: bannerURL ? `[Link](${bannerURL})` : "None",
             inline: true,
           },
         ])
         .setTimestamp()
         .setFooter({ text: `Requested By ${interaction.user.tag}` });
 
-      interaction.reply({
+      await interaction.editReply({
         embeds: [whoisembed],
         files: [imageAttachment],
       });
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   },
 };

@@ -1,13 +1,12 @@
 const {
+  MessageFlags,
+  InteractionContextType,
   SlashCommandBuilder,
-  EmbedBuilder,
   PermissionFlagsBits,
-  ChatInputCommandInteraction,
 } = require("discord.js");
 const Transcript = require("discord-html-transcripts");
 
 const { moderationlogSend } = require("../../Functions/moderationlogSend");
-const { errorSend } = require("../../Functions/errorlogSend");
 
 module.exports = {
   moderation: true,
@@ -15,123 +14,61 @@ module.exports = {
     .setName("purge")
     .setDescription("Deletes messages in the server")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
-    .setDMPermission(false)
-    .addNumberOption((options) =>
+    .setContexts(InteractionContextType.Guild)
+    .addIntegerOption((options) =>
       options
         .setName("amount")
         .setDescription("Enter the number of messages you want to delete.")
         .setMinValue(1)
         .setMaxValue(100)
-        .setRequired(true)
+        .setRequired(true),
     )
     .addStringOption((options) =>
       options
         .setName("reason")
         .setDescription("The reason for purging the messages?")
-        .setRequired(true)
+        .setRequired(true),
     )
     .addUserOption((options) =>
-      options.setName("user").setDescription("Select the user.")
+      options.setName("user").setDescription("Select the user."),
     ),
-  /**
-   * @param {ChatInputCommandInteraction} interaction
-   */
-  async execute(interaction, client) {
-    const { options, member } = interaction;
-
-    const amount = options.getNumber("amount");
-    const reason = options.getString("reason");
-    const user = options.getUser("user");
-
-    const successEmbed = new EmbedBuilder().setColor("Green");
-
-    const errorsArray = [];
-    if (user) {
-      let i = 0;
-      let messagesDelete = [];
-      const channelMessages = await interaction.channel.messages.fetch();
-      channelMessages.forEach((message) => {
-        if (message.author.id === user.id && amount > i) {
-          i++;
-          messagesDelete.push(message);
-        }
-      });
-
-      if (messagesDelete.length === 0) {
-        errorsArray.push(`No messages found from ${user}.`);
-      }
-
-      if (errorsArray.length) {
-        return errorSend(
-          {
-            user: `${member.user.username}`,
-            command: `${interaction.commandName}`,
-            error: `${errorsArray.join("\n")}`,
-            time: `${Math.floor(interaction.createdTimestamp / 1000)}`,
-          },
-          interaction
-        );
-      }
-
-      const transcript = await Transcript.generateFromMessages(
-        messagesDelete,
-        interaction.channel
-      );
-
-      interaction.channel.bulkDelete(messagesDelete, true).then((messages) => {
-        interaction.reply({
-          embeds: [
-            successEmbed.setDescription(
-              `🧹 \n Purged \`${messages.size}\` messages from ${user.tag}!`
-            ),
-          ],
-          ephemeral: true,
-        });
-
-        moderationlogSend(
-          {
-            action: "Purge",
-            moderator: `${member.user.username}`,
-            user: user ? `${user.tag}` : "Everyone",
-            reason: `${reason}`,
-            emoji: "🧹",
-            place: `${interaction.channel.name}`,
-            size: `${messages.size}`,
-            transcript: transcript,
-          },
-          interaction
-        );
-      });
-    } else {
-      const transcript = await Transcript.createTranscript(
-        interaction.channel,
-        { limit: amount }
-      );
-
-      interaction.channel.bulkDelete(amount, true).then((messages) => {
-        interaction.reply({
-          embeds: [
-            successEmbed.setDescription(
-              `🧹 \n Purged \`${messages.size}\` messages!`
-            ),
-          ],
-          ephemeral: true,
-        });
-
-        moderationlogSend(
-          {
-            action: "Purge",
-            moderator: `${member.user.username}`,
-            user: user ? `${user.tag}` : "Everyone",
-            reason: `${reason}`,
-            emoji: "🧹",
-            place: `${interaction.channel.name}`,
-            size: `${messages.size}`,
-            transcript: transcript,
-          },
-          interaction
-        );
-      });
+  async execute(interaction) {
+    const amount = interaction.options.getInteger("amount", true);
+    const reason = interaction.options.getString("reason", true);
+    const user = interaction.options.getUser("user");
+    const channel = interaction.channel;
+    if (!channel?.isTextBased() || typeof channel.bulkDelete !== "function") {
+      throw new Error("This channel does not support bulk message deletion.");
     }
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+    const fetched = await channel.messages.fetch({ limit: 100 });
+    const cutoff = Date.now() - 14 * 24 * 60 * 60 * 1000;
+    const selected = fetched.filter(
+      (message) =>
+        message.createdTimestamp > cutoff &&
+        (!user || message.author.id === user.id),
+    );
+    const messages = selected.first(amount);
+    if (!messages.length)
+      return interaction.editReply(
+        "No matching messages younger than 14 days were found.",
+      );
+    const transcript = await Transcript.generateFromMessages(messages, channel);
+    const deleted = await channel.bulkDelete(messages, true);
+    await interaction.editReply(
+      `Purged ${deleted.size} messages${user ? ` from ${user.tag}` : ""}.`,
+    );
+    await moderationlogSend(
+      {
+        action: "Purge",
+        moderator: interaction.user.tag,
+        user: user?.tag ?? "Everyone",
+        reason,
+        place: channel.name,
+        size: String(deleted.size),
+        transcript,
+      },
+      interaction,
+    );
   },
 };

@@ -1,46 +1,31 @@
 const { loadFiles } = require("../Functions/fileLoader");
-require("dotenv").config();
+const { Collection } = require("discord.js");
 
 async function loadCommands(client) {
-  console.time("Commands Loaded");
+  const commands = new Collection();
+  const subCommands = new Collection();
+  const definitions = [];
 
-  await client.commands.clear();
-  await client.subCommands.clear();
-
-  const commands = [];
-  const commandsArray = [];
-  const files = await loadFiles("Commands");
-
-  for (const file of files) {
-    try {
-      const command = require(file);
-
-      if (command.subCommand) {
-        client.subCommands.set(command.subCommand, command);
-      } else {
-        const { name } = command.data;
-        command.cooldown = command.cooldown ?? process.env.DEFAULT_COOLDOWN;
-        client.commands.set(name, command);
-        commands.push({
-          Command: name,
-          Status: "✅",
-        });
-        commandsArray.push(command.data.toJSON());
-      }
-    } catch (error) {
-      const commandName = file.split("/").pop().slice(0, -3);
-      commands.push({
-        Command: commandName,
-        Status: "🛑",
-        Error: error.toString(),
-      });
+  for (const file of await loadFiles("Commands")) {
+    const command = require(file);
+    const key = command.subCommand ?? command.data?.name;
+    const collection = command.subCommand ? subCommands : commands;
+    if (!key || collection.has(key))
+      throw new Error(`Invalid or duplicate command: ${file}`);
+    if (command.subCommand && typeof command.execute !== "function") {
+      throw new Error(`Missing subcommand execute function: ${file}`);
     }
+    collection.set(key, command);
+    if (!command.subCommand) definitions.push(command.data.toJSON());
   }
 
-  client.application.commands.set(commandsArray);
-  console.table(commands, ["Command", "Status", "Error"]);
-  console.info(`\n\x1b[36mLoaded ${commands.length} commands.\x1b[0m`);
-  console.timeEnd("Commands Loaded");
+  // Keep the current registry if loading or registration fails.
+  await client.application.commands.set(definitions);
+  client.commands = commands;
+  client.subCommands = subCommands;
+  console.info(
+    `Loaded ${commands.size} commands and ${subCommands.size} subcommands.`,
+  );
 }
 
 module.exports = { loadCommands };

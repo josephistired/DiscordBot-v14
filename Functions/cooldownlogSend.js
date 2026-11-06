@@ -1,18 +1,15 @@
-const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
-
+const { MessageFlags, EmbedBuilder } = require("discord.js");
 async function cooldownSend({ user, command, time, left }, interaction) {
-  const attachment = new AttachmentBuilder("assets/cooldown.jpg");
-
   const errorEmbed = new EmbedBuilder()
     .setAuthor({
       name: `${interaction.user.tag} | ${interaction.user.id}`,
-      iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+      iconURL: interaction.user.displayAvatarURL(),
     })
     .setDescription(
-      `⚠️ Alert: Please wait ${left} Seconds before running this command again.`
+      `⚠️ Alert: Please wait ${left} Seconds before running this command again.`,
     )
     .setColor("Red")
-    .setThumbnail("attachment://cooldown.jpg")
+
     .addFields(
       {
         name: "👤 User:",
@@ -25,15 +22,14 @@ async function cooldownSend({ user, command, time, left }, interaction) {
       {
         name: "⏲️ Command Executed:",
         value: `<t:${time}:D> | <t:${time}:R>`,
-      }
+      },
     )
     .setFooter({ text: "⏱️ Cooldown Alert" })
     .setTimestamp();
 
   await interaction.reply({
     embeds: [errorEmbed],
-    files: [attachment],
-    ephemeral: true,
+    flags: MessageFlags.Ephemeral,
   });
 }
 

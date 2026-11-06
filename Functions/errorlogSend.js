@@ -1,16 +1,13 @@
-const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
-
+const { MessageFlags, EmbedBuilder } = require("discord.js");
 async function errorSend({ user, command, time, error }, interaction) {
-  const attachment = new AttachmentBuilder("assets/error.png");
-
   const errorEmbed = new EmbedBuilder()
     .setTitle("🚫 Error Occured 🚫")
     .setAuthor({
       name: `${interaction.user.tag} | ${interaction.user.id}`,
-      iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+      iconURL: interaction.user.displayAvatarURL(),
     })
     .setColor("Red")
-    .setThumbnail("attachment://error.png")
+
     .addFields(
       {
         name: "👤 User:",
@@ -22,20 +19,24 @@ async function errorSend({ user, command, time, error }, interaction) {
       },
       {
         name: "🛑 Error:",
-        value: ` ${error}`,
+        value: String(error).slice(0, 1024) || "Unknown error",
       },
       {
         name: "⏲️ Command Executed:",
         value: `<t:${time}:D> | <t:${time}:R>`,
-      }
+      },
     )
     .setFooter({ text: " 🚫 Error Ocurred" })
     .setTimestamp();
 
-  await interaction.reply({
+  const respond = interaction.replied
+    ? "followUp"
+    : interaction.deferred
+      ? "editReply"
+      : "reply";
+  await interaction[respond]({
     embeds: [errorEmbed],
-    files: [attachment],
-    ephemeral: true,
+    ...(respond === "editReply" ? {} : { flags: MessageFlags.Ephemeral }),
   });
 }
 

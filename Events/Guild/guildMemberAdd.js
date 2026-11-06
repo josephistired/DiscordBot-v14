@@ -18,38 +18,50 @@ module.exports = {
   async execute(member) {
     // Welcome System
     const data = await welcomeDatabase.findOne({ Guild: member.guild.id });
-    if (!data) return;
+    let role = "No welcome role configured";
+    if (data) {
+      const channel = data.welcomeChannel;
+      let message =
+        data.welcomeMessage ||
+        `Welcome ${member.user} to ${member.guild}, enjoy your stay!`;
+      let wcolor = data.welcomeColor || "Green";
 
-    const channel = data.welcomeChannel;
-    let message =
-      data.welcomeMessage ||
-      `Welcome ${member.user} to ${member.guild}, enjoy your stay!`;
-    let wcolor = data.welcomeColor || "Green";
+      const verification = await require("../../Schemas/verification").findOne({
+        Guild: member.guild.id,
+      });
+      if (data.welcomeRole && data.welcomeRole !== verification?.role) {
+        role = data.welcomeRole;
+        await member.roles.add(role).catch(() => {
+          role = "Unable to assign configured role.";
+        });
+      }
 
-    let role = data.welcomeRole;
-    member.roles.add(role).catch(() => {
-      role = "Role selected is higher than the bot.";
-    });
+      const { guild } = member;
+      const welcomeChannel = guild.channels.cache.get(channel);
+      const icon = guild.iconURL();
 
-    const { guild } = member;
-    const welcomeChannel = guild.channels.cache.get(channel);
-    const icon = guild.iconURL();
+      const welcomeEmbed = new EmbedBuilder()
+        .setTitle(`***New member!***`)
+        .setDescription(message)
+        .setImage(member.displayAvatarURL({ size: 2048 }))
+        .setColor(wcolor)
+        .setThumbnail(icon)
+        .setTimestamp();
 
-    const welcomeEmbed = new EmbedBuilder()
-      .setTitle(`***New member!***`)
-      .setDescription(message)
-      .setImage(member.displayAvatarURL({ dynamic: true, size: 2048 }))
-      .setColor(wcolor)
-      .setThumbnail(icon)
-      .setTimestamp();
-
-    welcomeChannel.send({ embeds: [welcomeEmbed] });
+      if (welcomeChannel?.isTextBased())
+        await welcomeChannel.send({ embeds: [welcomeEmbed] });
+    }
 
     // Member Risk System Logging
     const logdata = await logDatabase.findOne({ Guild: member.guild.id });
-    if (!logdata) return;
+    if (
+      !logdata ||
+      !require("../../Functions/guildLog").enabled(logdata, "members")
+    )
+      return;
 
     const logchannel = member.guild.channels.cache.get(logdata.logChannel);
+    if (!logchannel?.isTextBased()) return;
 
     let lcolor = "#74e21e";
     let risk = "Fairly Safe";
@@ -77,10 +89,10 @@ module.exports = {
     const riskEmbed = new EmbedBuilder()
       .setAuthor({
         name: `${member.user.tag} | ${member.user.id}`,
-        iconURL: member.displayAvatarURL({ dynamic: true }),
+        iconURL: member.displayAvatarURL(),
       })
       .setColor(lcolor)
-      .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 256 }))
+      .setThumbnail(member.user.displayAvatarURL({ size: 256 }))
       .setDescription(
         [
           `👤 User: ${member.user}`,
@@ -89,7 +101,7 @@ module.exports = {
           `☢️ Risk Level: ${risk}`,
           `✍🏻 Account Created: <t:${accountCreation}:D> | <t:${accountCreation}:R>`,
           `👥 Account Joined: <t:${joiningTime}:D> | <t:${joiningTime}:R>`,
-        ].join("\n")
+        ].join("\n"),
       )
       .setFooter({ text: "User Joined" })
       .setTimestamp();
@@ -103,7 +115,7 @@ module.exports = {
         new ButtonBuilder()
           .setCustomId(`MemberLogging-Ban-${member.id}`)
           .setLabel("Ban")
-          .setStyle(ButtonStyle.Danger)
+          .setStyle(ButtonStyle.Danger),
       );
 
       await logchannel.send({

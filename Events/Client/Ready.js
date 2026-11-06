@@ -1,23 +1,14 @@
-console.clear();
-
-const mongoose = require("mongoose");
-
-mongoose.set("strictQuery", true);
-
-require("dotenv").config();
-
+const { Events } = require("discord.js");
 const { loadCommands } = require("../../Handlers/commandLoader");
 const { logSchemas } = require("../../Handlers/schemaLoader");
 
 module.exports = {
-  name: "ready",
+  name: Events.ClientReady,
   once: true,
   async execute(client) {
     client.user.setActivity(`${client.guilds.cache.size} Guilds`);
-
-    loadCommands(client);
+    await client.giveawaysManager.initialize();
+    await loadCommands(client);
     logSchemas();
-
-    await mongoose.connect(process.env.DATABASEURL);
   },
 };
